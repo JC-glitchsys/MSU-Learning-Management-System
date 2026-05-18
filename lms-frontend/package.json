@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
-    "firebase": "^10.12.2",
+    "firebase": "^12.13.0",
     "tailwindcss": "^4.3.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
