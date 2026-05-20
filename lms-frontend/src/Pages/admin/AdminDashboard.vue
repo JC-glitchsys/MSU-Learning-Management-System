@@ -1,55 +1,78 @@
 <template>
-  <div class="space-y-6">
-    <div>
-      <h2 class="text-xl font-bold text-[#1F1F1F]">Admin Overview</h2>
-      <p class="text-sm text-[#6B7280] mt-0.5">System-wide statistics and management.</p>
+  <div class="space-y-8 animate-fade-in">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-msu-border pb-5">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-black text-msu-maroon tracking-tight">System Command Workspace</h2>
+        <p class="text-sm text-[#6B7280] font-medium mt-1">Global audit monitors, enrollment controls, and real-time data logs control board.</p>
+      </div>
+      <div class="inline-flex px-4 py-2 rounded-full bg-white border border-msu-border text-xs font-bold text-msu-maroon tracking-wide shadow-sm items-center gap-1.5">
+        <ShieldCheckIcon class="w-3.5 h-3.5 stroke-[2.5]" />
+        <span>Root Administrator View</span>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <StatCard title="Total Students" value="248" description="Enrolled this semester" icon="🎓" iconBg="#FFF8E7" />
-      <StatCard title="Total Instructors" value="32" description="Active faculty" icon="👨‍🏫" iconBg="#EFF6FF" />
-      <StatCard title="Total Courses" value="12" description="Offered programs" icon="📋" iconBg="#F0FDF4" />
-      <StatCard title="Total Subjects" value="56" description="This semester" icon="📚" iconBg="#FFF1F2" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <StatCard title="Total Enrolled Students" :value="totalStudents" description="Active database records" :icon="UsersIcon" iconBg="#FFFFFF" class="border border-msu-border shadow-sm rounded-[24px]" />
+      <StatCard title="Total Instructors" :value="totalInstructors" description="Faculty profiles" :icon="GraduationCapIcon" iconBg="#FFFFFF" class="border border-msu-border shadow-sm rounded-[24px]" />
+      <StatCard title="Total Degree Programs" :value="totalCourses" description="Offered courses" :icon="FolderIcon" iconBg="#FFFFFF" class="border border-msu-border shadow-sm rounded-[24px]" />
+      <StatCard title="Total Active Subjects" :value="totalSubjects" description="Curriculum items" :icon="BookOpenIcon" iconBg="#FFFFFF" class="border border-msu-border shadow-sm rounded-[24px]" />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <!-- Recent Enrollments -->
-      <div class="lg:col-span-2">
-        <CardPanel title="Recent Enrollments">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="text-left text-xs text-[#6B7280] border-b border-[#E7DCC3]">
-                <th class="pb-3 font-medium">Student</th>
-                <th class="pb-3 font-medium">Subject</th>
-                <th class="pb-3 font-medium">Status</th>
-                <th class="pb-3 font-medium">Date</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[#E7DCC3]">
-              <tr v-for="e in enrollments" :key="e.id" class="hover:bg-[#FAFAF7] transition">
-                <td class="py-3 font-medium text-[#1F1F1F]">{{ e.student }}</td>
-                <td class="py-3 text-[#6B7280]">{{ e.subject }}</td>
-                <td class="py-3">
-                  <span :class="e.status === 'active' ? 'text-green-600 bg-green-50' : e.status === 'pending' ? 'text-yellow-600 bg-yellow-50' : 'text-red-600 bg-red-50'"
-                    class="text-xs px-2 py-0.5 rounded-full font-medium capitalize">
-                    {{ e.status }}
-                  </span>
-                </td>
-                <td class="py-3 text-[#6B7280] text-xs">{{ e.date }}</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-8">
+        <CardPanel title="Recent Stream Enrolment Logs">
+          <div v-if="loading" class="p-12 text-center">
+            <span class="w-6 h-6 border-2 border-msu-maroon border-t-transparent rounded-full animate-spin inline-block"></span>
+            <p class="text-xs text-gray-500 font-bold mt-2">Reading registration feeds...</p>
+          </div>
+
+          <div v-else-if="enrollments.length === 0" class="p-12 text-center text-[#6B7280]">
+            <p class="text-2xl">📋</p>
+            <p class="text-xs font-bold mt-2">Zero active cross-link records found inside Firestore enrollments.</p>
+          </div>
+
+          <div v-else class="overflow-x-auto -mx-6 px-6">
+            <table class="w-full text-sm min-w-[500px]">
+              <thead>
+                <tr class="text-left text-xs text-[#6B7280] font-bold uppercase tracking-wider border-b border-msu-border">
+                  <th class="pb-4 font-bold">Student Identity</th>
+                  <th class="pb-4 font-bold">Target Stream Collection</th>
+                  <th class="pb-4 font-bold">Registry State</th>
+                  <th class="pb-4 font-bold text-right">Date Applied</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-msu-border/60">
+                <tr v-for="e in enrollments" :key="e.id" class="hover:bg-msu-page-bg/40 transition group">
+                  <td class="py-4">
+                    <p class="font-bold text-[#1F2937] group-hover:text-msu-maroon transition-colors">{{ e.student }}</p>
+                    <p class="text-[10px] text-gray-400 font-mono">{{ e.email }}</p>
+                  </td>
+                  <td class="py-4 text-[#6B7280] font-medium text-xs">{{ e.subject }}</td>
+                  <td class="py-4">
+                    <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold border uppercase tracking-wide text-green-700 bg-green-50 border-green-200">
+                      {{ e.status }}
+                    </span>
+                  </td>
+                  <td class="py-4 text-right text-[#6B7280] font-mono text-xs">{{ e.date }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </CardPanel>
       </div>
 
-      <!-- Quick Links -->
-      <div class="space-y-3">
-        <CardPanel title="Quick Management">
-          <div class="space-y-2">
+      <div class="lg:col-span-4">
+        <CardPanel title="Database Control Panels">
+          <div class="space-y-2.5">
             <router-link v-for="link in quickLinks" :key="link.to" :to="link.to"
-              class="flex items-center gap-3 p-3 rounded-xl bg-[#FAFAF7] border border-[#E7DCC3] hover:border-[#800000] hover:bg-[#FFF8E7] transition">
-              <span class="text-lg">{{ link.icon }}</span>
-              <span class="text-sm font-medium text-[#1F1F1F]">{{ link.label }}</span>
+              class="group flex items-center justify-between p-3.5 rounded-2xl bg-white border border-msu-border hover:border-msu-maroon shadow-sm hover:shadow transition-all duration-150">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-msu-border text-msu-maroon shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                  <component :is="link.icon" class="w-4 h-4 stroke-[2]" />
+                </div>
+                <span class="text-xs font-bold text-[#1F2937] group-hover:text-msu-maroon transition-colors truncate">{{ link.label }}</span>
+              </div>
+              <ArrowRightIcon class="w-3.5 h-3.5 text-[#6B7280] group-hover:translate-x-0.5 transition-transform shrink-0" />
             </router-link>
           </div>
         </CardPanel>
@@ -59,22 +82,88 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../firebase/config.js'
 import StatCard from '@/components/common/StatCard.vue'
 import CardPanel from '@/components/common/CardPanel.vue'
+import { 
+  UsersIcon, GraduationCapIcon, BookOpenIcon, ClipboardListIcon, 
+  ShieldCheckIcon, ArrowRightIcon, FolderIcon, FileTextIcon, BarChart3Icon 
+} from 'lucide-vue-next'
 
-const enrollments = [
-  { id: 1, student: 'Juan Dela Cruz', subject: 'IT101 - Intro to Computing', status: 'active', date: 'Dec 7, 2025' },
-  { id: 2, student: 'Maria Santos', subject: 'IT201 - Database Mgmt', status: 'active', date: 'Dec 8, 2025' },
-  { id: 3, student: 'Pedro Reyes', subject: 'IT301 - Web Development', status: 'pending', date: 'Dec 9, 2025' },
-  { id: 4, student: 'Ana Lim', subject: 'IT401 - Capstone', status: 'active', date: 'Dec 10, 2025' },
-]
+// Real-time Metrics Values
+const totalStudents = ref(0)
+const totalInstructors = ref(0)
+const totalCourses = ref(0)
+const totalSubjects = ref(0)
+
+const enrollments = ref([])
+const loading = ref(true)
+
+const fetchDashboardMetrics = async () => {
+  loading.value = true
+  try {
+    // 1. Bilangin ang students where role == 'student'
+    const studentSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'student')))
+    totalStudents.value = studentSnap.size
+
+    // 2. Bilangin ang instructors where role == 'instructor'
+    const instructorSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'instructor')))
+    totalInstructors.value = instructorSnap.size
+
+    // 3. Bilangin ang lahat ng degree programs
+    const courseSnap = await getDocs(collection(db, 'courses'))
+    totalCourses.value = courseSnap.size
+
+    // 4. Bilangin ang lahat ng active subjects
+    const subjectSnap = await getDocs(collection(db, 'subjects'))
+    totalSubjects.value = subjectSnap.size
+
+    // 5. Humila ng totoong recent records mula sa 'enrollments' collection
+    const enrollSnap = await getDocs(collection(db, 'enrollments'))
+    enrollments.value = enrollSnap.docs.map(doc => {
+      const data = doc.data()
+      // Safe Date Conversion handler loop
+      let formattedDate = 'Just now'
+      if (data.createdAt) {
+        formattedDate = new Date(data.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        })
+      }
+      
+      return {
+        id: doc.id,
+        student: data.studentName || 'Unknown Student',
+        email: data.studentEmail || '',
+        subject: `${data.subjectCode || ''} - ${data.subjectTitle || ''}`,
+        status: 'active',
+        date: formattedDate
+      }
+    }).slice(0, 5) // Kunin lang ang top 5 pinakabagong logs para hindi humaba ang layout
+
+  } catch (err) {
+    console.error("Firestore loading error inside dashboard analytics layer:", err)
+  } finally {
+    loading.value = false
+  }
+}
 
 const quickLinks = [
-  { to: '/admin/students', label: 'Manage Students', icon: '🎓' },
-  { to: '/admin/instructors', label: 'Manage Instructors', icon: '👨‍🏫' },
-  { to: '/admin/courses', label: 'Manage Courses', icon: '📋' },
-  { to: '/admin/subjects', label: 'Manage Subjects', icon: '📚' },
-  { to: '/admin/enroll', label: 'Enroll Students', icon: '📝' },
-  { to: '/admin/reports', label: 'View Reports', icon: '📊' },
+  { to: '/admin/students', label: 'Manage Student Directory', icon: UsersIcon },
+  { to: '/admin/instructors', label: 'Faculty Roster Master', icon: GraduationCapIcon },
+  { to: '/admin/courses', label: 'Academic Programs Index', icon: FolderIcon },
+  { to: '/admin/subjects', label: 'Curriculum Subjects Base', icon: BookOpenIcon },
+  { to: '/admin/enrollment', label: 'Enrolment Cross-Manager', icon: FileTextIcon },
+  { to: '/admin/reports', label: 'Generate System Audits', icon: BarChart3Icon },
 ]
+
+onMounted(fetchDashboardMetrics)
 </script>
+
+<style scoped>
+.animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+</style>

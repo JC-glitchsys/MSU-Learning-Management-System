@@ -1,23 +1,30 @@
 <template>
-  <div class="flex h-screen bg-[#FFF8E7] font-sans text-[#1F1F1F] overflow-hidden">
-    <!-- Mobile overlay -->
-    <div
-      v-if="sidebarOpen"
-      class="fixed inset-0 z-20 bg-black/40 lg:hidden"
-      @click="sidebarOpen = false"
-    />
+  <div class="min-h-screen bg-[#FAFAF7]">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <Sidebar
+        :open="isSidebarOpen"
+        @close="isSidebarOpen = false"
+      />
 
-    <!-- Sidebar -->
-    <Sidebar :open="sidebarOpen" @close="sidebarOpen = false" />
+      <!-- Main Area -->
+      <div class="min-w-0 flex-1">
+        <Topbar @toggle-sidebar="isSidebarOpen = true" />
 
-    <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
-      <Topbar @toggle-sidebar="sidebarOpen = !sidebarOpen" />
-
-      <main class="flex-1 overflow-y-auto p-5 lg:p-8">
-        <router-view />
-      </main>
+        <main class="px-4 pb-10 pt-28 sm:px-6 lg:px-8">
+          <div class="mx-auto w-full max-w-7xl">
+            <router-view />
+          </div>
+        </main>
+      </div>
     </div>
+
+    <!-- Mobile Overlay -->
+    <div
+      v-if="isSidebarOpen"
+      class="fixed inset-0 z-40 bg-black/30 lg:hidden"
+      @click="isSidebarOpen = false"
+    ></div>
   </div>
 </template>
 
@@ -26,5 +33,5 @@ import { ref } from 'vue'
 import Sidebar from '@/components/common/Sidebar.vue'
 import Topbar from '@/components/common/Topbar.vue'
 
-const sidebarOpen = ref(false)
+const isSidebarOpen = ref(false)
 </script>

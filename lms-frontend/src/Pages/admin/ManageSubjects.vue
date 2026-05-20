@@ -1,663 +1,567 @@
+<template>
+  <div class="space-y-6 animate-fade-in">
+    <!-- Header -->
+    <section
+      class="rounded-[28px] border border-[#E7DCC3] bg-gradient-to-br from-white via-white to-[#FFF8E1] p-6 shadow-sm"
+    >
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+            Admin Registry
+          </p>
+
+          <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
+            Manage Subjects
+          </h1>
+
+          <p class="mt-1 max-w-2xl text-sm font-medium text-[#6B7280]">
+            Add subjects, assign instructors, and connect each subject to an academic program.
+          </p>
+        </div>
+
+        <button
+          @click="openCreateModal"
+          class="inline-flex w-fit items-center justify-center gap-2 rounded-full bg-[#800000] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] hover:shadow-md"
+        >
+          <PlusCircleIcon class="h-4 w-4" />
+          Add Subject
+        </button>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <section
+      class="flex flex-col justify-between gap-4 rounded-[24px] border border-[#E7DCC3] bg-white p-4 shadow-sm md:flex-row md:items-center"
+    >
+      <div
+        class="flex w-full items-center rounded-full border border-[#E7DCC3] bg-[#FAFAF7] px-4 py-2.5 transition focus-within:border-[#800000] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#F6E7B2] md:max-w-md"
+      >
+        <SearchIcon class="mr-2 h-4 w-4 shrink-0 text-[#800000]/70" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search by code, title, section, program, or instructor..."
+          class="w-full bg-transparent text-sm font-medium text-[#1F2937] outline-none placeholder:text-[#9CA3AF]"
+        />
+      </div>
+
+      <div
+        class="inline-flex w-fit rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-4 py-2 text-xs font-bold text-[#800000]"
+      >
+        {{ filteredSubjects.length }} subject{{ filteredSubjects.length === 1 ? '' : 's' }}
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <section
+      v-if="isLoading"
+      class="rounded-[28px] border border-[#E7DCC3] bg-white p-12 text-center shadow-sm"
+    >
+      <span
+        class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
+      ></span>
+      <p class="mt-3 text-sm font-bold text-[#6B7280]">Loading subjects...</p>
+    </section>
+
+    <!-- Error -->
+    <section
+      v-else-if="error"
+      class="rounded-[28px] border border-red-200 bg-red-50 p-6 text-sm font-semibold text-red-600"
+    >
+      {{ error }}
+    </section>
+
+    <!-- Empty -->
+    <section
+      v-else-if="filteredSubjects.length === 0"
+      class="rounded-[28px] border border-[#E7DCC3] bg-white p-12 text-center shadow-sm"
+    >
+      <div
+        class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF8E1] text-[#800000]"
+      >
+        <BookOpenIcon class="h-7 w-7" />
+      </div>
+
+      <h2 class="mt-4 text-lg font-black text-[#1F2937]">
+        No subjects found
+      </h2>
+
+      <p class="mt-1 text-sm text-[#6B7280]">
+        Add a subject or adjust your search keyword.
+      </p>
+    </section>
+
+    <!-- Subject Cards -->
+    <section
+      v-else
+      class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
+    >
+      <article
+        v-for="subject in filteredSubjects"
+        :key="subject.id"
+        class="group overflow-hidden rounded-[26px] border border-[#E7DCC3] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <!-- Banner -->
+        <div
+          class="relative overflow-hidden bg-gradient-to-br from-[#800000] via-[#8F1111] to-[#D4AF37] p-5 text-white"
+        >
+          <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10"></div>
+          <div class="absolute -bottom-10 left-8 h-24 w-24 rounded-full bg-black/10"></div>
+
+          <div class="relative flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
+                {{ subject.code || 'No Code' }}
+              </p>
+
+              <h2 class="mt-2 truncate text-lg font-black">
+                {{ subject.title || 'Untitled Subject' }}
+              </h2>
+
+              <p class="mt-1 truncate text-xs font-medium text-white/75">
+                {{ subject.program || 'No program' }}
+              </p>
+            </div>
+
+            <span
+              class="shrink-0 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20"
+            >
+              {{ subject.section || 'No Section' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="space-y-4 p-5">
+          <div class="rounded-2xl border border-[#E7DCC3] bg-[#FAFAF7] p-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FFF8E1] text-[#800000] ring-1 ring-[#E7DCC3]"
+              >
+                <GraduationCapIcon class="h-5 w-5" />
+              </div>
+
+              <div class="min-w-0">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
+                  Assigned Instructor
+                </p>
+                <p class="truncate text-sm font-black text-[#1F2937]">
+                  {{ subject.instructorName || 'No instructor assigned' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p class="line-clamp-2 min-h-[40px] text-sm leading-relaxed text-[#6B7280]">
+            {{ subject.description || 'No description provided.' }}
+          </p>
+
+          <div class="flex gap-2 pt-1">
+            <button
+              @click="openEditModal(subject)"
+              class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-black text-[#800000] shadow-sm transition hover:bg-[#800000] hover:text-white"
+            >
+              <PencilIcon class="h-3.5 w-3.5" />
+              Edit
+            </button>
+
+            <button
+              @click="deleteSubject(subject.id)"
+              class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-black text-red-600 shadow-sm transition hover:bg-red-600 hover:text-white"
+            >
+              <Trash2Icon class="h-3.5 w-3.5" />
+              Delete
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Modal -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-2xl overflow-hidden rounded-[28px] border border-[#E7DCC3] bg-white shadow-xl animate-slide-up"
+      >
+        <div
+          class="flex items-center justify-between border-b border-[#E7DCC3] bg-gradient-to-br from-white to-[#FFF8E1] px-6 py-5"
+        >
+          <div>
+            <h2 class="text-lg font-black text-[#800000]">
+              {{ isEditing ? 'Edit Subject' : 'Add Subject' }}
+            </h2>
+            <p class="mt-1 text-xs text-[#6B7280]">
+              Fill in the subject information and assign an instructor.
+            </p>
+          </div>
+
+          <button
+            @click="closeModal"
+            class="rounded-full p-2 text-[#6B7280] transition hover:bg-white hover:text-[#800000]"
+          >
+            <XIcon class="h-5 w-5" />
+          </button>
+        </div>
+
+        <form @submit.prevent="saveSubject" class="space-y-5 p-6">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Subject Code
+              </label>
+              <input
+                v-model="formData.code"
+                required
+                type="text"
+                placeholder="e.g. ITE192"
+                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Section
+              </label>
+              <input
+                v-model="formData.section"
+                required
+                type="text"
+                placeholder="e.g. BSIT-4A"
+                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              />
+            </div>
+
+            <div class="space-y-1.5 sm:col-span-2">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Subject Title
+              </label>
+              <input
+                v-model="formData.title"
+                required
+                type="text"
+                placeholder="e.g. Capstone Project 2"
+                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              />
+            </div>
+
+            <div class="space-y-1.5 sm:col-span-2">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Academic Program
+              </label>
+              <input
+                v-model="formData.program"
+                required
+                type="text"
+                placeholder="e.g. BSIT"
+                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              />
+            </div>
+
+            <div class="space-y-1.5 sm:col-span-2">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Description
+              </label>
+              <textarea
+                v-model="formData.description"
+                rows="3"
+                placeholder="Subject description..."
+                class="w-full resize-none rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              ></textarea>
+            </div>
+
+            <div class="space-y-1.5 sm:col-span-2">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+                Assign Instructor
+              </label>
+              <select
+                v-model="formData.instructorId"
+                required
+                class="w-full cursor-pointer rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm text-[#1F2937] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+              >
+                <option value="" disabled>Select an instructor...</option>
+                <option
+                  v-for="inst in availableInstructors"
+                  :key="inst.id"
+                  :value="inst.id"
+                >
+                  {{ inst.name || inst.email }} ({{ inst.department || 'No Dept' }})
+                </option>
+              </select>
+
+              <p
+                v-if="availableInstructors.length === 0"
+                class="mt-1 text-xs font-medium text-red-600"
+              >
+                No instructors found. Add instructor records first.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col-reverse gap-3 border-t border-[#E7DCC3] pt-5 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              @click="closeModal"
+              class="rounded-full border border-[#E7DCC3] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FFF8E1]"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              :disabled="isSaving"
+              class="inline-flex items-center justify-center gap-2 rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <SaveIcon class="h-4 w-4" />
+              {{ isSaving ? 'Saving...' : isEditing ? 'Update Subject' : 'Save Subject' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
   getDocs,
-  orderBy,
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from 'firebase/firestore'
-import { db } from '../../firebase/config.js'
+import { db } from '@/firebase/config.js'
+import {
+  BookOpenIcon,
+  GraduationCapIcon,
+  PencilIcon,
+  PlusCircleIcon,
+  SaveIcon,
+  SearchIcon,
+  Trash2Icon,
+  XIcon,
+} from 'lucide-vue-next'
 
-const COLLECTION_NAME = 'redesigned_subjects'
+const subjects = ref([])
+const availableInstructors = ref([])
 
-const emptyForm = () => ({
+const searchQuery = ref('')
+const error = ref('')
+const isLoading = ref(false)
+const isSaving = ref(false)
+const showModal = ref(false)
+const isEditing = ref(false)
+const editingId = ref(null)
+
+const formData = ref({
   code: '',
   title: '',
   description: '',
-  instructorName: '',
-  department: '',
-  specialization: '',
-  courseName: '',
-  moduleTitle: '',
-  activityTitle: '',
-  studentName: '',
+  program: '',
+  section: '',
+  instructorId: '',
 })
 
-const sampleSubjects = [
-  {
-    code: 'CCC101',
-    title: 'Intro to Programming',
-    description: 'Basics',
-    instructor: {
-      name: 'Amer Hussien Macatotong',
-      department: 'Information Systems',
-      specialization: 'Database',
-    },
-    course: {
-      courseName: 'BS Information Technology',
-    },
-    modules: [
-      {
-        title: 'Lecture 1',
-        description: 'Slides',
-        fileKey: 'gcs/dummy/lec1.pdf',
-        uploadedAt: '2025-12-08',
-      },
-      {
-        title: 'Module 1',
-        description: 'Introduction to DB',
-        fileKey: '',
-        uploadedAt: '2025-10-12',
-      },
-    ],
-    activities: [
-      {
-        title: 'Essay 1',
-        description: 'Write a 300-word essay.',
-        type: 'assignment',
-        maxScore: 100,
-        dueDate: '2025-01-15',
-      },
-    ],
-    enrolledStudents: [
-      {
-        name: 'Janisah A. Macarimbang',
-        studentNumber: '202227914',
-        program: 'BS-IT',
-        yearLevel: '3rd Year',
-      },
-    ],
-  },
-  {
-    code: 'CCC102',
-    title: 'Intro',
-    description: 'Prog 2',
-    instructor: {
-      name: 'Dr. Santos',
-      department: 'Computer Studies',
-      specialization: 'Web Development',
-    },
-    course: {
-      courseName: 'BS Information Technology',
-    },
-    modules: [
-      {
-        title: 'Lecture 1',
-        description: 'Slides',
-        fileKey: 'gcs/dummy/lec1.pdf',
-        uploadedAt: '2025-12-09',
-      },
-      {
-        title: 'Mayma',
-        description: 'HUHU',
-        fileKey: null,
-        uploadedAt: '2025-12-10',
-      },
-      {
-        title: 'JJ',
-        description: 'HAHA',
-        fileKey: null,
-        uploadedAt: '2025-12-10',
-      },
-    ],
-    activities: [
-      {
-        title: 'Act 1',
-        description: '',
-        type: 'assignment',
-        maxScore: 100,
-        dueDate: '',
-      },
-      {
-        title: 'Assignment2',
-        description: 'Make a query',
-        type: 'quiz',
-        maxScore: 100,
-        dueDate: '',
-      },
-    ],
-    enrolledStudents: [
-      {
-        name: 'Test Student',
-        studentNumber: 'S2025-001',
-        program: 'BSIT',
-        yearLevel: '1st Year',
-      },
-    ],
-  },
-  {
-    code: 'ITD114',
-    title: 'Information Management',
-    description: 'SQL and NoSQL database concepts',
-    instructor: {
-      name: 'Amer Hussien Macatotong',
-      department: 'Information Systems',
-      specialization: 'Database',
-    },
-    course: {
-      courseName: 'BS Information Technology',
-    },
-    modules: [
-      {
-        title: 'SQL Fundamentals',
-        description: 'Introduction to relational databases',
-        fileKey: '',
-        uploadedAt: '2026-05-16',
-      },
-      {
-        title: 'NoSQL Redesign Concepts',
-        description: 'Document database redesign principles',
-        fileKey: '',
-        uploadedAt: '2026-05-16',
-      },
-    ],
-    activities: [
-      {
-        title: 'SQL to NoSQL Redesign Project',
-        description: 'Redesign an SQL database into Firebase Firestore.',
-        type: 'project',
-        maxScore: 100,
-        dueDate: '2026-05-25',
-      },
-    ],
-    enrolledStudents: [
-      {
-        name: 'Janisah A. Macarimbang',
-        studentNumber: '202227914',
-        program: 'BS-IT',
-        yearLevel: '3rd Year',
-      },
-      {
-        name: 'Test Student',
-        studentNumber: '2025-0010',
-        program: 'BSIT',
-        yearLevel: '1st Year',
-      },
-    ],
-  },
-  {
-    code: 'ITD112',
-    title: 'Web Systems and Technologies',
-    description: 'Frontend and Firebase Firestore development',
-    instructor: {
-      name: 'Dr. Santos',
-      department: 'Computer Studies',
-      specialization: 'Web Development',
-    },
-    course: {
-      courseName: 'BS Information Technology',
-    },
-    modules: [
-      {
-        title: 'Vue Basics',
-        description: 'Vue 3 Composition API introduction',
-        fileKey: '',
-        uploadedAt: '2026-05-16',
-      },
-      {
-        title: 'Firebase Firestore CRUD',
-        description: 'Using Firestore as NoSQL database',
-        fileKey: '',
-        uploadedAt: '2026-05-16',
-      },
-    ],
-    activities: [
-      {
-        title: 'Build a CRUD App',
-        description: 'Create a working CRUD app using Firebase.',
-        type: 'project',
-        maxScore: 100,
-        dueDate: '2026-05-30',
-      },
-    ],
-    enrolledStudents: [
-      {
-        name: 'Test Student',
-        studentNumber: 'S2025-001',
-        program: 'BSIT',
-        yearLevel: '1st Year',
-      },
-    ],
-  },
-]
+const filteredSubjects = computed(() => {
+  const keyword = searchQuery.value.toLowerCase().trim()
 
-const subjects = ref([])
-const form = reactive(emptyForm())
-const editingId = ref(null)
-const selectedSubject = ref(null)
-const isLoading = ref(false)
-const isSaving = ref(false)
-const feedback = ref('')
-const errorMessage = ref('')
+  if (!keyword) return subjects.value
 
-const formTitle = computed(() => (editingId.value ? 'Update Subject' : 'Create Subject'))
-const submitText = computed(() => (editingId.value ? 'Save Changes' : 'Add Subject'))
+  return subjects.value.filter((subject) => {
+    return [
+      subject.code,
+      subject.title,
+      subject.description,
+      subject.program,
+      subject.section,
+      subject.instructorName,
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(keyword)
+  })
+})
 
-const stats = computed(() => ({
-  totalSubjects: subjects.value.length,
-  totalModules: subjects.value.reduce((sum, subject) => sum + (subject.modules?.length || 0), 0),
-  totalActivities: subjects.value.reduce((sum, subject) => sum + (subject.activities?.length || 0), 0),
-  totalEnrolledStudents: subjects.value.reduce(
-    (sum, subject) => sum + (subject.enrolledStudents?.length || 0),
-    0,
-  ),
-}))
+onMounted(async () => {
+  await Promise.all([fetchSubjects(), fetchInstructors()])
+})
 
-const subjectCollection = () => collection(db, COLLECTION_NAME)
-
-const loadSubjects = async () => {
+async function fetchSubjects() {
   isLoading.value = true
-  errorMessage.value = ''
+  error.value = ''
 
   try {
-    const subjectQuery = query(subjectCollection(), orderBy('createdAt', 'desc'))
-    const snapshot = await getDocs(subjectQuery)
+    const snapshot = await getDocs(collection(db, 'subjects'))
 
-    subjects.value = snapshot.docs.map((subjectDoc) => ({
-      id: subjectDoc.id,
-      ...subjectDoc.data(),
+    subjects.value = snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data(),
     }))
-  } catch (error) {
-    errorMessage.value = `Unable to load Firebase Firestore subjects: ${error.message}`
+  } catch (err) {
+    console.error('Fetch subjects error:', err)
+    error.value = 'Unable to load subjects.'
   } finally {
     isLoading.value = false
   }
 }
 
-const resetForm = () => {
-  Object.assign(form, emptyForm())
-  editingId.value = null
+async function fetchInstructors() {
+  try {
+    const instructorsQuery = query(
+      collection(db, 'users'),
+      where('role', '==', 'instructor')
+    )
+
+    const snapshot = await getDocs(instructorsQuery)
+
+    availableInstructors.value = snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data(),
+    }))
+  } catch (err) {
+    console.error('Fetch instructors error:', err)
+    error.value = 'Unable to load instructors.'
+  }
 }
 
-const buildSubjectPayload = () => ({
-  code: form.code.trim(),
-  title: form.title.trim(),
-  description: form.description.trim(),
-  instructor: {
-    name: form.instructorName.trim(),
-    department: form.department.trim(),
-    specialization: form.specialization.trim(),
-  },
-  course: {
-    courseName: form.courseName.trim(),
-  },
-  modules: form.moduleTitle.trim() ? [{ title: form.moduleTitle.trim() }] : [],
-  activities: form.activityTitle.trim() ? [{ title: form.activityTitle.trim() }] : [],
-  enrolledStudents: form.studentName.trim() ? [{ name: form.studentName.trim() }] : [],
-})
+function openCreateModal() {
+  resetForm()
+  isEditing.value = false
+  editingId.value = null
+  showModal.value = true
+}
 
-const saveSubject = async () => {
-  errorMessage.value = ''
-  feedback.value = ''
+function openEditModal(subject) {
+  isEditing.value = true
+  editingId.value = subject.id
 
-  if (!form.code.trim() || !form.title.trim()) {
-    errorMessage.value = 'Subject Code and Subject Title are required.'
+  formData.value = {
+    code: subject.code || '',
+    title: subject.title || '',
+    description: subject.description || '',
+    program: subject.program || '',
+    section: subject.section || '',
+    instructorId: subject.instructorId || '',
+  }
+
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+  resetForm()
+}
+
+function resetForm() {
+  formData.value = {
+    code: '',
+    title: '',
+    description: '',
+    program: '',
+    section: '',
+    instructorId: '',
+  }
+}
+
+async function saveSubject() {
+  error.value = ''
+
+  if (!formData.value.instructorId) {
+    error.value = 'Please assign an instructor.'
+    return
+  }
+
+  const selectedInstructor = availableInstructors.value.find(
+    (inst) => inst.id === formData.value.instructorId
+  )
+
+  if (!selectedInstructor) {
+    error.value = 'Selected instructor was not found.'
     return
   }
 
   isSaving.value = true
 
-  try {
-    const payload = buildSubjectPayload()
+  const payload = {
+    code: formData.value.code.trim(),
+    title: formData.value.title.trim(),
+    description: formData.value.description.trim(),
+    program: formData.value.program.trim(),
+    section: formData.value.section.trim(),
+    instructorId: selectedInstructor.id,
+    instructorName: selectedInstructor.name || selectedInstructor.email || 'Unnamed Instructor',
+    updatedAt: serverTimestamp(),
+  }
 
-    if (editingId.value) {
-      await updateDoc(doc(db, COLLECTION_NAME, editingId.value), {
-        ...payload,
-        updatedAt: serverTimestamp(),
-      })
-      feedback.value = 'Subject updated in Firebase Firestore.'
+  try {
+    if (isEditing.value && editingId.value) {
+      await updateDoc(doc(db, 'subjects', editingId.value), payload)
     } else {
-      await addDoc(subjectCollection(), {
+      await addDoc(collection(db, 'subjects'), {
         ...payload,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
       })
-      feedback.value = 'Subject added to the NoSQL redesigned collection.'
     }
 
-    resetForm()
-    await loadSubjects()
-  } catch (error) {
-    errorMessage.value = `Unable to save subject: ${error.message}`
+    await fetchSubjects()
+    closeModal()
+  } catch (err) {
+    console.error('Save subject error:', err)
+    error.value = 'Unable to save subject.'
   } finally {
     isSaving.value = false
   }
 }
 
-const editSubject = (subject) => {
-  editingId.value = subject.id
-  form.code = subject.code || ''
-  form.title = subject.title || ''
-  form.description = subject.description || ''
-  form.instructorName = subject.instructor?.name || ''
-  form.department = subject.instructor?.department || ''
-  form.specialization = subject.instructor?.specialization || ''
-  form.courseName = subject.course?.courseName || ''
-  form.moduleTitle = subject.modules?.[0]?.title || ''
-  form.activityTitle = subject.activities?.[0]?.title || ''
-  form.studentName = subject.enrolledStudents?.[0]?.name || ''
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const deleteSubject = async (subject) => {
-  const confirmed = window.confirm(`Delete ${subject.code} - ${subject.title} from Firebase Firestore?`)
-
-  if (!confirmed) return
-
-  errorMessage.value = ''
-  feedback.value = ''
+async function deleteSubject(subjectId) {
+  if (!confirm('Delete this subject? This action cannot be undone.')) return
 
   try {
-    await deleteDoc(doc(db, COLLECTION_NAME, subject.id))
-    feedback.value = 'Subject deleted from Firebase Firestore.'
-    if (selectedSubject.value?.id === subject.id) selectedSubject.value = null
-    await loadSubjects()
-  } catch (error) {
-    errorMessage.value = `Unable to delete subject: ${error.message}`
+    await deleteDoc(doc(db, 'subjects', subjectId))
+    await fetchSubjects()
+  } catch (err) {
+    console.error('Delete subject error:', err)
+    error.value = 'Unable to delete subject.'
   }
 }
-
-const seedSampleDataset = async () => {
-  errorMessage.value = ''
-  feedback.value = ''
-
-  try {
-    const snapshot = await getDocs(subjectCollection())
-
-    if (!snapshot.empty) {
-      window.alert('The sample dataset already exists in Firebase Firestore.')
-      return
-    }
-
-    await Promise.all(
-      sampleSubjects.map((subject) =>
-        addDoc(subjectCollection(), {
-          ...subject,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        }),
-      ),
-    )
-
-    feedback.value = 'Sample dataset seeded into the NoSQL redesigned collection.'
-    await loadSubjects()
-  } catch (error) {
-    errorMessage.value = `Unable to seed sample dataset: ${error.message}`
-  }
-}
-
-const showDetails = (subject) => {
-  selectedSubject.value = selectedSubject.value?.id === subject.id ? null : subject
-}
-
-onMounted(loadSubjects)
 </script>
 
-<template>
-  <div class="min-h-screen bg-[#FFF8E7] text-[#1F1F1F]">
-    <div class="mx-auto max-w-7xl space-y-8 p-4 sm:p-6 lg:p-8">
-      <header class="rounded-2xl border border-[#E7DCC3] bg-white p-6 shadow-sm">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#800000]">
-              MSU Main Learning Management System
-            </p>
-            <h1 class="mt-2 text-3xl font-bold text-[#1F1F1F]">Manage Subjects</h1>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#6B7280]">
-              Firebase Firestore CRUD for the SQL to NoSQL redesigned LMS.
-            </p>
-          </div>
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.22s ease-out forwards;
+}
 
-          <button
-            type="button"
-            class="rounded-2xl bg-[#800000] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5A0000] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2"
-            @click="seedSampleDataset"
-          >
-            Seed Sample Dataset
-          </button>
-        </div>
-      </header>
+.animate-slide-up {
+  animation: slideUp 0.22s ease-out forwards;
+}
 
-      <section class="rounded-2xl border border-[#E7DCC3] bg-white p-6 shadow-sm">
-        <div class="flex gap-4">
-          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#800000] text-lg font-bold text-[#D4AF37]">
-            DB
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-[#1F1F1F]">NoSQL redesign note</h2>
-            <p class="mt-2 text-sm leading-7 text-[#6B7280]">
-              “The original SQL LMS stored subjects, modules, activities, and enrollments in
-              separate tables. In the Firestore redesign, these related records are embedded
-              inside each subject document to reduce relational joins and make subject-centered
-              data easier to retrieve.”
-            </p>
-          </div>
-        </div>
-      </section>
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 
-      <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <article class="rounded-2xl border border-[#E7DCC3] bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold text-[#6B7280]">Total Subjects</p>
-          <p class="mt-2 text-3xl font-bold text-[#800000]">{{ stats.totalSubjects }}</p>
-        </article>
-        <article class="rounded-2xl border border-[#E7DCC3] bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold text-[#6B7280]">Total Modules</p>
-          <p class="mt-2 text-3xl font-bold text-[#800000]">{{ stats.totalModules }}</p>
-        </article>
-        <article class="rounded-2xl border border-[#E7DCC3] bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold text-[#6B7280]">Total Activities</p>
-          <p class="mt-2 text-3xl font-bold text-[#800000]">{{ stats.totalActivities }}</p>
-        </article>
-        <article class="rounded-2xl border border-[#E7DCC3] bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold text-[#6B7280]">Total Enrolled Students</p>
-          <p class="mt-2 text-3xl font-bold text-[#800000]">{{ stats.totalEnrolledStudents }}</p>
-        </article>
-      </section>
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-      <div v-if="feedback" class="rounded-2xl border border-[#D4AF37] bg-[#FFF8E7] p-4 text-sm font-semibold text-[#5A0000]">
-        {{ feedback }}
-      </div>
-      <div v-if="errorMessage" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
-        {{ errorMessage }}
-      </div>
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 
-      <section class="grid gap-8 xl:grid-cols-[420px_1fr]">
-        <form class="rounded-2xl border border-[#E7DCC3] bg-white p-6 shadow-sm" @submit.prevent="saveSubject">
-          <div class="mb-6 border-b border-[#E7DCC3] pb-4">
-            <h2 class="text-xl font-bold text-[#1F1F1F]">{{ formTitle }}</h2>
-            <p class="mt-1 text-sm text-[#6B7280]">
-              Store subject-centered records in the redesigned_subjects Firestore collection.
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <label class="block">
-              <span class="text-sm font-semibold text-[#1F1F1F]">Subject Code</span>
-              <input v-model="form.code" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="CCC101" />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-[#1F1F1F]">Subject Title</span>
-              <input v-model="form.title" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Intro to Programming" />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-[#1F1F1F]">Description</span>
-              <textarea v-model="form.description" rows="3" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Subject overview"></textarea>
-            </label>
-
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block sm:col-span-2">
-                <span class="text-sm font-semibold text-[#1F1F1F]">Instructor Name</span>
-                <input v-model="form.instructorName" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Instructor name" />
-              </label>
-
-              <label class="block">
-                <span class="text-sm font-semibold text-[#1F1F1F]">Department</span>
-                <input v-model="form.department" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Computer Studies" />
-              </label>
-
-              <label class="block">
-                <span class="text-sm font-semibold text-[#1F1F1F]">Specialization</span>
-                <input v-model="form.specialization" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Web Development" />
-              </label>
-            </div>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-[#1F1F1F]">Course Name</span>
-              <input v-model="form.courseName" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="BS Information Technology" />
-            </label>
-
-            <div class="rounded-2xl border border-[#E7DCC3] bg-[#FFF8E7] p-4">
-              <p class="text-sm font-bold text-[#800000]">Optional embedded records</p>
-              <div class="mt-4 space-y-4">
-                <label class="block">
-                  <span class="text-sm font-semibold text-[#1F1F1F]">Module Title</span>
-                  <input v-model="form.moduleTitle" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-white px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Lecture 1" />
-                </label>
-                <label class="block">
-                  <span class="text-sm font-semibold text-[#1F1F1F]">Activity Title</span>
-                  <input v-model="form.activityTitle" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-white px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Essay 1" />
-                </label>
-                <label class="block">
-                  <span class="text-sm font-semibold text-[#1F1F1F]">Enrolled Student Name</span>
-                  <input v-model="form.studentName" type="text" class="mt-1 w-full rounded-xl border border-[#E7DCC3] bg-white px-4 py-3 text-sm outline-none focus:border-[#800000] focus:ring-2 focus:ring-[#D4AF37]/40" placeholder="Student name" />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button type="submit" class="rounded-2xl bg-[#800000] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#5A0000] disabled:cursor-not-allowed disabled:opacity-70" :disabled="isSaving">
-              {{ isSaving ? 'Saving...' : submitText }}
-            </button>
-            <button v-if="editingId" type="button" class="rounded-2xl border border-[#E7DCC3] px-5 py-3 text-sm font-semibold text-[#800000] transition hover:bg-[#FFF8E7]" @click="resetForm">
-              Cancel Edit
-            </button>
-          </div>
-        </form>
-
-        <section class="space-y-4">
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 class="text-xl font-bold text-[#1F1F1F]">Subject Documents</h2>
-              <p class="text-sm text-[#6B7280]">Cards are loaded from Firebase Firestore.</p>
-            </div>
-            <button type="button" class="rounded-2xl border border-[#E7DCC3] bg-white px-4 py-2 text-sm font-semibold text-[#800000] transition hover:bg-[#FFF8E7]" @click="loadSubjects">
-              Refresh List
-            </button>
-          </div>
-
-          <div v-if="isLoading" class="rounded-2xl border border-[#E7DCC3] bg-white p-6 text-center text-sm font-semibold text-[#6B7280] shadow-sm">
-            Loading Firebase Firestore subjects...
-          </div>
-
-          <div v-else-if="subjects.length === 0" class="rounded-2xl border border-dashed border-[#E7DCC3] bg-white p-8 text-center shadow-sm">
-            <p class="text-lg font-bold text-[#1F1F1F]">No subject documents yet.</p>
-            <p class="mt-2 text-sm text-[#6B7280]">Create a subject or seed the sample dataset.</p>
-          </div>
-
-          <template v-else>
-            <article v-for="subject in subjects" :key="subject.id" class="rounded-2xl border border-[#E7DCC3] bg-white p-6 shadow-sm">
-            <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="rounded-full bg-[#800000] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                    {{ subject.code }}
-                  </span>
-                  <span class="rounded-full border border-[#D4AF37] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#5A0000]">
-                    {{ subject.course?.courseName || 'No course' }}
-                  </span>
-                </div>
-                <h3 class="mt-3 text-xl font-bold text-[#1F1F1F]">{{ subject.title }}</h3>
-                <p class="mt-2 text-sm leading-6 text-[#6B7280]">{{ subject.description || 'No description provided.' }}</p>
-              </div>
-
-              <div class="flex flex-wrap gap-2">
-                <button type="button" class="rounded-xl border border-[#E7DCC3] px-3 py-2 text-xs font-bold text-[#800000] transition hover:bg-[#FFF8E7]" @click="showDetails(subject)">
-                  View Details
-                </button>
-                <button type="button" class="rounded-xl border border-[#D4AF37] px-3 py-2 text-xs font-bold text-[#5A0000] transition hover:bg-[#FFF8E7]" @click="editSubject(subject)">
-                  Edit
-                </button>
-                <button type="button" class="rounded-xl bg-[#5A0000] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#800000]" @click="deleteSubject(subject)">
-                  Delete
-                </button>
-              </div>
-            </div>
-
-            <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <div class="rounded-2xl bg-[#FFF8E7] p-4">
-                <p class="text-xs font-bold uppercase tracking-wide text-[#6B7280]">Instructor</p>
-                <p class="mt-1 font-semibold text-[#1F1F1F]">{{ subject.instructor?.name || 'Unassigned' }}</p>
-                <p class="text-sm text-[#6B7280]">{{ subject.instructor?.department || 'No department' }}</p>
-                <p class="text-sm text-[#6B7280]">{{ subject.instructor?.specialization || 'No specialization' }}</p>
-              </div>
-              <div class="rounded-2xl bg-[#FFF8E7] p-4">
-                <p class="text-xs font-bold uppercase tracking-wide text-[#6B7280]">Embedded Counts</p>
-                <p class="mt-1 text-sm text-[#1F1F1F]">Modules: <strong>{{ subject.modules?.length || 0 }}</strong></p>
-                <p class="text-sm text-[#1F1F1F]">Activities: <strong>{{ subject.activities?.length || 0 }}</strong></p>
-                <p class="text-sm text-[#1F1F1F]">Enrolled Students: <strong>{{ subject.enrolledStudents?.length || 0 }}</strong></p>
-              </div>
-              <div class="rounded-2xl bg-[#FFF8E7] p-4 md:col-span-2 xl:col-span-1">
-                <p class="text-xs font-bold uppercase tracking-wide text-[#6B7280]">Collection</p>
-                <p class="mt-1 font-semibold text-[#800000]">{{ COLLECTION_NAME }}</p>
-                <p class="text-sm text-[#6B7280]">NoSQL redesigned collection</p>
-              </div>
-            </div>
-
-            <div v-if="selectedSubject?.id === subject.id" class="mt-5 rounded-2xl border border-[#E7DCC3] bg-[#FFF8E7] p-5">
-              <h4 class="text-lg font-bold text-[#1F1F1F]">Subject Details</h4>
-              <div class="mt-4 grid gap-4 lg:grid-cols-3">
-                <div>
-                  <p class="font-bold text-[#800000]">Modules</p>
-                  <ul class="mt-2 space-y-2 text-sm text-[#1F1F1F]">
-                    <li v-for="(module, index) in subject.modules" :key="`module-${index}`" class="rounded-xl bg-white p-3">
-                      <strong>{{ module.title || 'Untitled module' }}</strong>
-                      <p v-if="module.description" class="text-[#6B7280]">{{ module.description }}</p>
-                      <p v-if="module.uploadedAt" class="text-xs text-[#6B7280]">Uploaded: {{ module.uploadedAt }}</p>
-                    </li>
-                    <li v-if="!subject.modules?.length" class="rounded-xl bg-white p-3 text-[#6B7280]">No modules embedded.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <p class="font-bold text-[#800000]">Activities</p>
-                  <ul class="mt-2 space-y-2 text-sm text-[#1F1F1F]">
-                    <li v-for="(activity, index) in subject.activities" :key="`activity-${index}`" class="rounded-xl bg-white p-3">
-                      <strong>{{ activity.title || 'Untitled activity' }}</strong>
-                      <p v-if="activity.description" class="text-[#6B7280]">{{ activity.description }}</p>
-                      <p class="text-xs text-[#6B7280]">
-                        {{ activity.type || 'activity' }}<span v-if="activity.maxScore"> · {{ activity.maxScore }} pts</span><span v-if="activity.dueDate"> · Due {{ activity.dueDate }}</span>
-                      </p>
-                    </li>
-                    <li v-if="!subject.activities?.length" class="rounded-xl bg-white p-3 text-[#6B7280]">No activities embedded.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <p class="font-bold text-[#800000]">Enrolled Students</p>
-                  <ul class="mt-2 space-y-2 text-sm text-[#1F1F1F]">
-                    <li v-for="(student, index) in subject.enrolledStudents" :key="`student-${index}`" class="rounded-xl bg-white p-3">
-                      <strong>{{ student.name || 'Unnamed student' }}</strong>
-                      <p class="text-xs text-[#6B7280]">
-                        {{ student.studentNumber || 'No student number' }}<span v-if="student.program"> · {{ student.program }}</span><span v-if="student.yearLevel"> · {{ student.yearLevel }}</span>
-                      </p>
-                    </li>
-                    <li v-if="!subject.enrolledStudents?.length" class="rounded-xl bg-white p-3 text-[#6B7280]">No enrolled students embedded.</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            </article>
-          </template>
-        </section>
-      </section>
-    </div>
-  </div>
-</template>
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

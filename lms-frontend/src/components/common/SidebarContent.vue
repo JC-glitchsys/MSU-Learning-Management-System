@@ -1,51 +1,59 @@
 <template>
-  <div class="flex flex-col h-full">
-    <!-- Logo area -->
-    <div class="px-5 py-6 border-b border-[#5A0000]">
+  <div class="flex h-full flex-col bg-white">
+    <!-- Brand Header -->
+    <div class="flex items-center justify-between border-b border-[#E7DCC3] p-6">
       <div class="flex items-center gap-3">
-        <!-- MSU Seal placeholder -->
-        <div class="w-10 h-10 rounded-full bg-[#D4AF37] flex items-center justify-center shrink-0">
-          <span class="text-[#800000] font-bold text-sm">MSU</span>
+        <div
+          class="flex h-9 w-9 items-center justify-center rounded-full bg-[#800000] text-xs font-black text-white"
+        >
+          M
         </div>
+
         <div>
-          <p class="font-bold text-white text-sm leading-tight">MSU LMS</p>
-          <p class="text-[#F6E7B2] text-[10px] leading-tight">Mindanao State University</p>
+          <h1 class="text-xs font-black uppercase tracking-widest text-[#800000]">
+            MSU LMS
+          </h1>
+          <p class="text-[10px] font-bold text-gray-400">
+            {{ panelLabel }}
+          </p>
         </div>
       </div>
-    </div>
 
-    <!-- Role Badge -->
-    <div class="px-5 pt-4 pb-2">
-      <span class="inline-block text-[10px] font-semibold uppercase tracking-widest text-[#D4AF37] bg-[#5A0000] px-3 py-1 rounded-full">
-        {{ roleLabel }}
-      </span>
-    </div>
-
-    <!-- Nav Links -->
-    <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
-      <router-link
-        v-for="link in navLinks"
-        :key="link.to"
-        :to="link.to"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150"
-        :class="isActive(link.to)
-          ? 'bg-white/10 text-white font-semibold border-l-2 border-[#D4AF37] pl-[10px]'
-          : 'text-[#F6E7B2] hover:bg-white/10 hover:text-white'"
-        @click="mobile && $emit('close')"
+      <button
+        v-if="mobile"
+        @click="$emit('close')"
+        class="text-sm text-gray-400 transition hover:text-[#800000] lg:hidden"
       >
-        <span class="text-base w-5 text-center">{{ link.icon }}</span>
-        <span>{{ link.label }}</span>
+        ✕
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 space-y-1 overflow-y-auto p-4">
+      <router-link
+        v-for="item in menuItems"
+        :key="item.to"
+        :to="item.to"
+        @click="mobile ? $emit('close') : null"
+        class="group flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-[#1F2937] transition-all duration-150 hover:bg-[#FFF8E1] hover:text-[#800000]"
+        active-class="bg-[#FFF8E1] !text-[#800000] border-l-4 border-[#800000] rounded-l-none"
+      >
+        <component
+          :is="item.icon"
+          class="h-4 w-4 stroke-[2] text-gray-400 transition-colors group-hover:text-[#800000]"
+        />
+        <span class="truncate">{{ item.label }}</span>
       </router-link>
     </nav>
 
     <!-- Logout -->
-    <div class="p-4 border-t border-[#5A0000]">
+    <div class="border-t border-[#E7DCC3] bg-white p-4">
       <button
         @click="$emit('logout')"
-        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#F6E7B2] hover:bg-[#5A0000] hover:text-white transition-all"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
       >
-        <span class="text-base w-5 text-center">🚪</span>
-        <span>Logout</span>
+        <LogOutIcon class="h-4 w-4 stroke-[2]" />
+        <span>Terminate Session</span>
       </button>
     </div>
   </div>
@@ -53,58 +61,146 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import {
+  LayoutDashboardIcon,
+  UsersIcon,
+  GraduationCapIcon,
+  FolderIcon,
+  BookOpenIcon,
+  FileCheckIcon,
+  LogOutIcon,
+  UploadIcon,
+  ClipboardListIcon,
+  CheckSquareIcon,
+  LibraryBigIcon,
+  NotebookTabsIcon,
+  UserIcon,
+  ChartNoAxesColumnIcon,
+} from 'lucide-vue-next'
 
-defineProps({ mobile: Boolean })
-defineEmits(['logout', 'close'])
-
-const route = useRoute()
-
-const user = JSON.parse(localStorage.getItem('user') || '{}')
-const role = user.role || 'student'
-
-const roleLabel = computed(() => {
-  if (role === 'admin') return 'Administrator'
-  if (role === 'instructor') return 'Instructor'
-  return 'Student'
+defineProps({
+  mobile: Boolean,
 })
 
-const studentLinks = [
-  { label: 'Dashboard', to: '/student/dashboard', icon: '🏠' },
-  { label: 'My Subjects', to: '/student/subjects', icon: '📚' },
-  { label: 'Modules', to: '/student/modules', icon: '📄' },
-  { label: 'Activities', to: '/student/activities', icon: '📝' },
-  { label: 'My Grades', to: '/student/grades', icon: '🎓' },
-  { label: 'Profile', to: '/student/profile', icon: '👤' },
-]
+defineEmits(['close', 'logout'])
 
-const instructorLinks = [
-  { label: 'Dashboard', to: '/instructor/dashboard', icon: '🏠' },
-  { label: 'My Subjects', to: '/instructor/subjects', icon: '📚' },
-  { label: 'Upload Module', to: '/instructor/upload-module', icon: '📤' },
-  { label: 'Create Activity', to: '/instructor/create-activity', icon: '✏️' },
-  { label: 'Submissions', to: '/instructor/submissions', icon: '📥' },
-  { label: 'Grade Submission', to: '/instructor/grade-submission', icon: '🎯' },
-  { label: 'Profile', to: '/instructor/profile', icon: '👤' },
-]
-
-const adminLinks = [
-  { label: 'Dashboard', to: '/admin/dashboard', icon: '🏠' },
-  { label: 'Manage Students', to: '/admin/students', icon: '🎓' },
-  { label: 'Manage Instructors', to: '/admin/instructors', icon: '👨‍🏫' },
-  { label: 'Manage Courses', to: '/admin/courses', icon: '📋' },
-  { label: 'Manage Subjects', to: '/admin/subjects', icon: '📚' },
-  { label: 'Enroll Students', to: '/admin/enroll', icon: '📝' },
-  { label: 'Reports', to: '/admin/reports', icon: '📊' },
-]
-
-const navLinks = computed(() => {
-  if (role === 'admin') return adminLinks
-  if (role === 'instructor') return instructorLinks
-  return studentLinks
+const loggedInUser = computed(() => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || '{}')
+  } catch (error) {
+    return {}
+  }
 })
 
-function isActive(path) {
-  return route.path.startsWith(path)
-}
+const role = computed(() => {
+  return String(loggedInUser.value?.role || 'student')
+    .toLowerCase()
+    .trim()
+})
+
+const panelLabel = computed(() => {
+  if (role.value === 'admin') return 'Admin Console'
+  if (role.value === 'instructor') return 'Instructor Workspace'
+  return 'Student Classroom'
+})
+
+const adminMenu = [
+  {
+    to: '/admin/dashboard',
+    label: 'System Dashboard',
+    icon: LayoutDashboardIcon,
+  },
+  {
+    to: '/admin/students',
+    label: 'Manage Students',
+    icon: UsersIcon,
+  },
+  {
+    to: '/admin/instructors',
+    label: 'Manage Instructors',
+    icon: GraduationCapIcon,
+  },
+  {
+    to: '/admin/programs',
+    label: 'Manage Programs',
+    icon: FolderIcon,
+  },
+  {
+    to: '/admin/subjects',
+    label: 'Manage Subjects',
+    icon: BookOpenIcon,
+  },
+  {
+    to: '/admin/enrollment',
+    label: 'Student Enrollment',
+    icon: FileCheckIcon,
+  },
+]
+
+const instructorMenu = [
+  {
+    to: '/instructor/dashboard',
+    label: 'Faculty Dashboard',
+    icon: LayoutDashboardIcon,
+  },
+  {
+    to: '/instructor/subjects',
+    label: 'My Subjects',
+    icon: BookOpenIcon,
+  },
+  {
+    to: '/instructor/upload-module',
+    label: 'Upload Modules',
+    icon: UploadIcon,
+  },
+  {
+    to: '/instructor/create-activity',
+    label: 'Create Activities',
+    icon: ClipboardListIcon,
+  },
+  {
+    to: '/instructor/submissions',
+    label: 'Submissions',
+    icon: FileCheckIcon,
+  },
+  {
+    to: '/instructor/grade-submission',
+    label: 'Grade Submission',
+    icon: CheckSquareIcon,
+  },
+]
+
+const studentMenu = [
+  {
+    to: '/student/dashboard',
+    label: 'Student Dashboard',
+    icon: LayoutDashboardIcon,
+  },
+  {
+    to: '/student/subjects',
+    label: 'My Subjects',
+    icon: LibraryBigIcon,
+  },
+  {
+    to: '/student/activities',
+    label: 'My Activities',
+    icon: NotebookTabsIcon,
+  },
+  {
+    to: '/student/grades',
+    label: 'My Grades',
+    icon: ChartNoAxesColumnIcon,
+  },
+  {
+    to: '/student/profile',
+    label: 'Profile',
+    icon: UserIcon,
+  },
+]
+
+const menuItems = computed(() => {
+  if (role.value === 'admin') return adminMenu
+  if (role.value === 'instructor') return instructorMenu
+  return studentMenu
+})
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <div class="min-h-screen bg-[#FFF8E7] font-sans text-[#1F1F1F]">
+  <div class="min-h-screen bg-[#FAFAF7]">
     <router-view />
   </div>
 </template>
+
+<script setup>
+</script>

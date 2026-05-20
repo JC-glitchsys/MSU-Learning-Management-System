@@ -1,25 +1,34 @@
 <template>
   <!-- Desktop Sidebar -->
   <aside
-    class="hidden lg:flex flex-col w-64 shrink-0 bg-[#800000] text-white h-screen"
+    class="hidden h-screen w-68 shrink-0 flex-col border-r border-[#E7DCC3] bg-white transition-all duration-200 lg:flex"
   >
     <SidebarContent @logout="logout" />
   </aside>
 
   <!-- Mobile Sidebar Drawer -->
-  <aside
-    v-if="open"
-    class="fixed top-0 left-0 z-30 flex flex-col w-64 h-screen bg-[#800000] text-white lg:hidden shadow-2xl"
-  >
-    <SidebarContent @logout="logout" @close="$emit('close')" :mobile="true" />
-  </aside>
+  <transition name="slide">
+    <aside
+      v-if="open"
+      class="fixed bottom-0 left-0 top-0 z-50 flex h-full w-68 flex-col border-r border-[#E7DCC3] bg-white shadow-xl lg:hidden"
+    >
+      <SidebarContent
+        :mobile="true"
+        @logout="logout"
+        @close="$emit('close')"
+      />
+    </aside>
+  </transition>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 import SidebarContent from './SidebarContent.vue'
 
-defineProps({ open: Boolean })
+defineProps({
+  open: Boolean,
+})
+
 defineEmits(['close'])
 
 const router = useRouter()
@@ -29,3 +38,15 @@ function logout() {
   router.push('/login')
 }
 </script>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+</style>

@@ -1,11 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+/* 🎭 Dito natin ine-extend ang theme setup gamit ang bagong Tailwind v4 specification syntax */
+@theme {
+  --color-msu-maroon: #800000;
+  --color-msu-hover: #5A0000;
+  --color-msu-gold: #D4AF37;
+  --color-msu-bg-light: #FFF8E1;
+  --color-msu-page-bg: #FAFAF7;
+  --color-msu-border: #E7DCC3;
+  
+  /* I-whitelist ang structural custom widths natin */
+  --spacing-68: 17rem; 
 }
