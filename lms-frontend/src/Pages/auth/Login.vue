@@ -2,15 +2,12 @@
   <div class="login-page flex min-h-screen items-center justify-center bg-[#F8F9FA] px-4 py-8 sm:px-8">
     <main class="login-shell grid w-full max-w-5xl overflow-hidden rounded-2xl border border-[#DADCE0] bg-white md:grid-cols-[0.9fr_1.1fr]">
       <aside class="login-brand flex flex-col justify-between bg-[#800000] p-8 text-white sm:p-10">
-        <div class="flex items-center gap-3">
-          <img :src="msuLogo" alt="Mindanao State University" class="h-11 w-11 rounded-md bg-white p-1 object-contain" />
-          <div>
-            <p class="text-sm font-semibold leading-5">Mindanao State University</p>
-            <p class="text-xs leading-4 text-white/70">Learning Management System</p>
-          </div>
+        <div class="flex flex-col items-start gap-1">
+          <img :src="msuLogo" alt="MSU Learn" class="h-auto w-48 object-contain" />
+          <p class="text-xs leading-4 text-white/70">Mindanao State University · Learning Management System</p>
         </div>
         <div class="my-10 max-w-sm md:my-0">
-          <p class="text-xs font-medium uppercase tracking-[0.16em] text-white/65">MSU LMS</p>
+          <img :src="wordmark" alt="MSU Learn" class="h-auto w-24 opacity-70" />
           <h1 class="mt-3 text-3xl font-semibold leading-tight tracking-tight text-white">Your learning, in one place.</h1>
           <p class="mt-4 max-w-xs text-sm leading-6 text-white/80">Access your subjects, course materials, activities, and academic progress through your university account.</p>
         </div>
@@ -92,7 +89,8 @@ import { useRouter } from 'vue-router'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/config.js'
-import msuLogo from '@/assets/logo.png'
+import msuLogo from '@/assets/horizontal.png'
+import wordmark from '@/assets/wordmark.png'
 import {
   EyeIcon,
   EyeOffIcon,

@@ -36,8 +36,9 @@ button { cursor: pointer; }
 #app { min-height: 100vh; }
 
 /* Shared workspace frame */
-.lms-main { width: 100%; padding: 32px 32px 72px; }
-.lms-container { width: 100%; max-width: 1280px; margin-inline: auto; }
+.lms-main { width: 100%; padding: 24px 32px 48px; }
+.lms-container { width: 100%; max-width: 1280px; min-height: 100%; margin-inline: auto; }
+.lms-page-card { min-height: calc(100vh - 144px); padding: 24px; border: 0; border-radius: 12px; background: #FFFFFF; }
 .lms-container > .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-block-start: 24px !important; }
 .lms-container [class~="gap-6"] { gap: 24px !important; }
 .lms-container [class~="gap-5"] { gap: 20px !important; }
@@ -55,30 +56,136 @@ main article[class*="rounded-"],
 main .lms-card {
   border-radius: 8px !important;
 }
-main .lms-container > div > section:first-child:has(h1) {
+main .lms-page-card > div > section:first-child:has(h1) {
   padding: 0 0 20px !important;
   background: transparent !important;
   border: 0 !important;
-  border-bottom: 1px solid var(--lms-border) !important;
-}
-main .lms-container > div > div:first-child > h2,
-main .lms-container > div > div:first-child h2:first-child {
-  font-size: 24px !important;
-  line-height: 32px !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.02em !important;
-  color: var(--lms-ink) !important;
 }
 main [class*="bg-white"][class*="border"][class*="rounded-"] {
-  border-color: var(--lms-border) !important;
+  border-color: #F0F1F3 !important;
   box-shadow: none !important;
   transition: border-color 160ms ease, background-color 160ms ease;
 }
 main [class*="bg-white"][class*="border"][class*="rounded-"]:hover {
-  border-color: #C8CDD4 !important;
+  border-color: #E7E9EE !important;
+}
+main .lms-page-card [class*="border-b"],
+main .lms-page-card [class*="border-t"],
+main .lms-page-card [class*="border-l"],
+main .lms-page-card [class*="border-r"],
+.lms-modal-overlay [class*="border-b"],
+.lms-modal-overlay [class*="border-t"] { border-color: transparent !important; }
+main .lms-page-card [class*="divide-y"] > :not([hidden]) ~ :not([hidden]),
+.lms-modal-overlay [class*="divide-y"] > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 0 !important;
+  border-block-start-width: 0 !important;
 }
 
-.lms-container h1 { color: var(--lms-ink) !important; font-size: 24px !important; line-height: 32px !important; font-weight: 600 !important; letter-spacing: -0.02em !important; }
+/* Shared type hierarchy for every student, instructor, and admin page. */
+.lms-page-card h1,
+.lms-container h1 {
+  color: var(--lms-ink) !important;
+  font-size: 22px !important;
+  line-height: 30px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+.lms-page-card > div[class*="space-y-"] > div:first-child > h2 {
+  color: var(--lms-ink) !important;
+  font-size: 22px !important;
+  line-height: 30px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+.lms-page-card h2 {
+  color: var(--lms-ink);
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  text-transform: none !important;
+}
+.lms-page-card h3 {
+  color: var(--lms-ink);
+  font-size: 15px !important;
+  line-height: 22px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.lms-page-card h4 {
+  color: var(--lms-ink);
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.lms-page-card h1 + p,
+.lms-page-card h2 + p {
+  color: var(--lms-muted) !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+}
+.lms-page-card p[class~="font-medium"] { font-weight: 400 !important; }
+.lms-page-card label {
+  color: #42464D;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.lms-modal-overlay h2,
+.lms-modal-overlay h3 {
+  color: var(--lms-ink) !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.lms-modal-overlay label {
+  color: #42464D !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.lms-modal-overlay [class~="uppercase"] { text-transform: none !important; letter-spacing: 0 !important; }
+.lms-modal-overlay [class~="font-black"],
+.lms-modal-overlay [class~="font-extrabold"],
+.lms-modal-overlay [class~="font-bold"] { font-weight: 500 !important; }
+main .lms-page-card th {
+  background: #F3F4F6 !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+main .lms-page-card table {
+  border: 0 !important;
+  border-radius: 8px !important;
+  border-collapse: separate !important;
+  border-spacing: 0 3px !important;
+  background: transparent !important;
+}
+main .lms-page-card th,
+main .lms-page-card td { border: 0 !important; }
+main .lms-page-card tbody tr { background: #FFFFFF; }
+main .lms-page-card tbody tr:nth-child(even) { background: #FAFAFB; }
+main .lms-page-card tbody tr:hover { background: #F3F4F6 !important; }
+.lms-page-card [class~="uppercase"] { text-transform: none !important; letter-spacing: 0 !important; }
+.lms-page-card [class~="font-black"],
+.lms-page-card [class~="font-extrabold"],
+.lms-page-card [class~="font-bold"] { font-weight: 500 !important; }
 main h2 { color: var(--lms-ink); }
 input, textarea, select {
   border-radius: 8px !important;
@@ -106,7 +213,8 @@ tr[class*="hover:bg"]:hover { background-color: #F8F9FA !important; }
 .login-brand { min-height: 620px; }
 
 @media (max-width: 767px) {
-  .lms-main { padding: 24px 16px 48px; }
+  .lms-main { padding: 16px 16px 32px; }
+  .lms-page-card { min-height: calc(100vh - 132px); padding: 16px; border-radius: 10px; }
   th, td { padding: 12px 14px; }
   .login-brand { min-height: auto; }
   .login-shell { min-height: auto; }

@@ -4,14 +4,14 @@
       <div class="flex min-w-0 items-center gap-2.5" :class="collapsed ? 'justify-center' : ''">
         <img :src="lmsLogo" alt="MSU LMS logo" class="h-9 w-9 shrink-0 object-contain" />
         <div v-if="!collapsed" class="min-w-0">
-          <h1 class="truncate text-sm font-semibold text-[#202124]">MSU LMS</h1>
-          <p class="truncate text-xs font-normal text-[#8A8F98]">{{ panelLabel }}</p>
+          <img :src="wordmark" alt="MSU Learn" class="h-auto w-24 object-contain" />
+          <p class="truncate text-xs font-normal text-[#5F6368]">{{ panelLabel }}</p>
         </div>
       </div>
       <button
         v-if="mobile"
         @click="$emit('close')"
-        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#737983] transition hover:bg-white hover:text-[#800000]"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#5F6368] transition hover:bg-[#E9EAEC] hover:text-[#343A40]"
         aria-label="Close navigation"
       >
         <XIcon class="h-4 w-4" />
@@ -19,7 +19,7 @@
       <button
         v-else
         @click="$emit('toggle-sidebar')"
-        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#737983] transition hover:bg-white hover:text-[#800000]"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#5F6368] transition hover:bg-[#E9EAEC] hover:text-[#343A40]"
         :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
         :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
       >
@@ -30,18 +30,18 @@
 
     <nav aria-label="Primary navigation" class="flex-1 space-y-5 overflow-y-auto px-1 py-1">
       <section v-for="group in navGroups" :key="group.label" class="space-y-1">
-        <h2 v-if="!collapsed" class="px-3 pb-1 pt-1 text-xs font-medium leading-4 text-[#9AA0A9]">{{ group.label }}</h2>
+        <h2 v-if="!collapsed" class="px-3 pb-1 pt-1 text-xs font-medium leading-4 text-[#5F6368]">{{ group.label }}</h2>
         <router-link
           v-for="item in group.items"
           :key="item.to"
           :to="item.to"
           @click="mobile ? $emit('close') : null"
-          class="group flex h-10 items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#555B65] transition-colors hover:bg-[#F7F7F8] hover:text-[#202124]"
+          class="group flex h-10 items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#42464D] transition-colors hover:bg-[#E9EAEC] hover:text-[#343A40] [&.router-link-active>svg]:text-[#4B5563]"
           :class="collapsed ? 'justify-center px-0' : 'px-3'"
-          active-class="bg-[#FDF0F0] !font-medium !text-[#800000]"
+          active-class="bg-[#E5E7EB] !font-medium !text-[#343A40]"
           :title="collapsed ? item.label : undefined"
         >
-          <component :is="item.icon" class="h-[18px] w-[18px] shrink-0 stroke-[1.8] text-[#858B95] transition-colors group-hover:text-[#800000]" />
+          <component :is="item.icon" class="h-[18px] w-[18px] shrink-0 stroke-[1.8] text-[#5F6368] transition-colors group-hover:text-[#4B5563]" />
           <span v-if="!collapsed" class="truncate">{{ item.label }}</span>
         </router-link>
       </section>
@@ -63,7 +63,7 @@
       </div>
       <button
         @click="showSignOutConfirmation = !showSignOutConfirmation"
-        class="group flex h-10 w-full items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#737983] transition-colors hover:bg-[#F7F7F8] hover:text-[#800000]"
+        class="group flex h-10 w-full items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#4B5563] transition-colors hover:bg-[#E9EAEC] hover:text-[#343A40]"
         :class="collapsed ? 'justify-center px-0' : 'px-3'"
         :title="collapsed ? 'Sign out' : undefined"
         :aria-expanded="showSignOutConfirmation"
@@ -78,6 +78,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import lmsLogo from '@/assets/logo.png'
+import wordmark from '@/assets/wordmark.png'
 import {
   LayoutDashboardIcon,
   UsersIcon,

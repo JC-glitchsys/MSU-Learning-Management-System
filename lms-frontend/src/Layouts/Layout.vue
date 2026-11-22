@@ -11,7 +11,9 @@
       <Topbar @toggle-sidebar="isSidebarOpen = true" />
       <main class="lms-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain">
         <div class="lms-container">
-          <router-view />
+          <div class="lms-page-card">
+            <router-view />
+          </div>
         </div>
       </main>
     </div>

@@ -22,12 +22,7 @@
             </router-link>
           </template>
 
-          <div v-if="loading" class="p-8 text-center">
-            <span
-              class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-            ></span>
-            <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading subjects...</p>
-          </div>
+          <SkeletonLoader v-if="loading" variant="cards" />
 
           <div
             v-else-if="subjects.length === 0"
@@ -105,12 +100,7 @@
             </router-link>
           </template>
 
-          <div v-if="loading" class="p-8 text-center">
-            <span
-              class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-            ></span>
-            <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading activities...</p>
-          </div>
+          <SkeletonLoader v-if="loading" variant="rows" />
 
           <div
             v-else-if="pendingActivities.length === 0"
@@ -182,12 +172,7 @@
         </router-link>
       </template>
 
-      <div v-if="loading" class="p-8 text-center">
-        <span
-          class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-        ></span>
-        <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading submissions...</p>
-      </div>
+      <SkeletonLoader v-if="loading" variant="table" />
 
       <div
         v-else-if="submissions.length === 0"
@@ -267,6 +252,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onMounted, ref } from 'vue'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

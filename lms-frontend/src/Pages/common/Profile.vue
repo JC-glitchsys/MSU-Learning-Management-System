@@ -1,7 +1,6 @@
 <template>
   <div class="mx-auto max-w-5xl space-y-6 animate-fade-in">
     <header>
-      <p class="text-xs font-medium uppercase tracking-wide text-[#8A8F98]">Account</p>
       <h1 class="mt-1 text-3xl font-semibold leading-[38px] text-[#202124]">Edit profile</h1>
       <p class="mt-2 text-sm leading-5 text-[#737983]">Update your account details and profile photo.</p>
     </header>
@@ -10,9 +9,7 @@
       {{ error }}
     </p>
 
-    <div v-if="loading" class="rounded-2xl border border-[#E7E9EE] bg-white p-8 text-sm text-[#737983]">
-      Loading your profile...
-    </div>
+    <SkeletonLoader v-if="loading" variant="profile" card />
 
     <div v-else class="grid grid-cols-1 items-start gap-5 xl:grid-cols-[260px_minmax(0,740px)] xl:justify-center">
       <section class="rounded-2xl border border-[#E7E9EE] bg-white p-6 text-center">
@@ -110,6 +107,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { onAuthStateChanged, updateProfile } from 'firebase/auth'

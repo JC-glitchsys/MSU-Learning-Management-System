@@ -1,11 +1,11 @@
 <template>
-  <div class="inline-flex items-center border-b border-[#DADCE0]" role="tablist" aria-label="Record status">
+  <div class="inline-flex items-center gap-1 rounded-lg bg-[#F3F4F6] p-1" role="tablist" aria-label="Record status">
     <button
       type="button"
       role="tab"
       :aria-selected="!modelValue"
-      class="border-b-2 px-3 py-2 text-sm font-medium transition"
-      :class="!modelValue ? 'border-[#800000] text-[#800000]' : 'border-transparent text-[#5F6368] hover:text-[#202124]'"
+      class="rounded-md px-3 py-2 text-sm font-medium transition"
+      :class="!modelValue ? 'bg-white text-[#343A40]' : 'text-[#667085] hover:text-[#343A40]'"
       @click="$emit('update:modelValue', false)"
     >
       Active <span class="ml-1 text-xs">{{ activeCount }}</span>
@@ -14,8 +14,8 @@
       type="button"
       role="tab"
       :aria-selected="modelValue"
-      class="border-b-2 px-3 py-2 text-sm font-medium transition"
-      :class="modelValue ? 'border-[#800000] text-[#800000]' : 'border-transparent text-[#5F6368] hover:text-[#202124]'"
+      class="rounded-md px-3 py-2 text-sm font-medium transition"
+      :class="modelValue ? 'bg-white text-[#343A40]' : 'text-[#667085] hover:text-[#343A40]'"
       @click="$emit('update:modelValue', true)"
     >
       Archived <span class="ml-1 text-xs">{{ archivedCount }}</span>

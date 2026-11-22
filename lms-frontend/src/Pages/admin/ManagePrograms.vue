@@ -6,10 +6,6 @@
     >
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-medium text-[#5F6368]">
-            Administration / Programs
-          </p>
-
           <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">
             Manage Programs
           </h1>
@@ -56,14 +52,7 @@
     <!-- Main Card -->
     <section class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
       <!-- Loading -->
-      <div v-if="loading" class="p-12 text-center">
-        <span
-          class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-        ></span>
-        <p class="mt-3 text-sm font-bold text-[#5F6368]">
-          Loading academic programs...
-        </p>
-      </div>
+      <SkeletonLoader v-if="loading" variant="table" class="p-6" />
 
       <!-- Error -->
       <div v-else-if="error" class="p-12 text-center">
@@ -180,10 +169,11 @@
     </section>
 
     <!-- Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
-    >
+    <Teleport to="body">
+      <div
+        v-if="isModalOpen"
+        class="lms-modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      >
       <div
         class="w-full max-w-xl overflow-hidden rounded-lg border border-[#DADCE0] bg-white animate-slide-up"
       >
@@ -281,11 +271,13 @@
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,

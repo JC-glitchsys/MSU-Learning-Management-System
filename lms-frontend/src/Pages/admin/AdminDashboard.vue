@@ -3,10 +3,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-8">
         <CardPanel title="Recent Stream Enrolment Logs">
-          <div v-if="loading" class="p-12 text-center">
-            <span class="w-6 h-6 border-2 border-msu-maroon border-t-transparent rounded-full animate-spin inline-block"></span>
-            <p class="text-xs text-[#5F6368] font-bold mt-2">Reading registration feeds...</p>
-          </div>
+          <SkeletonLoader v-if="loading" variant="table" />
 
           <div v-else-if="enrollments.length === 0" class="p-12 text-center text-[#5F6368]">
             <p class="text-2xl">📋</p>
@@ -64,6 +61,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { ref, onMounted } from 'vue'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

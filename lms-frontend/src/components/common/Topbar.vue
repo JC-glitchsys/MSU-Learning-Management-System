@@ -1,58 +1,50 @@
 <template>
   <header
-    class="sticky top-0 z-30 w-full border-b border-[#E7E9EE] bg-transparent"
+    class="sticky top-0 z-30 w-full border-b border-[#F0F1F3] bg-white"
   >
-    <div class="flex h-16 w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <div class="flex h-14 w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
       <div class="flex min-w-0 items-center gap-3">
         <button
-          class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-[#737983] transition hover:bg-[#F7F7F8] lg:hidden"
+          class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#F3F4F6] hover:text-[#343A40] lg:hidden"
           @click="$emit('toggle-sidebar')"
           aria-label="Open sidebar"
         >
           <MenuIcon class="h-5 w-5 stroke-[1.8]" />
         </button>
 
-        <div class="flex min-w-0 items-center gap-2">
-          <span class="hidden shrink-0 text-sm font-normal leading-5 text-[#8A8F98] sm:block">Workspace</span>
-          <ChevronRightIcon class="hidden h-4 w-4 shrink-0 text-[#C1C5CC] sm:block" />
-          <h1 class="truncate text-sm font-semibold leading-5 text-[#202124]">
-            {{ pageTitle }}
-          </h1>
-        </div>
+        <h1 class="truncate text-sm font-medium leading-5 text-[#343A40]">{{ pageTitle }}</h1>
       </div>
 
       <div class="flex shrink-0 items-center gap-2 sm:gap-3">
         <div
-          class="topbar-search hidden h-9 w-56 items-center gap-2 rounded-xl border border-[#ECEEF1] bg-[#F7F7F8] px-2.5 transition focus-within:border-[#D8B7B7] focus-within:bg-white xl:flex"
+          class="topbar-search hidden h-9 w-56 items-center gap-2 rounded-lg border border-transparent bg-[#F7F8FA] px-2.5 transition focus-within:border-[#E5E7EB] focus-within:bg-white xl:flex"
         >
-          <SearchIcon class="h-4 w-4 shrink-0 text-[#858B95]" />
+          <SearchIcon class="h-4 w-4 shrink-0 text-[#98A2B3]" />
           <input
             ref="searchInput"
             type="text"
             autocomplete="off"
             :placeholder="searchPlaceholder"
-            class="min-w-0 flex-1 bg-transparent text-sm font-normal leading-5 text-[#202124] outline-none placeholder:text-[#9AA0A9]"
+            class="min-w-0 flex-1 bg-transparent text-sm font-normal leading-5 text-[#343A40] outline-none placeholder:text-[#98A2B3]"
           />
-          <span class="shrink-0 rounded-md border border-[#E5E7EB] bg-white px-1.5 py-0.5 text-[10px] font-medium leading-4 text-[#8A8F98]">Ctrl K</span>
+          <span class="shrink-0 rounded border border-[#EAECF0] bg-white px-1.5 py-0.5 text-[10px] font-normal leading-4 text-[#98A2B3]">Ctrl K</span>
         </div>
 
         <button
-          class="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-[#737983] transition hover:bg-[#F7F7F8] hover:text-[#800000]"
+          class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#F3F4F6] hover:text-[#343A40]"
           aria-label="Notifications"
         >
           <BellIcon class="h-[18px] w-[18px] stroke-[1.8]" />
         </button>
 
-        <div class="mx-1 h-6 w-px bg-[#ECEEF1]"></div>
-
-        <router-link :to="profilePath" class="flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-1.5 transition hover:bg-[#F7F7F8]">
-          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#800000] text-[11px] font-semibold text-white ring-2 ring-[#FDF0F0]">
+        <router-link :to="profilePath" class="flex items-center gap-2 rounded-lg py-1 pl-1 pr-1.5 transition hover:bg-[#F7F8FA]">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#800000] text-[11px] font-medium text-white">
             <img v-if="userPhotoURL" :src="userPhotoURL" alt="" class="h-full w-full rounded-full object-cover" />
             <template v-else>{{ initials }}</template>
           </span>
           <span class="hidden max-w-40 flex-col sm:flex">
-            <span class="truncate text-xs font-medium leading-4 text-[#202124]">{{ userName }}</span>
-            <span class="text-[11px] leading-4 text-[#8A8F98]">{{ roleLabel }}</span>
+            <span class="truncate text-xs font-medium leading-4 text-[#343A40]">{{ userName }}</span>
+            <span class="text-[11px] leading-4 text-[#98A2B3]">{{ roleLabel }}</span>
           </span>
         </router-link>
       </div>
@@ -65,7 +57,6 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   BellIcon,
-  ChevronRightIcon,
   MenuIcon,
   SearchIcon,
 } from 'lucide-vue-next'

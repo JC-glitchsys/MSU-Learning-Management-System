@@ -53,9 +53,7 @@
         <ArchiveViewToggle v-model="showArchived" :active-count="activeCount" :archived-count="archivedCount" />
       </div>
       
-      <div v-if="loading" class="p-6 text-center bg-white rounded-2xl border border-[#DADCE0]">
-        <span class="w-6 h-6 border-2 border-[#800000] border-t-transparent rounded-full animate-spin inline-block"></span>
-      </div>
+      <SkeletonLoader v-if="loading" variant="rows" card />
       <div v-else-if="visibleActivities.length === 0" class="p-8 text-center bg-white rounded-2xl border border-[#DADCE0] text-xs text-[#5F6368]">
         {{ showArchived ? 'No archived activities.' : 'No active assessments published.' }}
       </div>
@@ -78,6 +76,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

@@ -5,9 +5,7 @@
       <p class="text-[#5F6368] mt-2 font-medium text-sm">Access your assigned classroom streams and operations panels.</p>
     </div>
 
-    <div v-if="loading" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm">
-      <span class="w-8 h-8 border-4 border-[#800000]/30 border-t-[#800000] rounded-full animate-spin inline-block"></span>
-    </div>
+    <SkeletonLoader v-if="loading" variant="cards" card />
 
     <div v-else-if="error" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm text-[#D93025] font-bold">
       {{ error }}
@@ -46,6 +44,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { ref, onMounted } from 'vue'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

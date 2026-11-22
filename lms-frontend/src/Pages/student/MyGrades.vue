@@ -5,7 +5,7 @@
       <p class="text-[#5F6368] mt-1 font-medium text-sm">Review final graded markers, status checkpoints, and advisor critique logs.</p>
     </div>
 
-    <div v-if="loading" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm"><span class="w-6 h-6 border-4 border-[#800000]/30 border-t-[#800000] rounded-full animate-spin inline-block"></span></div>
+    <SkeletonLoader v-if="loading" variant="cards" card />
     
     <div v-else class="space-y-8">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -55,6 +55,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

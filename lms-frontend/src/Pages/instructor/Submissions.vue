@@ -6,9 +6,6 @@
     >
       <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#FDF0F0]">
-            Instructor Queue
-          </p>
           <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
             Student Submissions
           </h1>
@@ -28,12 +25,7 @@
     <!-- Main Card -->
     <section class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
       <!-- Loading -->
-      <div v-if="loading" class="p-12 text-center">
-        <span
-          class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-        ></span>
-        <p class="mt-3 text-sm font-bold text-[#5F6368]">Loading submissions...</p>
-      </div>
+      <SkeletonLoader v-if="loading" variant="table" class="p-6" />
 
       <!-- Empty -->
       <div v-else-if="submissions.length === 0" class="p-12 text-center">
@@ -131,6 +123,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, getDocs, query, where } from 'firebase/firestore'

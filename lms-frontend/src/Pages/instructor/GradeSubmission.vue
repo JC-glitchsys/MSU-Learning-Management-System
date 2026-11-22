@@ -20,10 +20,6 @@
               Back to Submissions
             </button>
 
-            <p class="text-xs font-bold uppercase tracking-[0.24em] text-white/70">
-              Grade Submission
-            </p>
-
             <h1 class="mt-2 text-2xl font-black tracking-tight md:text-3xl">
               Review Student Work
             </h1>
@@ -44,17 +40,7 @@
     </section>
 
     <!-- Loading -->
-    <section
-      v-if="loading"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-12 text-center shadow-sm"
-    >
-      <span
-        class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-      ></span>
-      <p class="mt-3 text-sm font-bold text-[#5F6368]">
-        Loading submission...
-      </p>
-    </section>
+    <SkeletonLoader v-if="loading" variant="details" card />
 
     <!-- Error / Empty -->
     <section
@@ -303,6 +289,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {

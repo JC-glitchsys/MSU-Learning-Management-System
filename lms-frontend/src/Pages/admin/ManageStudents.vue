@@ -2,7 +2,6 @@
   <div class="space-y-6">
     <section class="flex flex-wrap items-end justify-between gap-4 border-b border-[#DADCE0] pb-5">
       <div>
-        <p class="text-xs font-medium text-[#5F6368]">Administration / Students</p>
         <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">Manage Students</h1>
         <p class="mt-1 text-sm text-[#5F6368]">View student accounts and manage active or archived records.</p>
       </div>
@@ -20,10 +19,7 @@
     </section>
 
     <section class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
-      <div v-if="loading" class="p-12 text-center">
-        <span class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"></span>
-        <p class="mt-3 text-sm text-[#5F6368]">Loading student records...</p>
-      </div>
+      <SkeletonLoader v-if="loading" variant="table" class="p-6" />
       <div v-else-if="error" class="p-12 text-center">
         <AlertCircleIcon class="mx-auto h-8 w-8 text-[#B3261E]" />
         <p class="mt-3 text-sm text-[#B3261E]">{{ error }}</p>
@@ -73,6 +69,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onMounted, ref } from 'vue'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

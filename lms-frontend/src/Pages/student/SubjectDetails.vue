@@ -1,13 +1,7 @@
 <template>
   <div class="space-y-6 animate-fade-in">
     <!-- Loading -->
-    <div
-      v-if="loading"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-10 text-center shadow-sm"
-    >
-      <span class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"></span>
-      <p class="mt-3 text-sm font-semibold text-[#5F6368]">Loading subject details...</p>
-    </div>
+    <SkeletonLoader v-if="loading" variant="details" card />
 
     <!-- Error -->
     <div
@@ -352,6 +346,7 @@
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'

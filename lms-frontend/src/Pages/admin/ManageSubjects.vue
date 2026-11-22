@@ -6,10 +6,6 @@
     >
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#FDF0F0]">
-            Admin Registry
-          </p>
-
           <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
             Manage Subjects
           </h1>
@@ -54,15 +50,7 @@
     </section>
 
     <!-- Loading -->
-    <section
-      v-if="isLoading"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-12 text-center shadow-sm"
-    >
-      <span
-        class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
-      ></span>
-      <p class="mt-3 text-sm font-bold text-[#5F6368]">Loading subjects...</p>
-    </section>
+    <SkeletonLoader v-if="isLoading" variant="cards" card />
 
     <!-- Error -->
     <section
@@ -179,10 +167,11 @@
     </section>
 
     <!-- Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
-    >
+    <Teleport to="body">
+      <div
+        v-if="showModal"
+        class="lms-modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      >
       <div
         class="w-full max-w-2xl overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-xl animate-slide-up"
       >
@@ -320,11 +309,13 @@
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
 import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,
