@@ -2,15 +2,15 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"
+      class="flex items-end justify-between gap-6 border-b border-[#DADCE0] pb-5"
     >
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#FDF0F0]">
-            Admin Registry
+          <p class="text-xs font-medium text-[#5F6368]">
+            Administration / Programs
           </p>
 
-          <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
+          <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">
             Manage Programs
           </h1>
 
@@ -21,7 +21,7 @@
 
         <button
           @click="openModal()"
-          class="inline-flex w-fit items-center justify-center gap-2 rounded-full bg-[#800000] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] hover:shadow-md"
+          class="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-lg bg-[#800000] px-4 text-sm font-medium text-white transition hover:bg-[#5C0000]"
         >
           <PlusCircleIcon class="h-4 w-4" />
           Add Program
@@ -31,10 +31,10 @@
 
     <!-- Search -->
     <section
-      class="flex flex-col justify-between gap-4 rounded-[24px] border border-[#DADCE0] bg-white p-4 shadow-sm md:flex-row md:items-center"
+      class="flex flex-col justify-between gap-4 border-b border-[#DADCE0] pb-4 md:flex-row md:items-center"
     >
       <div
-        class="flex w-full items-center rounded-full border border-[#DADCE0] bg-[#F8F9FA] px-4 py-2.5 transition focus-within:border-[#800000] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#FDF0F0] md:max-w-md"
+        class="flex h-10 w-full items-center rounded-lg border border-[#DADCE0] bg-white px-3 transition focus-within:border-[#800000] md:max-w-lg"
       >
         <SearchIcon class="mr-2 h-4 w-4 shrink-0 text-[#800000]/70" />
         <input
@@ -46,7 +46,7 @@
       </div>
 
       <div
-        class="inline-flex w-fit rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-4 py-2 text-xs font-bold text-[#800000]"
+        class="inline-flex w-fit rounded-md bg-[#F8F9FA] px-2.5 py-1.5 text-xs font-medium text-[#5F6368]"
       >
         {{ filteredPrograms.length }} program{{ filteredPrograms.length === 1 ? '' : 's' }}
       </div>
@@ -54,7 +54,7 @@
     </section>
 
     <!-- Main Card -->
-    <section class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
+    <section class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
       <!-- Loading -->
       <div v-if="loading" class="p-12 text-center">
         <span
@@ -169,7 +169,7 @@
 
             <button
               @click="archiveProgram(program.id)"
-              class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-black text-[#D93025] shadow-sm transition hover:bg-white hover:text-white lg:flex-none"
+              class="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-md border border-[#DADCE0] bg-white px-3 text-xs font-medium text-[#5F6368] transition hover:bg-[#F8F9FA] hover:text-[#202124] lg:flex-none"
             >
               <component :is="program.archived ? ArchiveRestoreIcon : ArchiveIcon" class="h-3.5 w-3.5" />
               {{ program.archived ? 'Restore' : 'Archive' }}
@@ -185,10 +185,10 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
     >
       <div
-        class="w-full max-w-xl overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-xl animate-slide-up"
+        class="w-full max-w-xl overflow-hidden rounded-lg border border-[#DADCE0] bg-white animate-slide-up"
       >
         <div
-          class="flex items-center justify-between border-b border-[#DADCE0] bg-gradient-to-br from-white to-[#FDF0F0] px-6 py-5"
+          class="flex items-center justify-between border-b border-[#DADCE0] bg-white px-6 py-5"
         >
           <div>
             <h3 class="text-lg font-black text-[#800000]">
