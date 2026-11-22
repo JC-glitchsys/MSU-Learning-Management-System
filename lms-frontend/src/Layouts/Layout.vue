@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen bg-[#F7F8FA]">
+  <div class="flex h-screen overflow-hidden bg-[#F7F8FA]">
     <Sidebar
       :open="isSidebarOpen"
       :collapsed="isSidebarCollapsed"
@@ -7,9 +7,9 @@
       @toggle="isSidebarCollapsed = !isSidebarCollapsed"
     />
 
-    <div class="flex min-h-screen min-w-0 flex-1 flex-col">
+    <div class="flex h-screen min-h-0 min-w-0 flex-1 flex-col">
       <Topbar @toggle-sidebar="isSidebarOpen = true" />
-      <main class="lms-main min-w-0 flex-1">
+      <main class="lms-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain">
         <div class="lms-container">
           <router-view />
         </div>

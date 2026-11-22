@@ -1,479 +1,137 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <section class="flex flex-wrap items-end justify-between gap-4 border-b border-[#DADCE0] pb-5">
       <div>
-        <h1 class="text-3xl font-black tracking-tight text-[#800000]">
-          Manage Subjects
-        </h1>
-        <p class="mt-1 text-sm font-medium text-[#5F6368]">
-          Add, update, assign instructors, and manage LMS subjects.
-        </p>
+        <p class="text-xs font-medium text-[#5F6368]">Administration / Students</p>
+        <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">Manage Students</h1>
+        <p class="mt-1 text-sm text-[#5F6368]">View student accounts and manage active or archived records.</p>
       </div>
+      <span class="rounded-md bg-[#F8F9FA] px-3 py-1.5 text-xs font-medium text-[#5F6368]">
+        {{ filteredStudents.length }} student{{ filteredStudents.length === 1 ? '' : 's' }}
+      </span>
+    </section>
 
-      <button
-        @click="openCreateModal"
-        class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] hover:shadow-md"
-      >
-        + Add Subject
-      </button>
-    </div>
+    <section class="flex flex-col gap-4 border-b border-[#DADCE0] pb-4 md:flex-row md:items-center md:justify-between">
+      <label class="flex h-10 w-full items-center rounded-lg border border-[#DADCE0] bg-white px-3 transition focus-within:border-[#800000] md:max-w-lg">
+        <SearchIcon class="mr-2 h-4 w-4 shrink-0 text-[#800000]/70" />
+        <input v-model="searchQuery" type="search" placeholder="Search by name, email, student number, or program..." class="w-full bg-transparent text-sm text-[#202124] outline-none placeholder:text-[#5F6368]" />
+      </label>
+      <ArchiveViewToggle v-model="showArchived" :active-count="activeCount" :archived-count="archivedCount" />
+    </section>
 
-    <!-- Search -->
-    <div class="rounded-[28px] border border-[#DADCE0] bg-white p-5 shadow-sm">
-      <div class="mb-4 flex justify-between gap-4">
-        <ArchiveViewToggle v-model="showArchived" :active-count="activeCount" :archived-count="archivedCount" />
+    <section class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
+      <div v-if="loading" class="p-12 text-center">
+        <span class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"></span>
+        <p class="mt-3 text-sm text-[#5F6368]">Loading student records...</p>
       </div>
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search by subject code, title, section, program, or instructor..."
-        class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-3 text-sm outline-none transition hover:border-[#FDF0F0] focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-      />
-    </div>
-
-    <!-- Loading -->
-    <div
-      v-if="isLoading"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-8 text-center text-sm font-semibold text-[#5F6368] shadow-sm"
-    >
-      Loading subjects...
-    </div>
-
-    <!-- Error -->
-    <div
-      v-else-if="error"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-5 text-sm font-semibold text-[#D93025]"
-    >
-      {{ error }}
-    </div>
-
-    <!-- Empty -->
-    <div
-      v-else-if="filteredSubjects.length === 0"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-10 text-center shadow-sm"
-    >
-      <h2 class="text-lg font-bold text-[#202124]">No subjects found</h2>
-      <p class="mt-1 text-sm text-[#5F6368]">
-        Add your first subject to start building the LMS class structure.
-      </p>
-    </div>
-
-    <!-- Subject Cards -->
-    <div
-      v-else
-      class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
-    >
-      <div
-        v-for="subject in filteredSubjects"
-        :key="subject.id"
-        class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-      >
-        <div class="bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white">
-          <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <p class="text-xs font-bold uppercase tracking-widest text-white/70">
-                {{ subject.code || 'No Code' }}
-              </p>
-              <h2 class="mt-1 truncate text-lg font-black">
-                {{ subject.title || 'Untitled Subject' }}
-              </h2>
-            </div>
-
-            <span class="rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20">
-              {{ subject.section || 'No Section' }}
-            </span>
-          </div>
+      <div v-else-if="error" class="p-12 text-center">
+        <AlertCircleIcon class="mx-auto h-8 w-8 text-[#B3261E]" />
+        <p class="mt-3 text-sm text-[#B3261E]">{{ error }}</p>
+      </div>
+      <div v-else-if="filteredStudents.length === 0" class="p-12 text-center">
+        <UsersIcon class="mx-auto h-8 w-8 text-[#9AA0A6]" />
+        <h2 class="mt-3 text-base font-semibold text-[#202124]">No {{ showArchived ? 'archived' : 'active' }} students found</h2>
+        <p class="mt-1 text-sm text-[#5F6368]">Try another search or switch the record status.</p>
+      </div>
+      <template v-else>
+        <div class="hidden grid-cols-12 gap-4 border-b border-[#DADCE0] bg-[#F8F9FA] px-5 py-3 text-xs font-semibold uppercase tracking-wide text-[#5F6368] lg:grid">
+          <div class="col-span-4">Student</div><div class="col-span-3">Program</div><div class="col-span-3">Contact</div><div class="col-span-2 text-right">Action</div>
         </div>
-
-        <div class="space-y-4 p-5">
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-[#5F6368]">
-              Program
-            </p>
-            <p class="mt-1 text-sm font-bold text-[#202124]">
-              {{ subject.program || 'Not specified' }}
-            </p>
-          </div>
-
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-[#5F6368]">
-              Assigned Instructor
-            </p>
-            <p class="mt-1 text-sm font-bold text-[#800000]">
-              {{ subject.instructorName || 'No instructor assigned' }}
-            </p>
-          </div>
-
-          <p class="line-clamp-2 text-sm text-[#5F6368]">
-            {{ subject.description || 'No description provided.' }}
-          </p>
-
-          <div class="flex gap-2 pt-2">
-            <button
-              @click="openEditModal(subject)"
-              class="flex-1 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
-            >
-              Edit
-            </button>
-
-            <button
-              @click="archiveSubject(subject.id)"
-              class="flex-1 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-bold text-[#D93025] transition hover:bg-white"
-            >
-              {{ subject.archived ? 'Restore' : 'Archive' }}
-            </button>
-          </div>
+        <div class="divide-y divide-[#DADCE0]/70">
+          <article v-for="student in filteredStudents" :key="student.id" class="grid grid-cols-1 gap-4 px-5 py-4 transition-colors hover:bg-[#F8F9FA] lg:grid-cols-12 lg:items-center">
+            <div class="min-w-0 lg:col-span-4">
+              <div class="flex items-center gap-3">
+                <img v-if="student.photoURL" :src="student.photoURL" alt="" class="h-10 w-10 rounded-full border border-[#DADCE0] object-cover" />
+                <div v-else class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FDF0F0] text-xs font-semibold text-[#800000]">{{ initials(student.name) }}</div>
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold text-[#202124]">{{ student.name || 'Unnamed Student' }}</p>
+                  <p class="mt-0.5 truncate text-xs text-[#5F6368]">Student no.: {{ student.studentNumber || 'Not provided' }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="min-w-0 lg:col-span-3">
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-[#5F6368] lg:hidden">Program</p>
+              <p class="mt-1 truncate text-sm font-medium text-[#202124] lg:mt-0">{{ student.program || 'Not assigned' }}</p>
+              <p class="mt-0.5 text-xs text-[#5F6368]">{{ student.yearLevel || 'Year level not provided' }}</p>
+            </div>
+            <div class="min-w-0 lg:col-span-3">
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-[#5F6368] lg:hidden">Contact</p>
+              <p class="mt-1 truncate text-sm text-[#202124] lg:mt-0">{{ student.email || 'No email' }}</p>
+              <p class="mt-0.5 truncate text-xs text-[#5F6368]">{{ student.contact || 'No contact number' }}</p>
+            </div>
+            <div class="flex lg:col-span-2 lg:justify-end">
+              <button type="button" @click="toggleArchive(student)" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#E7C5C5] bg-white px-3 text-xs font-medium text-[#9F2424] transition hover:bg-[#FDF0F0]">
+                <component :is="student.archived ? ArchiveRestoreIcon : ArchiveIcon" class="h-3.5 w-3.5" />
+                {{ student.archived ? 'Restore' : 'Archive' }}
+              </button>
+            </div>
+          </article>
         </div>
-      </div>
-    </div>
-
-    <!-- Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-    >
-      <div class="w-full max-w-2xl rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-xl">
-        <div class="mb-5 flex items-center justify-between">
-          <div>
-            <h2 class="text-xl font-black text-[#800000]">
-              {{ isEditing ? 'Edit Subject' : 'Add Subject' }}
-            </h2>
-            <p class="text-sm text-[#5F6368]">
-              Fill in the subject information and assign an instructor.
-            </p>
-          </div>
-
-          <button
-            @click="closeModal"
-            class="rounded-full px-3 py-2 text-sm font-bold text-[#5F6368] transition hover:bg-[#FDF0F0] hover:text-[#800000]"
-          >
-            ×
-          </button>
-        </div>
-
-        <form @submit.prevent="saveSubject" class="space-y-5">
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Subject Code
-              </label>
-              <input
-                v-model="formData.code"
-                required
-                type="text"
-                placeholder="e.g. ITE192"
-                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Section
-              </label>
-              <input
-                v-model="formData.section"
-                required
-                type="text"
-                placeholder="e.g. BSIT-4A"
-                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Subject Title
-              </label>
-              <input
-                v-model="formData.title"
-                required
-                type="text"
-                placeholder="e.g. Capstone Project 2"
-                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Under What Academic Program?
-              </label>
-              <input
-                v-model="formData.program"
-                required
-                type="text"
-                placeholder="e.g. BSIT"
-                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Description
-              </label>
-              <textarea
-                v-model="formData.description"
-                rows="2"
-                placeholder="Subject description..."
-                class="w-full resize-none rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              ></textarea>
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Assign Instructor
-              </label>
-              <select
-                v-model="formData.instructorId"
-                required
-                class="w-full cursor-pointer rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              >
-                <option value="" disabled>Select an instructor...</option>
-                <option
-                  v-for="inst in availableInstructors"
-                  :key="inst.id"
-                  :value="inst.id"
-                >
-                  {{ inst.name }} ({{ inst.department || 'No Dept' }})
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              @click="closeModal"
-              class="rounded-full border border-[#DADCE0] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              :disabled="isSaving"
-              class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {{ isSaving ? 'Saving...' : isEditing ? 'Update Subject' : 'Save Subject' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </template>
+    </section>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  doc,
-  updateDoc,
-  serverTimestamp,
-} from 'firebase/firestore'
-import { db } from '@/firebase/config.js'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../firebase/config.js'
 import { confirmAction, showResult } from '@/utils/resultMessage'
 import { filterArchived, setRecordArchived } from '@/utils/archive'
 import ArchiveViewToggle from '@/components/common/ArchiveViewToggle.vue'
+import { AlertCircleIcon, ArchiveIcon, ArchiveRestoreIcon, SearchIcon, UsersIcon } from 'lucide-vue-next'
 
-const subjects = ref([])
-const availableInstructors = ref([])
-
+const students = ref([])
+const loading = ref(true)
+const error = ref('')
 const searchQuery = ref('')
 const showArchived = ref(false)
-const error = ref('')
-const isLoading = ref(false)
-const isSaving = ref(false)
-const showModal = ref(false)
-const isEditing = ref(false)
-const editingId = ref(null)
 
-const activeCount = computed(() => subjects.value.filter((item) => item.archived !== true).length)
-const archivedCount = computed(() => subjects.value.filter((item) => item.archived === true).length)
-
-const formData = ref({
-  code: '',
-  title: '',
-  description: '',
-  program: '',
-  section: '',
-  instructorId: '',
-})
-
-const filteredSubjects = computed(() => {
-  const keyword = searchQuery.value.toLowerCase().trim()
-
-  const visible = filterArchived(subjects.value, showArchived.value)
-  if (!keyword) return visible
-
-  return visible.filter((subject) => {
-    return [
-      subject.code,
-      subject.title,
-      subject.description,
-      subject.program,
-      subject.section,
-      subject.instructorName,
-    ]
-      .join(' ')
-      .toLowerCase()
-      .includes(keyword)
-  })
-})
-
-onMounted(async () => {
-  await Promise.all([fetchSubjects(), fetchInstructors()])
-})
-
-
-//Read Operation//
-async function fetchSubjects() {
-  isLoading.value = true
-  error.value = ''
-
-  try {
-    const snapshot = await getDocs(collection(db, 'subjects'))
-
-    subjects.value = snapshot.docs.map((document) => ({
-      id: document.id,
-      ...document.data(),
-    }))
-  } catch (err) {
-    console.log('Fetch subjects error:', err)
-    error.value = 'Unable to load subjects.'
-  } finally {
-    isLoading.value = false
-  }
-}
-
-async function fetchInstructors() {
-  try {
-    const instructorsQuery = query(
-      collection(db, 'users'),
-      where('role', '==', 'instructor')
-    )
-
-    const snapshot = await getDocs(instructorsQuery)
-
-    availableInstructors.value = snapshot.docs.map((document) => ({
-      id: document.id,
-      ...document.data(),
-    }))
-  } catch (err) {
-    console.log('Fetch instructors error:', err)
-    error.value = 'Unable to load instructors.'
-  }
-}
-
-function openCreateModal() {
-  resetForm()
-  isEditing.value = false
-  editingId.value = null
-  showModal.value = true
-}
-
-function openEditModal(subject) {
-  isEditing.value = true
-  editingId.value = subject.id
-
-  formData.value = {
-    code: subject.code || '',
-    title: subject.title || '',
-    description: subject.description || '',
-    program: subject.program || '',
-    section: subject.section || '',
-    instructorId: subject.instructorId || '',
-  }
-
-  showModal.value = true
-}
-
-function closeModal() {
-  showModal.value = false
-  resetForm()
-}
-
-function resetForm() {
-  formData.value = {
-    code: '',
-    title: '',
-    description: '',
-    program: '',
-    section: '',
-    instructorId: '',
-  }
-}
-
-async function saveSubject() {
-  error.value = ''
-
-  if (!formData.value.instructorId) {
-    error.value = 'Please assign an instructor.'
-    return
-  }
-
-  const selectedInstructor = availableInstructors.value.find(
-    (inst) => inst.id === formData.value.instructorId
+const activeCount = computed(() => students.value.filter((item) => item.archived !== true).length)
+const archivedCount = computed(() => students.value.filter((item) => item.archived === true).length)
+const filteredStudents = computed(() => {
+  const term = searchQuery.value.trim().toLowerCase()
+  return filterArchived(students.value, showArchived.value).filter((student) =>
+    !term || [student.name, student.email, student.studentNumber, student.program, student.yearLevel]
+      .some((value) => String(value || '').toLowerCase().includes(term)),
   )
+})
 
-  if (!selectedInstructor) {
-    error.value = 'Selected instructor was not found.'
-    return
-  }
-
-  isSaving.value = true
-
-  const payload = {
-    code: formData.value.code.trim(),
-    title: formData.value.title.trim(),
-    description: formData.value.description.trim(),
-    program: formData.value.program.trim(),
-    section: formData.value.section.trim(),
-    instructorId: selectedInstructor.id,
-    instructorName: selectedInstructor.name || selectedInstructor.email || 'Unnamed Instructor',
-    updatedAt: serverTimestamp(),
-  }
-
-  //Update Operation//
+async function fetchStudents() {
+  loading.value = true
+  error.value = ''
   try {
-    if (isEditing.value && editingId.value) {
-      await updateDoc(doc(db, 'subjects', editingId.value), payload)
-    } else {
-      await addDoc(collection(db, 'subjects'), {
-        ...payload,
-        createdAt: serverTimestamp(),
-      })
-    }
-
-    await fetchSubjects()
-    closeModal()
-    showResult(isEditing.value ? 'Subject Updated' : 'Subject Added', 'The subject details have been saved.')
+    const snapshot = await getDocs(query(collection(db, 'users'), where('role', '==', 'student')))
+    students.value = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
   } catch (err) {
-    console.log('Save subject error:', err)
-    error.value = 'Unable to save subject.'
-    showResult('Could Not Save Subject', 'Please try again.', 'error')
+    console.error('Fetch students error:', err)
+    error.value = 'Failed to load students. Please check Firestore permissions.'
   } finally {
-    isSaving.value = false
+    loading.value = false
   }
 }
 
-// Archive and restore operations
-async function archiveSubject(subjectId) {
-  const subject = subjects.value.find((item) => item.id === subjectId)
-  const restoring = subject?.archived === true
-  if (!await confirmAction(restoring ? 'Restore Subject?' : 'Archive Subject?', restoring ? 'This subject will return to the active list.' : 'This subject will be archived and can be restored later.', restoring ? 'Restore' : 'Archive')) return
-
+async function toggleArchive(student) {
+  const restoring = student.archived === true
+  const accepted = await confirmAction(
+    restoring ? 'Restore Student?' : 'Archive Student?',
+    restoring ? 'This student account will return to the active list.' : 'This student account will be archived and can be restored later.',
+    restoring ? 'Restore' : 'Archive',
+  )
+  if (!accepted) return
   try {
-    await setRecordArchived(db, 'subjects', subjectId, !restoring)
-    await fetchSubjects()
-    showResult(restoring ? 'Subject Restored' : 'Subject Archived', restoring ? 'The subject is active again.' : 'The subject was moved to the archive.')
+    await setRecordArchived(db, 'users', student.id, !restoring)
+    await fetchStudents()
+    showResult(restoring ? 'Student Restored' : 'Student Archived', restoring ? 'The student account is active again.' : 'The student account was moved to the archive.')
   } catch (err) {
-    console.log('Archive subject error:', err)
-    error.value = 'Unable to update subject.'
-    showResult('Could Not Update Subject', 'Please try again.', 'error')
+    console.error('Archive student error:', err)
+    showResult('Could Not Update Student', 'Please try again.', 'error')
   }
 }
+
+function initials(name) {
+  return String(name || 'ST').split(' ').filter(Boolean).map((word) => word[0]).join('').toUpperCase().slice(0, 2)
+}
+
+onMounted(fetchStudents)
 </script>
