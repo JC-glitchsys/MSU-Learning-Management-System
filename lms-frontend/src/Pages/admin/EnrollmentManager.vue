@@ -1,26 +1,26 @@
 <template>
-  <div class="space-y-6 animate-fade-in">
+  <div class="mx-auto max-w-6xl space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="rounded-[28px] border border-[#E7DCC3] bg-gradient-to-br from-white via-white to-[#FFF8E1] p-6 shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"
     >
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+          <p class="text-xs font-medium uppercase tracking-wide text-[#5F6368]">
             Admin Enrollment
           </p>
 
-          <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
+          <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">
             Student Enrollment
           </h1>
 
-          <p class="mt-1 max-w-2xl text-sm font-medium text-[#6B7280]">
+          <p class="mt-1 max-w-2xl text-sm font-medium text-[#5F6368]">
             Enroll students into subjects and manage active subject enrollment records.
           </p>
         </div>
 
         <div
-          class="inline-flex w-fit rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-bold text-[#800000] shadow-sm"
+          class="inline-flex w-fit rounded-md bg-[#F8F9FA] px-2.5 py-1.5 text-xs font-medium text-[#5F6368]"
         >
           {{ filteredEnrollments.length }} enrollment{{ filteredEnrollments.length === 1 ? '' : 's' }}
         </div>
@@ -31,20 +31,20 @@
       <!-- Enrollment Form -->
       <aside class="xl:col-span-4">
         <div
-          class="sticky top-28 rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-sm"
+          class="rounded-lg border border-[#DADCE0] bg-white p-5"
         >
           <div class="mb-5 flex items-center gap-3">
             <div
-              class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFF8E1] text-[#800000] ring-1 ring-[#E7DCC3]"
+              class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
             >
               <UserPlusIcon class="h-5 w-5" />
             </div>
 
             <div>
-              <h2 class="text-base font-black text-[#1F2937]">
+              <h2 class="text-base font-black text-[#202124]">
                 Enroll Student
               </h2>
-              <p class="text-xs text-[#6B7280]">
+              <p class="text-xs text-[#5F6368]">
                 Select a student and assign a subject.
               </p>
             </div>
@@ -52,13 +52,13 @@
 
           <div class="space-y-4">
             <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Student
               </label>
 
               <select
                 v-model="selectedStudentId"
-                class="w-full cursor-pointer rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-3 text-sm text-[#1F2937] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full cursor-pointer rounded-[12px] border border-[#DADCE0] bg-white px-4 py-3 text-sm text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               >
                 <option value="">Choose student...</option>
                 <option
@@ -70,19 +70,19 @@
                 </option>
               </select>
 
-              <p v-if="students.length === 0" class="text-xs font-medium text-red-600">
+              <p v-if="students.length === 0" class="text-xs font-medium text-[#D93025]">
                 No student records found.
               </p>
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Subject
               </label>
 
               <select
                 v-model="selectedSubjectId"
-                class="w-full cursor-pointer rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-3 text-sm text-[#1F2937] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full cursor-pointer rounded-[12px] border border-[#DADCE0] bg-white px-4 py-3 text-sm text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               >
                 <option value="">Choose subject...</option>
                 <option
@@ -94,7 +94,7 @@
                 </option>
               </select>
 
-              <p v-if="subjects.length === 0" class="text-xs font-medium text-red-600">
+              <p v-if="subjects.length === 0" class="text-xs font-medium text-[#D93025]">
                 No subjects found. Add subjects first.
               </p>
             </div>
@@ -102,7 +102,7 @@
             <button
               @click="processEnrollment"
               :disabled="enrolling"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#800000] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#800000] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <LinkIcon class="h-4 w-4" />
               {{ enrolling ? 'Enrolling...' : 'Enroll Student' }}
@@ -114,68 +114,67 @@
       <!-- Enrollment List -->
       <main class="space-y-4 xl:col-span-8">
         <!-- Search -->
-        <section
-          class="flex flex-col justify-between gap-4 rounded-[24px] border border-[#E7DCC3] bg-white p-4 shadow-sm md:flex-row md:items-center"
-        >
+        <section class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-1 border-b border-[#DADCE0]">
+              <ArchiveViewToggle v-model="showArchived" :active-count="activeEnrollmentsCount" :archived-count="archivedEnrollmentsCount" />
+            </div>
+            <button @click="fetchData" class="inline-flex h-9 items-center gap-2 rounded-md border border-[#DADCE0] bg-white px-3 text-sm font-medium text-[#5F6368] transition hover:bg-[#F8F9FA]"><RefreshCcwIcon class="h-4 w-4" /> Refresh</button>
+          </div>
+          <div class="flex min-h-12 items-center justify-between gap-4 rounded-lg border border-[#DADCE0] bg-white px-3 py-2">
           <div
-            class="flex w-full items-center rounded-full border border-[#E7DCC3] bg-[#FAFAF7] px-4 py-2.5 transition focus-within:border-[#800000] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#F6E7B2] md:max-w-md"
+            class="flex w-full items-center rounded-md border border-transparent bg-transparent px-2 py-1 transition focus-within:border-[#DADCE0] md:max-w-md"
           >
             <SearchIcon class="mr-2 h-4 w-4 shrink-0 text-[#800000]/70" />
             <input
               v-model="searchQuery"
               type="text"
               placeholder="Search by student, subject code, or subject title..."
-              class="w-full bg-transparent text-sm font-medium text-[#1F2937] outline-none placeholder:text-[#9CA3AF]"
+              class="w-full bg-transparent text-sm font-medium text-[#202124] outline-none placeholder:text-[#5F6368]"
             />
           </div>
 
-          <button
-            @click="fetchData"
-            class="inline-flex w-fit items-center gap-2 rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-bold text-[#800000] transition hover:bg-[#FFF8E1]"
-          >
-            <RefreshCcwIcon class="h-3.5 w-3.5" />
-            Refresh
-          </button>
+          </div>
         </section>
 
         <!-- Main Card -->
-        <section class="overflow-hidden rounded-[28px] border border-[#E7DCC3] bg-white shadow-sm">
+        <section class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
           <div v-if="loading" class="p-12 text-center">
             <span
               class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
             ></span>
-            <p class="mt-3 text-sm font-bold text-[#6B7280]">
+            <p class="mt-3 text-sm font-bold text-[#5F6368]">
               Loading enrollment records...
             </p>
           </div>
 
           <div v-else-if="error" class="p-12 text-center">
-            <AlertCircleIcon class="mx-auto h-10 w-10 text-red-600" />
-            <p class="mt-3 text-sm font-bold text-red-600">
+            <AlertCircleIcon class="mx-auto h-10 w-10 text-[#D93025]" />
+            <p class="mt-3 text-sm font-bold text-[#D93025]">
               {{ error }}
             </p>
           </div>
 
           <div v-else-if="filteredEnrollments.length === 0" class="p-12 text-center">
             <div
-              class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF8E1] text-[#800000]"
+              class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FDF0F0] text-[#800000]"
             >
               <UsersIcon class="h-7 w-7" />
             </div>
 
-            <h2 class="mt-4 text-lg font-black text-[#1F2937]">
+            <h2 class="mt-4 text-lg font-black text-[#202124]">
               No enrollment records found
             </h2>
 
-            <p class="mt-1 text-sm text-[#6B7280]">
-              Enroll a student into a subject to create a record.
+            <p class="mt-1 text-sm text-[#5F6368]">
+              {{ showArchived ? 'Archived enrollment records will appear here.' : 'Enroll a student into a subject to create a record.' }}
             </p>
           </div>
 
-          <div v-else class="divide-y divide-[#E7DCC3]/70">
+          <div v-else class="divide-y divide-[#DADCE0]/70">
             <!-- Desktop Header -->
             <div
-              class="hidden grid-cols-12 gap-4 bg-[#FAFAF7] px-6 py-4 text-xs font-black uppercase tracking-wider text-[#6B7280] lg:grid"
+              class="hidden grid-cols-12 gap-4 bg-[#F8F9FA] px-6 py-4 text-xs font-black uppercase tracking-wider text-[#5F6368] lg:grid"
             >
               <div class="col-span-4">Student</div>
               <div class="col-span-5">Subject</div>
@@ -185,22 +184,22 @@
             <div
               v-for="enrollment in filteredEnrollments"
               :key="enrollment.id"
-              class="grid grid-cols-1 gap-4 px-6 py-5 transition hover:bg-[#FAFAF7] lg:grid-cols-12 lg:items-center"
+              class="grid grid-cols-1 gap-4 px-6 py-5 transition hover:bg-[#F8F9FA] lg:grid-cols-12 lg:items-center"
             >
               <!-- Student -->
               <div class="min-w-0 lg:col-span-4">
                 <div class="flex items-center gap-3">
                   <div
-                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5A0000] text-xs font-black text-white ring-2 ring-[#D4AF37]/40"
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5C0000] text-xs font-black text-white ring-2 ring-[#FDF0F0]/40"
                   >
                     {{ getInitials(enrollment.studentName) }}
                   </div>
 
                   <div class="min-w-0">
-                    <p class="truncate text-sm font-black text-[#1F2937]">
+                    <p class="truncate text-sm font-black text-[#202124]">
                       {{ enrollment.studentName || 'Student' }}
                     </p>
-                    <p class="mt-0.5 truncate text-xs font-medium text-[#6B7280]">
+                    <p class="mt-0.5 truncate text-xs font-medium text-[#5F6368]">
                       {{ enrollment.studentEmail || 'No email' }}
                     </p>
                   </div>
@@ -210,16 +209,16 @@
               <!-- Subject -->
               <div class="min-w-0 lg:col-span-5">
                 <span
-                  class="mb-1 inline-flex rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#800000]"
+                  class="mb-1 inline-flex rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#800000]"
                 >
                   {{ enrollment.subjectCode || 'Subject' }}
                 </span>
 
-                <p class="truncate text-sm font-black text-[#1F2937]">
+                <p class="truncate text-sm font-black text-[#202124]">
                   {{ enrollment.subjectTitle || 'Untitled Subject' }}
                 </p>
 
-                <p class="mt-0.5 truncate text-xs text-[#6B7280]">
+                <p class="mt-0.5 truncate text-xs text-[#5F6368]">
                   Instructor: {{ enrollment.instructorName || 'Unassigned' }}
                 </p>
               </div>
@@ -228,10 +227,10 @@
               <div class="lg:col-span-3 lg:text-right">
                 <button
                   @click="revokeEnrollment(enrollment.id)"
-                  class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-black text-red-600 shadow-sm transition hover:bg-red-600 hover:text-white lg:w-auto"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#DADCE0] bg-white px-3 py-2 text-xs font-medium text-[#5F6368] transition hover:bg-[#F8F9FA] hover:text-[#202124] lg:w-auto"
                 >
-                  <Trash2Icon class="h-3.5 w-3.5" />
-                  Remove
+                  <component :is="enrollment.archived ? ArchiveRestoreIcon : ArchiveIcon" class="h-3.5 w-3.5" />
+                  {{ enrollment.archived ? 'Restore' : 'Archive' }}
                 </button>
               </div>
             </div>
@@ -247,20 +246,22 @@ import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,
   collection,
-  deleteDoc,
-  doc,
   getDocs,
   query,
   serverTimestamp,
   where,
 } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'
+import { confirmAction, showResult } from '@/utils/resultMessage'
+import { filterArchived, setRecordArchived } from '@/utils/archive'
+import ArchiveViewToggle from '@/components/common/ArchiveViewToggle.vue'
 import {
   AlertCircleIcon,
   LinkIcon,
   RefreshCcwIcon,
   SearchIcon,
-  Trash2Icon,
+  ArchiveIcon,
+  ArchiveRestoreIcon,
   UserPlusIcon,
   UsersIcon,
 } from 'lucide-vue-next'
@@ -273,16 +274,21 @@ const loading = ref(true)
 const enrolling = ref(false)
 const error = ref('')
 const searchQuery = ref('')
+const showArchived = ref(false)
 
 const selectedStudentId = ref('')
 const selectedSubjectId = ref('')
 
+const activeEnrollmentsCount = computed(() => enrollments.value.filter((item) => item.archived !== true).length)
+const archivedEnrollmentsCount = computed(() => enrollments.value.filter((item) => item.archived === true).length)
+
 const filteredEnrollments = computed(() => {
   const keyword = searchQuery.value.toLowerCase().trim()
 
-  if (!keyword) return enrollments.value
+  const visibleEnrollments = filterArchived(enrollments.value, showArchived.value)
+  if (!keyword) return visibleEnrollments
 
-  return enrollments.value.filter((enrollment) => {
+  return visibleEnrollments.filter((enrollment) => {
     return (
       enrollment.studentName?.toLowerCase().includes(keyword) ||
       enrollment.studentEmail?.toLowerCase().includes(keyword) ||
@@ -305,14 +311,14 @@ async function fetchData() {
     students.value = studentSnapshot.docs.map((document) => ({
       id: document.id,
       ...document.data(),
-    }))
+    })).filter((student) => student.archived !== true)
 
     const subjectSnapshot = await getDocs(collection(db, 'subjects'))
 
     subjects.value = subjectSnapshot.docs.map((document) => ({
       id: document.id,
       ...document.data(),
-    }))
+    })).filter((subject) => subject.archived !== true)
 
     const enrollmentSnapshot = await getDocs(collection(db, 'enrollments'))
 
@@ -336,19 +342,20 @@ async function fetchData() {
 
 async function processEnrollment() {
   if (!selectedStudentId.value || !selectedSubjectId.value) {
-    alert('Please select a student and a subject.')
+    showResult('Selection Required', 'Choose both a student and a subject.', 'info')
     return
   }
 
   const alreadyEnrolled = enrollments.value.some((enrollment) => {
     return (
       enrollment.studentId === selectedStudentId.value &&
+      enrollment.archived !== true &&
       enrollment.subjectId === selectedSubjectId.value
     )
   })
 
   if (alreadyEnrolled) {
-    alert('This student is already enrolled in the selected subject.')
+    showResult('Already Enrolled', 'This student is already in the selected subject.', 'info')
     return
   }
 
@@ -361,7 +368,7 @@ async function processEnrollment() {
   )
 
   if (!selectedStudent || !selectedSubject) {
-    alert('Selected student or subject was not found.')
+    showResult('Selection Not Found', 'Choose a valid student and subject, then try again.', 'error')
     return
   }
 
@@ -386,23 +393,27 @@ async function processEnrollment() {
     selectedSubjectId.value = ''
 
     await fetchData()
+    showResult('Student Enrolled', `${selectedStudent.name || 'The student'} was enrolled in ${selectedSubject.code || selectedSubject.title}.`)
   } catch (err) {
     console.error('Process enrollment error:', err)
-    alert('Unable to enroll student. Please try again.')
+    showResult('Could Not Enroll Student', 'Please try again.', 'error')
   } finally {
     enrolling.value = false
   }
 }
 
 async function revokeEnrollment(id) {
-  if (!confirm('Remove this student from the subject?')) return
+  const item = enrollments.value.find((enrollment) => enrollment.id === id)
+  const restoring = item?.archived === true
+  if (!await confirmAction(restoring ? 'Restore Enrollment?' : 'Archive Enrollment?', restoring ? 'This enrollment will return to the active list.' : 'This enrollment will move to the archive and can be restored later.', restoring ? 'Restore' : 'Archive')) return
 
   try {
-    await deleteDoc(doc(db, 'enrollments', id))
+    await setRecordArchived(db, 'enrollments', id, !restoring)
     await fetchData()
+    showResult(restoring ? 'Enrollment Restored' : 'Enrollment Archived', restoring ? 'The enrollment is active again.' : 'The enrollment was moved to the archive.')
   } catch (err) {
     console.error('Revoke enrollment error:', err)
-    alert('Unable to remove enrollment record.')
+    showResult('Could Not Update Enrollment', 'Please try again.', 'error')
   }
 }
 

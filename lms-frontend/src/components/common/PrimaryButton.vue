@@ -2,7 +2,7 @@
   <button
     :type="type"
     :disabled="disabled"
-    class="rounded-lg bg-[#800000] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#5A0000] transition disabled:opacity-50 disabled:cursor-not-allowed"
+    class="rounded-lg bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-50"
     @click="$emit('click')"
   >
     <slot />

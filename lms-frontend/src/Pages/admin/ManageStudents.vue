@@ -6,33 +6,36 @@
         <h1 class="text-3xl font-black tracking-tight text-[#800000]">
           Manage Subjects
         </h1>
-        <p class="mt-1 text-sm font-medium text-[#6B7280]">
+        <p class="mt-1 text-sm font-medium text-[#5F6368]">
           Add, update, assign instructors, and manage LMS subjects.
         </p>
       </div>
 
       <button
         @click="openCreateModal"
-        class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] hover:shadow-md"
+        class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] hover:shadow-md"
       >
         + Add Subject
       </button>
     </div>
 
     <!-- Search -->
-    <div class="rounded-[28px] border border-[#E7DCC3] bg-white p-5 shadow-sm">
+    <div class="rounded-[28px] border border-[#DADCE0] bg-white p-5 shadow-sm">
+      <div class="mb-4 flex justify-between gap-4">
+        <ArchiveViewToggle v-model="showArchived" :active-count="activeCount" :archived-count="archivedCount" />
+      </div>
       <input
         v-model="searchQuery"
         type="text"
         placeholder="Search by subject code, title, section, program, or instructor..."
-        class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-3 text-sm outline-none transition hover:border-[#D4AF37] focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+        class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-3 text-sm outline-none transition hover:border-[#FDF0F0] focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
       />
     </div>
 
     <!-- Loading -->
     <div
       v-if="isLoading"
-      class="rounded-[28px] border border-[#E7DCC3] bg-white p-8 text-center text-sm font-semibold text-[#6B7280] shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-white p-8 text-center text-sm font-semibold text-[#5F6368] shadow-sm"
     >
       Loading subjects...
     </div>
@@ -40,7 +43,7 @@
     <!-- Error -->
     <div
       v-else-if="error"
-      class="rounded-[28px] border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-600"
+      class="rounded-[28px] border border-[#DADCE0] bg-white p-5 text-sm font-semibold text-[#D93025]"
     >
       {{ error }}
     </div>
@@ -48,10 +51,10 @@
     <!-- Empty -->
     <div
       v-else-if="filteredSubjects.length === 0"
-      class="rounded-[28px] border border-[#E7DCC3] bg-white p-10 text-center shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-white p-10 text-center shadow-sm"
     >
-      <h2 class="text-lg font-bold text-[#1F2937]">No subjects found</h2>
-      <p class="mt-1 text-sm text-[#6B7280]">
+      <h2 class="text-lg font-bold text-[#202124]">No subjects found</h2>
+      <p class="mt-1 text-sm text-[#5F6368]">
         Add your first subject to start building the LMS class structure.
       </p>
     </div>
@@ -64,9 +67,9 @@
       <div
         v-for="subject in filteredSubjects"
         :key="subject.id"
-        class="overflow-hidden rounded-[24px] border border-[#E7DCC3] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+        class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
       >
-        <div class="bg-gradient-to-r from-[#800000] via-[#9A1B1B] to-[#D4AF37] p-5 text-white">
+        <div class="bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
               <p class="text-xs font-bold uppercase tracking-widest text-white/70">
@@ -85,16 +88,16 @@
 
         <div class="space-y-4 p-5">
           <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">
+            <p class="text-xs font-bold uppercase tracking-wider text-[#5F6368]">
               Program
             </p>
-            <p class="mt-1 text-sm font-bold text-[#1F2937]">
+            <p class="mt-1 text-sm font-bold text-[#202124]">
               {{ subject.program || 'Not specified' }}
             </p>
           </div>
 
           <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">
+            <p class="text-xs font-bold uppercase tracking-wider text-[#5F6368]">
               Assigned Instructor
             </p>
             <p class="mt-1 text-sm font-bold text-[#800000]">
@@ -102,23 +105,23 @@
             </p>
           </div>
 
-          <p class="line-clamp-2 text-sm text-[#6B7280]">
+          <p class="line-clamp-2 text-sm text-[#5F6368]">
             {{ subject.description || 'No description provided.' }}
           </p>
 
           <div class="flex gap-2 pt-2">
             <button
               @click="openEditModal(subject)"
-              class="flex-1 rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-bold text-[#800000] transition hover:bg-[#FFF8E1]"
+              class="flex-1 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
             >
               Edit
             </button>
 
             <button
-              @click="deleteSubject(subject.id)"
-              class="flex-1 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
+              @click="archiveSubject(subject.id)"
+              class="flex-1 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-bold text-[#D93025] transition hover:bg-white"
             >
-              Delete
+              {{ subject.archived ? 'Restore' : 'Archive' }}
             </button>
           </div>
         </div>
@@ -130,29 +133,29 @@
       v-if="showModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
     >
-      <div class="w-full max-w-2xl rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-xl">
+      <div class="w-full max-w-2xl rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-xl">
         <div class="mb-5 flex items-center justify-between">
           <div>
             <h2 class="text-xl font-black text-[#800000]">
               {{ isEditing ? 'Edit Subject' : 'Add Subject' }}
             </h2>
-            <p class="text-sm text-[#6B7280]">
+            <p class="text-sm text-[#5F6368]">
               Fill in the subject information and assign an instructor.
             </p>
           </div>
 
           <button
             @click="closeModal"
-            class="rounded-full px-3 py-2 text-sm font-bold text-[#6B7280] transition hover:bg-[#FFF8E1] hover:text-[#800000]"
+            class="rounded-full px-3 py-2 text-sm font-bold text-[#5F6368] transition hover:bg-[#FDF0F0] hover:text-[#800000]"
           >
-            ✕
+            ×
           </button>
         </div>
 
         <form @submit.prevent="saveSubject" class="space-y-5">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Subject Code
               </label>
               <input
@@ -160,12 +163,12 @@
                 required
                 type="text"
                 placeholder="e.g. ITE192"
-                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               />
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Section
               </label>
               <input
@@ -173,12 +176,12 @@
                 required
                 type="text"
                 placeholder="e.g. BSIT-4A"
-                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               />
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Subject Title
               </label>
               <input
@@ -186,12 +189,12 @@
                 required
                 type="text"
                 placeholder="e.g. Capstone Project 2"
-                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               />
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Under What Academic Program?
               </label>
               <input
@@ -199,30 +202,30 @@
                 required
                 type="text"
                 placeholder="e.g. BSIT"
-                class="w-full rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               />
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Description
               </label>
               <textarea
                 v-model="formData.description"
                 rows="2"
                 placeholder="Subject description..."
-                class="w-full resize-none rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full resize-none rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               ></textarea>
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#1F2937]">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Assign Instructor
               </label>
               <select
                 v-model="formData.instructorId"
                 required
-                class="w-full cursor-pointer rounded-[12px] border border-[#E7DCC3] bg-white px-4 py-2.5 text-sm text-[#1F2937] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full cursor-pointer rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               >
                 <option value="" disabled>Select an instructor...</option>
                 <option
@@ -240,7 +243,7 @@
             <button
               type="button"
               @click="closeModal"
-              class="rounded-full border border-[#E7DCC3] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FFF8E1]"
+              class="rounded-full border border-[#DADCE0] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
             >
               Cancel
             </button>
@@ -248,7 +251,7 @@
             <button
               type="submit"
               :disabled="isSaving"
-              class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] disabled:cursor-not-allowed disabled:opacity-60"
+              class="rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {{ isSaving ? 'Saving...' : isEditing ? 'Update Subject' : 'Save Subject' }}
             </button>
@@ -269,21 +272,27 @@ import {
   addDoc,
   doc,
   updateDoc,
-  deleteDoc,
   serverTimestamp,
 } from 'firebase/firestore'
 import { db } from '@/firebase/config.js'
+import { confirmAction, showResult } from '@/utils/resultMessage'
+import { filterArchived, setRecordArchived } from '@/utils/archive'
+import ArchiveViewToggle from '@/components/common/ArchiveViewToggle.vue'
 
 const subjects = ref([])
 const availableInstructors = ref([])
 
 const searchQuery = ref('')
+const showArchived = ref(false)
 const error = ref('')
 const isLoading = ref(false)
 const isSaving = ref(false)
 const showModal = ref(false)
 const isEditing = ref(false)
 const editingId = ref(null)
+
+const activeCount = computed(() => subjects.value.filter((item) => item.archived !== true).length)
+const archivedCount = computed(() => subjects.value.filter((item) => item.archived === true).length)
 
 const formData = ref({
   code: '',
@@ -297,9 +306,10 @@ const formData = ref({
 const filteredSubjects = computed(() => {
   const keyword = searchQuery.value.toLowerCase().trim()
 
-  if (!keyword) return subjects.value
+  const visible = filterArchived(subjects.value, showArchived.value)
+  if (!keyword) return visible
 
-  return subjects.value.filter((subject) => {
+  return visible.filter((subject) => {
     return [
       subject.code,
       subject.title,
@@ -318,6 +328,8 @@ onMounted(async () => {
   await Promise.all([fetchSubjects(), fetchInstructors()])
 })
 
+
+//Read Operation//
 async function fetchSubjects() {
   isLoading.value = true
   error.value = ''
@@ -425,6 +437,7 @@ async function saveSubject() {
     updatedAt: serverTimestamp(),
   }
 
+  //Update Operation//
   try {
     if (isEditing.value && editingId.value) {
       await updateDoc(doc(db, 'subjects', editingId.value), payload)
@@ -437,25 +450,30 @@ async function saveSubject() {
 
     await fetchSubjects()
     closeModal()
+    showResult(isEditing.value ? 'Subject Updated' : 'Subject Added', 'The subject details have been saved.')
   } catch (err) {
     console.log('Save subject error:', err)
     error.value = 'Unable to save subject.'
+    showResult('Could Not Save Subject', 'Please try again.', 'error')
   } finally {
     isSaving.value = false
   }
 }
 
-async function deleteSubject(subjectId) {
-  const confirmed = confirm('Are you sure you want to delete this subject?')
-
-  if (!confirmed) return
+// Archive and restore operations
+async function archiveSubject(subjectId) {
+  const subject = subjects.value.find((item) => item.id === subjectId)
+  const restoring = subject?.archived === true
+  if (!await confirmAction(restoring ? 'Restore Subject?' : 'Archive Subject?', restoring ? 'This subject will return to the active list.' : 'This subject will be archived and can be restored later.', restoring ? 'Restore' : 'Archive')) return
 
   try {
-    await deleteDoc(doc(db, 'subjects', subjectId))
+    await setRecordArchived(db, 'subjects', subjectId, !restoring)
     await fetchSubjects()
+    showResult(restoring ? 'Subject Restored' : 'Subject Archived', restoring ? 'The subject is active again.' : 'The subject was moved to the archive.')
   } catch (err) {
-    console.log('Delete subject error:', err)
-    error.value = 'Unable to delete subject.'
+    console.log('Archive subject error:', err)
+    error.value = 'Unable to update subject.'
+    showResult('Could Not Update Subject', 'Please try again.', 'error')
   }
 }
 </script>

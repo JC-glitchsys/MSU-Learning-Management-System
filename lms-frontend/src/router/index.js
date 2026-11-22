@@ -1,5 +1,6 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import { showResult } from '@/utils/resultMessage'
 
 // Layouts
 import Layout from '@/layouts/Layout.vue'
@@ -30,6 +31,7 @@ import StudentSubjects from '@/Pages/student/StudentSubjects.vue'
 import SubjectDetails from '@/Pages/student/SubjectDetails.vue'
 import MyActivities from '@/Pages/student/MyActivities.vue'
 import MyGrades from '@/Pages/student/MyGrades.vue'
+import Profile from '@/Pages/common/Profile.vue'
 
 const routes = [
   {
@@ -86,6 +88,11 @@ const routes = [
         name: 'MyGrades',
         component: MyGrades,
       },
+      {
+        path: 'profile',
+        name: 'StudentProfile',
+        component: Profile,
+      },
     ],
   },
 
@@ -132,6 +139,11 @@ const routes = [
         name: 'GradeSubmission',
         component: GradeSubmission,
       },
+      {
+        path: 'profile',
+        name: 'InstructorProfile',
+        component: Profile,
+      },
     ],
   },
 
@@ -177,6 +189,11 @@ const routes = [
         path: 'enrollment',
         name: 'EnrollmentManager',
         component: EnrollmentManager,
+      },
+      {
+        path: 'profile',
+        name: 'AdminProfile',
+        component: Profile,
       },
     ],
   },
@@ -235,7 +252,7 @@ router.beforeEach((to, from, next) => {
     const requiredRole = normalizeRole(targetRole)
 
     if (userRole !== requiredRole) {
-      alert('Access Denied: Hindi ka awtorisadong pumasok sa panel na ito.')
+      showResult('Access Denied', 'You are not authorized to open that section.', 'error')
       return next(getDashboardByRole(userRole))
     }
   }

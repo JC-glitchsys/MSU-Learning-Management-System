@@ -2,21 +2,21 @@
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
       <div class="w-16 h-16 rounded-full bg-[#800000] flex items-center justify-center mx-auto mb-4">
-        <span class="text-[#D4AF37] font-bold text-xl">MSU</span>
+        <span class="text-[#FDF0F0] font-bold text-xl">MSU</span>
       </div>
       <h1 class="text-2xl font-bold text-[#800000]">Create an Account</h1>
-      <p class="text-sm text-[#6B7280] mt-1">Mindanao State University LMS</p>
+      <p class="text-sm text-[#5F6368] mt-1">Mindanao State University LMS</p>
     </div>
 
     <form
-      class="rounded-2xl border border-[#E7DCC3] bg-white shadow-sm p-8 space-y-4"
+      class="rounded-2xl border border-[#DADCE0] bg-white shadow-sm p-8 space-y-4"
       @submit.prevent="handleRegister"
     >
       <div>
         <label class="block text-sm font-medium mb-1.5">Account Type</label>
         <select
           v-model="form.role"
-          class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-[#FAFAF7] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+          class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-[#F8F9FA] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
         >
           <option value="student">Student</option>
           <option value="instructor">Instructor</option>
@@ -29,7 +29,7 @@
           v-model="form.name"
           type="text"
           placeholder="Juan Dela Cruz"
-          class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-[#FAFAF7] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+          class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-[#F8F9FA] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
         />
       </div>
 
@@ -39,7 +39,7 @@
           v-model="form.email"
           type="email"
           placeholder="you@msu.edu.ph"
-          class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-[#FAFAF7] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+          class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-[#F8F9FA] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
         />
       </div>
 
@@ -49,11 +49,11 @@
           v-model="form.password"
           type="password"
           placeholder="Minimum 6 characters"
-          class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-[#FAFAF7] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+          class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-[#F8F9FA] focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
         />
       </div>
 
-      <div v-if="form.role === 'student'" class="space-y-4 rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] p-4">
+      <div v-if="form.role === 'student'" class="space-y-4 rounded-xl border border-[#DADCE0] bg-[#FDF0F0] p-4">
         <p class="text-sm font-semibold text-[#800000]">Student Details</p>
 
         <div>
@@ -62,7 +62,7 @@
             v-model="form.studentNumber"
             type="text"
             placeholder="202227914"
-            class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
           />
         </div>
 
@@ -72,7 +72,7 @@
             v-model="form.program"
             type="text"
             placeholder="BS Information Technology"
-            class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
           />
         </div>
 
@@ -82,12 +82,12 @@
             v-model="form.yearLevel"
             type="text"
             placeholder="3rd Year"
-            class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
           />
         </div>
       </div>
 
-      <div v-if="form.role === 'instructor'" class="space-y-4 rounded-xl border border-[#E7DCC3] bg-[#FFF8E7] p-4">
+      <div v-if="form.role === 'instructor'" class="space-y-4 rounded-xl border border-[#DADCE0] bg-[#FDF0F0] p-4">
         <p class="text-sm font-semibold text-[#800000]">Instructor Details</p>
 
         <div>
@@ -96,7 +96,7 @@
             v-model="form.department"
             type="text"
             placeholder="Computer Studies"
-            class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
           />
         </div>
 
@@ -106,23 +106,23 @@
             v-model="form.specialization"
             type="text"
             placeholder="Web Development"
-            class="w-full border border-[#E7DCC3] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
+            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
           />
         </div>
       </div>
 
-      <p v-if="error" class="text-xs text-red-600">{{ error }}</p>
-      <p v-if="success" class="text-xs text-green-700">{{ success }}</p>
+      <p v-if="error" class="text-xs text-[#D93025]">{{ error }}</p>
+      <p v-if="success" class="text-xs text-[#188038]">{{ success }}</p>
 
       <button
         type="submit"
         :disabled="isLoading"
-        class="w-full rounded-lg bg-[#800000] px-5 py-3 text-sm font-semibold text-white hover:bg-[#5A0000] transition disabled:cursor-not-allowed disabled:opacity-60"
+        class="w-full rounded-lg bg-[#800000] px-5 py-3 text-sm font-semibold text-white hover:bg-[#5C0000] transition disabled:cursor-not-allowed disabled:opacity-60"
       >
         {{ isLoading ? 'Creating Account...' : 'Register' }}
       </button>
 
-      <p class="text-center text-xs text-[#6B7280]">
+      <p class="text-center text-xs text-[#5F6368]">
         Already have an account?
         <router-link to="/login" class="text-[#800000] font-medium hover:underline">Sign In</router-link>
       </p>
@@ -131,6 +131,7 @@
 </template>
 
 <script setup>
+import { showResult } from '@/utils/resultMessage'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
@@ -251,6 +252,7 @@ const handleRegister = async () => {
     }
 
     success.value = 'Account created successfully. Redirecting to sign in...'
+    showResult('Account Created', 'Your account was created. Redirecting to sign in.')
 
     setTimeout(() => {
       router.push('/login')

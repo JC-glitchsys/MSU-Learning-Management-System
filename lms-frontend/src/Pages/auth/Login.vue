@@ -1,202 +1,86 @@
 <template>
-  <div
-    class="login-page relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#FFFDF8] via-white to-[#FFF8E1] px-4 py-10"
-  >
-    <!-- Soft Background Glows -->
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div class="absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#800000]/[0.05] blur-3xl"></div>
-      <div class="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#D4AF37]/[0.16] blur-3xl"></div>
-      <div class="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-[#800000]/[0.04] blur-3xl"></div>
-    </div>
+  <div class="login-page flex min-h-screen items-center justify-center bg-[#F8F9FA] px-4 py-8 sm:px-8">
+    <main class="login-shell grid w-full max-w-5xl overflow-hidden rounded-2xl border border-[#DADCE0] bg-white md:grid-cols-[0.9fr_1.1fr]">
+      <aside class="login-brand flex flex-col justify-between bg-[#800000] p-8 text-white sm:p-10">
+        <div class="flex items-center gap-3">
+          <img :src="msuLogo" alt="Mindanao State University" class="h-11 w-11 rounded-md bg-white p-1 object-contain" />
+          <div>
+            <p class="text-sm font-semibold leading-5">Mindanao State University</p>
+            <p class="text-xs leading-4 text-white/70">Learning Management System</p>
+          </div>
+        </div>
+        <div class="my-10 max-w-sm md:my-0">
+          <p class="text-xs font-medium uppercase tracking-[0.16em] text-white/65">MSU LMS</p>
+          <h1 class="mt-3 text-3xl font-semibold leading-tight tracking-tight text-white">Your learning, in one place.</h1>
+          <p class="mt-4 max-w-xs text-sm leading-6 text-white/80">Access your subjects, course materials, activities, and academic progress through your university account.</p>
+        </div>
+        <p class="text-xs leading-5 text-white/65">A shared academic workspace for students and faculty.</p>
+      </aside>
 
-    <!-- Main Floating Shell -->
-    <main
-      class="relative z-10 grid w-full max-w-6xl overflow-hidden rounded-[34px] border border-[#E7DCC3] bg-white/90 shadow-[0_24px_70px_rgba(90,0,0,0.12)] backdrop-blur-xl lg:grid-cols-[1fr_1fr]"
-    >
-      <!-- Left Branding Panel -->
-      <section
-        class="relative hidden min-h-[620px] overflow-hidden bg-gradient-to-br from-[#800000] via-[#7A0707] to-[#B98718] p-10 text-white lg:flex lg:flex-col lg:justify-between"
-      >
-        <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10"></div>
-        <div class="absolute bottom-12 right-10 h-28 w-28 rounded-full bg-[#D4AF37]/20 blur-xl"></div>
-        <div class="absolute -bottom-20 -left-16 h-60 w-60 rounded-full bg-black/10"></div>
+      <section class="flex items-center justify-center px-6 py-10 sm:px-12 sm:py-14">
+      <div class="w-full max-w-md">
+      <div class="mb-8">
+        <p class="text-xs font-medium uppercase tracking-wide text-[#5F6368]">Welcome back</p>
+        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-[#202124]">Sign in to your account</h2>
+        <p class="mt-2 text-sm leading-5 text-[#5F6368]">Use your institutional account to access your LMS workspace.</p>
+      </div>
 
-        <div class="relative">
-          <div
-            class="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 shadow-[inset_0_1px_8px_rgba(255,255,255,0.12)] backdrop-blur-md"
-          >
-            <img
-              :src="msuSeal"
-              alt="MSU Seal"
-              class="h-10 w-10 object-contain drop-shadow-md"
+      <form class="space-y-5" @submit.prevent="handleLogin">
+        <div class="space-y-1.5">
+          <label class="block text-sm font-medium text-[#202124]">Email address</label>
+          <div class="flex items-center gap-3 rounded border border-[#DADCE0] px-3 py-2.5 focus-within:border-[#800000]">
+            <MailIcon class="h-4 w-4 shrink-0 text-[#5F6368]" />
+            <input
+              v-model="form.email"
+              type="email"
+              autocomplete="username"
+              placeholder="you@msu.edu.ph"
+              class="w-full border-0 bg-transparent p-0 text-sm text-[#202124] outline-none focus:ring-0"
             />
-
-            <div>
-              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-white">
-                Mindanao State University
-              </p>
-              <p class="text-[10px] font-light uppercase tracking-[0.18em] text-white/70">
-                Learning Management System
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-16 max-w-md">
-            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[#F5D56E]">
-              MSU LMS
-            </p>
-
-            <h1 class="mt-4 text-3xl font-semibold leading-[1.15] tracking-[-0.03em] text-white xl:text-4xl">
-              Learn, teach, and manage classes in one academic space.
-            </h1>
-
-            <p class="mt-5 max-w-sm text-sm font-light leading-7 text-white/78">
-              A clean digital platform for students, instructors, and administrators
-              to manage subjects, modules, activities, submissions, and grades.
-            </p>
           </div>
         </div>
 
-        <div class="relative grid grid-cols-2 gap-3">
-          <div class="rounded-[22px] border border-white/15 bg-white/10 p-4 backdrop-blur">
-            <p class="text-[11px] font-semibold uppercase tracking-wider text-[#F5D56E]">
-              Students
-            </p>
-            <p class="mt-2 text-xs font-light leading-5 text-white/80">
-              Access subjects, classwork, and grades.
-            </p>
-          </div>
-
-          <div class="rounded-[22px] border border-white/15 bg-white/10 p-4 backdrop-blur">
-            <p class="text-[11px] font-semibold uppercase tracking-wider text-[#F5D56E]">
-              Faculty
-            </p>
-            <p class="mt-2 text-xs font-light leading-5 text-white/80">
-              Upload modules and evaluate submissions.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Right Login Panel -->
-      <section class="flex min-h-[620px] items-center justify-center p-6 sm:p-10">
-        <div class="w-full max-w-md">
-          <!-- Mobile Brand: logo only, no circle -->
-          <div class="mb-8 text-center lg:hidden">
-            <img
-              :src="msuSeal"
-              alt="MSU Seal"
-              class="mx-auto mb-4 h-20 w-20 object-contain drop-shadow-sm"
+        <div class="space-y-1.5">
+          <label class="block text-sm font-medium text-[#202124]">Password</label>
+          <div class="flex items-center gap-3 rounded border border-[#DADCE0] px-3 py-2.5 focus-within:border-[#800000]">
+            <LockIcon class="h-4 w-4 shrink-0 text-[#5F6368]" />
+            <input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              class="w-full border-0 bg-transparent p-0 text-sm text-[#202124] outline-none focus:ring-0"
             />
-
-            <h1 class="text-2xl font-semibold tracking-tight text-[#800000]">
-              MSU LMS
-            </h1>
-            <p class="mt-1 text-sm font-light text-[#6B7280]">
-              Mindanao State University
-            </p>
-          </div>
-
-          <!-- Login Card -->
-          <div
-            class="rounded-[30px] border border-[#E7DCC3] bg-white p-7 shadow-[0_14px_40px_rgba(31,41,55,0.08)] sm:p-8"
-          >
-            <div class="mb-7">
-              <div class="hidden items-center gap-4 lg:flex">
-                <!-- Desktop logo: logo only, no circle -->
-                <img
-                  :src="msuSeal"
-                  alt="MSU Seal"
-                  class="h-16 w-16 shrink-0 object-contain drop-shadow-sm"
-                />
-
-                <div>
-                  <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D4AF37]">
-                    Welcome Back
-                  </p>
-                  <h2 class="text-xl font-semibold tracking-tight text-[#800000]">
-                    Sign in to your account
-                  </h2>
-                </div>
-              </div>
-
-              <p class="mt-5 text-sm font-light leading-6 text-[#6B7280]">
-                Use your institutional account to access your LMS dashboard.
-              </p>
-            </div>
-
-            <form class="space-y-4" @submit.prevent="handleLogin">
-              <!-- Email -->
-              <div class="space-y-1.5">
-                <label class="block text-[11px] font-semibold uppercase tracking-wider text-[#1F2937]">
-                  Email Address
-                </label>
-
-                <div
-                  class="flex items-center rounded-[14px] border border-[#E7DCC3] bg-white px-4 py-3 shadow-[inset_0_1px_4px_rgba(128,0,0,0.04)] transition focus-within:border-[#800000] focus-within:ring-2 focus-within:ring-[#F6E7B2]"
-                >
-                  <MailIcon class="mr-3 h-4 w-4 shrink-0 text-[#800000]/70" />
-                  <input
-                    v-model="form.email"
-                    type="email"
-                    placeholder="you@msu.edu.ph"
-                    class="w-full bg-transparent text-sm font-light text-[#1F2937] outline-none placeholder:text-[#9CA3AF]"
-                  />
-                </div>
-              </div>
-
-              <!-- Password -->
-              <div class="space-y-1.5">
-                <label class="block text-[11px] font-semibold uppercase tracking-wider text-[#1F2937]">
-                  Password
-                </label>
-
-                <div
-                  class="flex items-center rounded-[14px] border border-[#E7DCC3] bg-white px-4 py-3 shadow-[inset_0_1px_4px_rgba(128,0,0,0.04)] transition focus-within:border-[#800000] focus-within:ring-2 focus-within:ring-[#F6E7B2]"
-                >
-                  <LockIcon class="mr-3 h-4 w-4 shrink-0 text-[#800000]/70" />
-                  <input
-                    v-model="form.password"
-                    :type="showPassword ? 'text' : 'password'"
-                    placeholder="••••••••"
-                    class="w-full bg-transparent text-sm font-light text-[#1F2937] outline-none placeholder:text-[#9CA3AF]"
-                  />
-
-                  <button
-                    type="button"
-                    @click="showPassword = !showPassword"
-                    class="ml-3 text-[#6B7280] transition hover:text-[#800000]"
-                  >
-                    <EyeIcon v-if="!showPassword" class="h-4 w-4" />
-                    <EyeOffIcon v-else class="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Error -->
-              <p
-                v-if="error"
-                class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-light text-red-600"
-              >
-                {{ error }}
-              </p>
-
-              <!-- Button -->
-              <button
-                type="submit"
-                :disabled="isLoading"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#800000] via-[#8F1111] to-[#5A0000] px-6 py-3.5 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_14px_28px_rgba(128,0,0,0.22)] transition hover:-translate-y-0.5 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_18px_34px_rgba(128,0,0,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
-              >
-                <LogInIcon class="h-4 w-4" />
-                {{ isLoading ? 'Signing in...' : 'Sign In' }}
-              </button>
-            </form>
-
-            <p class="mt-6 border-t border-[#E7DCC3] pt-5 text-center text-xs font-light text-[#6B7280]">
-              MSU LMS &copy; {{ new Date().getFullYear() }} · Mindanao State University
-            </p>
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              class="rounded p-1 text-[#5F6368] hover:bg-[#F1F3F4]"
+            >
+              <EyeIcon v-if="!showPassword" class="h-4 w-4" />
+              <EyeOffIcon v-else class="h-4 w-4" />
+            </button>
           </div>
         </div>
+
+        <p v-if="error" class="rounded border border-[#DADCE0] bg-[#F8F9FA] px-3 py-2 text-sm text-[#D93025]">
+          {{ error }}
+        </p>
+
+        <button
+          type="submit"
+          :disabled="isLoading"
+          class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[#800000] px-4 text-sm font-medium text-white transition-colors hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <LogInIcon class="h-4 w-4" />
+          {{ isLoading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <p class="mt-7 border-t border-[#DADCE0] pt-5 text-center text-xs text-[#5F6368]">
+        MSU LMS &copy; {{ new Date().getFullYear() }} · Mindanao State University
+      </p>
+      </div>
       </section>
     </main>
   </div>
@@ -208,7 +92,7 @@ import { useRouter } from 'vue-router'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/config.js'
-import msuSeal from '@/assets/msu-seal.png'
+import msuLogo from '@/assets/logo.png'
 import {
   EyeIcon,
   EyeOffIcon,
@@ -308,6 +192,10 @@ async function handleLogin() {
     }
 
     const profile = userDoc.data()
+    if (profile.archived === true) {
+      error.value = 'This account has been archived. Contact an administrator if you need access restored.'
+      return
+    }
     const token = await credential.user.getIdToken()
 
     const { rawRole, role } = getRoleFromProfile(profile)
@@ -326,6 +214,7 @@ async function handleLogin() {
         uid: credential.user.uid,
         name: profile.name || credential.user.displayName || credential.user.email,
         email: credential.user.email,
+        photoURL: profile.photoURL || credential.user.photoURL || '',
         role,
         token,
       })
@@ -343,11 +232,3 @@ async function handleLogin() {
   }
 }
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-.login-page {
-  font-family: 'Poppins', sans-serif;
-}
-</style>

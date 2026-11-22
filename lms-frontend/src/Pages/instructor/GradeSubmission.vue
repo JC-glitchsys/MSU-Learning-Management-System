@@ -2,10 +2,10 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="overflow-hidden rounded-[28px] border border-[#E7DCC3] bg-white shadow-sm"
+      class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm"
     >
       <div
-        class="relative bg-gradient-to-r from-[#800000] via-[#8F1111] to-[#D4AF37] p-6 text-white md:p-7"
+        class="relative bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-6 text-white md:p-7"
       >
         <div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10"></div>
         <div class="absolute -bottom-12 left-10 h-32 w-32 rounded-full bg-black/10"></div>
@@ -46,12 +46,12 @@
     <!-- Loading -->
     <section
       v-if="loading"
-      class="rounded-[28px] border border-[#E7DCC3] bg-white p-12 text-center shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-white p-12 text-center shadow-sm"
     >
       <span
         class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
       ></span>
-      <p class="mt-3 text-sm font-bold text-[#6B7280]">
+      <p class="mt-3 text-sm font-bold text-[#5F6368]">
         Loading submission...
       </p>
     </section>
@@ -59,19 +59,19 @@
     <!-- Error / Empty -->
     <section
       v-else-if="error || !submission"
-      class="rounded-[28px] border border-red-200 bg-red-50 p-8 text-center shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-white p-8 text-center shadow-sm"
     >
-      <AlertCircleIcon class="mx-auto h-10 w-10 text-red-600" />
-      <h2 class="mt-3 text-lg font-black text-red-700">
+      <AlertCircleIcon class="mx-auto h-10 w-10 text-[#D93025]" />
+      <h2 class="mt-3 text-lg font-black text-[#D93025]">
         Submission not found
       </h2>
-      <p class="mt-1 text-sm font-medium text-red-600">
+      <p class="mt-1 text-sm font-medium text-[#D93025]">
         {{ error || 'The selected submission record could not be loaded.' }}
       </p>
 
       <button
         @click="backToQueue"
-        class="mt-5 rounded-full bg-[#800000] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#5A0000]"
+        class="mt-5 rounded-full bg-[#800000] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#5C0000]"
       >
         Return to Submissions
       </button>
@@ -83,21 +83,21 @@
       <div class="space-y-6 xl:col-span-7">
         <!-- Student + Activity Summary -->
         <div
-          class="rounded-[28px] border border-[#E7DCC3] bg-gradient-to-br from-white via-white to-[#FFF8E1] p-6 shadow-sm"
+          class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"
         >
           <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <span
-                class="inline-flex rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#800000]"
+                class="inline-flex rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#800000]"
               >
                 {{ submission.subjectCode || 'Subject' }}
               </span>
 
-              <h2 class="mt-3 text-xl font-black text-[#1F2937]">
+              <h2 class="mt-3 text-xl font-black text-[#202124]">
                 {{ submission.activityTitle || submission.title || 'Submitted Activity' }}
               </h2>
 
-              <p class="mt-1 text-sm font-medium text-[#6B7280]">
+              <p class="mt-1 text-sm font-medium text-[#5F6368]">
                 {{ submission.subjectTitle || 'No subject title' }}
               </p>
             </div>
@@ -111,26 +111,26 @@
           </div>
 
           <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div class="rounded-2xl border border-[#E7DCC3] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
+            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
                 Student
               </p>
-              <p class="mt-1 truncate text-sm font-black text-[#1F2937]">
+              <p class="mt-1 truncate text-sm font-black text-[#202124]">
                 {{ submission.studentName || 'Student' }}
               </p>
             </div>
 
-            <div class="rounded-2xl border border-[#E7DCC3] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
+            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
                 Submitted
               </p>
-              <p class="mt-1 text-sm font-black text-[#1F2937]">
+              <p class="mt-1 text-sm font-black text-[#202124]">
                 {{ formatDate(submission.submittedAt) }}
               </p>
             </div>
 
-            <div class="rounded-2xl border border-[#E7DCC3] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
+            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
                 Current Grade
               </p>
               <p class="mt-1 text-sm font-black text-[#800000]">
@@ -141,26 +141,26 @@
         </div>
 
         <!-- Answer -->
-        <div class="rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-sm">
+        <div class="rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm">
           <div class="mb-4 flex items-center gap-3">
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF8E1] text-[#800000] ring-1 ring-[#E7DCC3]"
+              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
             >
               <FileTextIcon class="h-5 w-5" />
             </div>
 
             <div>
-              <h3 class="text-base font-black text-[#1F2937]">
+              <h3 class="text-base font-black text-[#202124]">
                 Student Answer
               </h3>
-              <p class="text-xs text-[#6B7280]">
+              <p class="text-xs text-[#5F6368]">
                 Review the submitted text response.
               </p>
             </div>
           </div>
 
           <div
-            class="min-h-[180px] rounded-2xl border border-[#E7DCC3] bg-[#FAFAF7] p-5 text-sm leading-relaxed text-[#1F2937] whitespace-pre-wrap"
+            class="min-h-[180px] rounded-2xl border border-[#DADCE0] bg-[#F8F9FA] p-5 text-sm leading-relaxed text-[#202124] whitespace-pre-wrap"
           >
             {{ submission.answerText || 'No written answer was submitted.' }}
           </div>
@@ -169,27 +169,27 @@
         <!-- Attachment -->
         <div
           v-if="submission.fileUrl"
-          class="rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-sm"
+          class="rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm"
         >
           <div class="mb-4 flex items-center gap-3">
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF8E1] text-[#800000] ring-1 ring-[#E7DCC3]"
+              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
             >
               <PaperclipIcon class="h-5 w-5" />
             </div>
 
             <div>
-              <h3 class="text-base font-black text-[#1F2937]">
+              <h3 class="text-base font-black text-[#202124]">
                 Attachment
               </h3>
-              <p class="text-xs text-[#6B7280]">
+              <p class="text-xs text-[#5F6368]">
                 Open the submitted file or external link.
               </p>
             </div>
           </div>
 
           <div
-            class="flex flex-col gap-3 rounded-2xl border border-[#E7DCC3] bg-gradient-to-r from-white to-[#FFF8E1] p-4 sm:flex-row sm:items-center sm:justify-between"
+            class="flex flex-col gap-3 rounded-2xl border border-[#DADCE0] bg-gradient-to-r from-white to-[#FDF0F0] p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <p class="min-w-0 truncate text-xs font-bold text-[#800000]">
               {{ submission.fileUrl }}
@@ -198,7 +198,7 @@
             <a
               :href="submission.fileUrl"
               target="_blank"
-              class="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#800000] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#5A0000]"
+              class="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#800000] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#5C0000]"
             >
               Open File
               <ExternalLinkIcon class="h-3.5 w-3.5" />
@@ -210,24 +210,24 @@
       <!-- Grading Form -->
       <aside class="xl:col-span-5">
         <div
-          class="sticky top-28 rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-sm"
+          class="sticky top-28 rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm"
         >
           <!-- Student Card -->
           <div
-            class="mb-6 rounded-2xl border border-[#E7DCC3] bg-gradient-to-br from-white to-[#FFF8E1] p-4"
+            class="mb-6 rounded-2xl border border-[#DADCE0] bg-gradient-to-br from-white to-[#FDF0F0] p-4"
           >
             <div class="flex items-center gap-3">
               <div
-                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5A0000] text-sm font-black text-white ring-2 ring-[#D4AF37]/40"
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5C0000] text-sm font-black text-white ring-2 ring-[#FDF0F0]/40"
               >
                 {{ getInitials(submission.studentName) }}
               </div>
 
               <div class="min-w-0">
-                <p class="truncate text-sm font-black text-[#1F2937]">
+                <p class="truncate text-sm font-black text-[#202124]">
                   {{ submission.studentName || 'Student' }}
                 </p>
-                <p class="truncate text-xs text-[#6B7280]">
+                <p class="truncate text-xs text-[#5F6368]">
                   {{ submission.studentEmail || 'No email available' }}
                 </p>
               </div>
@@ -237,7 +237,7 @@
           <form @submit.prevent="saveGrade" class="space-y-5">
             <div>
               <label
-                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#1F2937]"
+                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#202124]"
               >
                 Grade
               </label>
@@ -250,10 +250,10 @@
                   min="0"
                   :max="submission.points || undefined"
                   placeholder="Score"
-                  class="w-28 rounded-[14px] border border-[#E7DCC3] bg-white px-4 py-3 text-center text-lg font-black text-[#800000] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                  class="w-28 rounded-[14px] border border-[#DADCE0] bg-white px-4 py-3 text-center text-lg font-black text-[#800000] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
                 />
 
-                <span class="text-sm font-bold text-[#6B7280]">
+                <span class="text-sm font-bold text-[#5F6368]">
                   <template v-if="submission.points">
                     / {{ submission.points }} points
                   </template>
@@ -266,7 +266,7 @@
 
             <div>
               <label
-                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#1F2937]"
+                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#202124]"
               >
                 Feedback
               </label>
@@ -275,14 +275,14 @@
                 v-model="feedbackText"
                 rows="6"
                 placeholder="Write feedback for the student..."
-                class="w-full resize-none rounded-[16px] border border-[#E7DCC3] bg-white px-4 py-3 text-sm leading-relaxed text-[#1F2937] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#F6E7B2]"
+                class="w-full resize-none rounded-[16px] border border-[#DADCE0] bg-white px-4 py-3 text-sm leading-relaxed text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               ></textarea>
             </div>
 
             <button
               type="submit"
               :disabled="committing"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5A0000] disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <SaveIcon class="h-4 w-4" />
               {{ committing ? 'Saving Grade...' : 'Save Grade and Feedback' }}
@@ -291,7 +291,7 @@
             <button
               type="button"
               @click="backToQueue"
-              class="w-full rounded-full border border-[#E7DCC3] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FFF8E1]"
+              class="w-full rounded-full border border-[#DADCE0] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
             >
               Cancel
             </button>
@@ -312,6 +312,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'
+import { showResult } from '@/utils/resultMessage'
 import {
   AlertCircleIcon,
   ArrowLeftIcon,
@@ -387,11 +388,12 @@ async function saveGrade() {
       gradedAt: serverTimestamp(),
     })
 
-    alert('Grade and feedback saved successfully.')
+    showResult('Grade Saved', 'The grade and feedback have been recorded.')
     backToQueue()
   } catch (err) {
     console.error('Save grade error:', err)
     error.value = 'Unable to save grade. Please try again.'
+    showResult('Could Not Save Grade', 'Please try again.', 'error')
   } finally {
     committing.value = false
   }
@@ -431,14 +433,14 @@ function formatDate(value) {
 
 function getStatusClass(status) {
   if (status === 'graded') {
-    return 'border-green-200 bg-green-50 text-green-700'
+    return 'border-[#DADCE0] bg-white text-[#188038]'
   }
 
   if (status === 'late') {
-    return 'border-red-200 bg-red-50 text-red-700'
+    return 'border-[#DADCE0] bg-white text-[#D93025]'
   }
 
-  return 'border-amber-200 bg-amber-50 text-amber-700'
+  return 'border-[#DADCE0] bg-white text-[#D93025]'
 }
 
 onMounted(fetchSubmission)

@@ -1,70 +1,9 @@
 <template>
   <div class="space-y-8 animate-fade-in">
-    <!-- Header -->
-    <section class="rounded-[28px] border border-[#E7DCC3] bg-white p-6 shadow-sm">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">
-            Instructor Dashboard
-          </p>
-
-          <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
-            Good day, {{ user.name || 'Instructor' }}!
-          </h1>
-
-          <p class="mt-1 max-w-2xl text-sm font-medium text-[#6B7280]">
-            Manage your assigned subjects, upload modules, create activities, and review student submissions.
-          </p>
-        </div>
-
-        <div
-          class="inline-flex w-fit items-center gap-2 rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-4 py-2 text-xs font-bold text-[#800000]"
-        >
-          <AwardIcon class="h-3.5 w-3.5 stroke-[2.5]" />
-          <span>{{ user.department || 'Faculty Workspace' }}</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats -->
-    <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      <StatCard
-        title="Assigned Subjects"
-        :value="totalSubjects"
-        description="Subjects assigned to you"
-        :icon="BookOpenIcon"
-        iconBg="#FFF8E1"
-      />
-
-      <StatCard
-        title="Uploaded Modules"
-        :value="totalModules"
-        description="Learning materials posted"
-        :icon="UploadCloudIcon"
-        iconBg="#FFF8E1"
-      />
-
-      <StatCard
-        title="Created Activities"
-        :value="totalActivities"
-        description="Assignments and quizzes"
-        :icon="PenToolIcon"
-        iconBg="#FFF8E1"
-      />
-
-      <StatCard
-        title="Pending Reviews"
-        :value="pendingReviews"
-        description="Submissions waiting for grading"
-        :icon="InboxIcon"
-        iconBg="#FFF8E1"
-      />
-    </section>
-
     <!-- Error -->
     <div
       v-if="error"
-      class="rounded-[24px] border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-600"
+      class="rounded-[24px] border border-[#DADCE0] bg-white p-5 text-sm font-semibold text-[#D93025]"
     >
       {{ error }}
     </div>
@@ -76,19 +15,19 @@
           v-for="tool in tools"
           :key="tool.to"
           :to="tool.to"
-          class="group rounded-2xl border border-[#E7DCC3] bg-white p-5 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#800000] hover:shadow-md"
+          class="group rounded-2xl border border-[#DADCE0] bg-white p-5 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#800000] hover:shadow-md"
         >
           <div
-            class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#E7DCC3] bg-[#FFF8E1] text-[#800000] transition group-hover:scale-105"
+            class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#DADCE0] bg-[#FDF0F0] text-[#800000] transition group-hover:scale-105"
           >
             <component :is="tool.icon" class="h-5 w-5 stroke-[2]" />
           </div>
 
-          <p class="mt-3 text-sm font-black text-[#1F2937] group-hover:text-[#800000]">
+          <p class="mt-3 text-sm font-black text-[#202124] group-hover:text-[#800000]">
             {{ tool.label }}
           </p>
 
-          <p class="mt-1 text-xs text-[#6B7280]">
+          <p class="mt-1 text-xs text-[#5F6368]">
             {{ tool.description }}
           </p>
         </router-link>
@@ -102,7 +41,7 @@
         <template #header-action>
           <router-link
             to="/instructor/subjects"
-            class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5A0000] hover:underline"
+            class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5C0000] hover:underline"
           >
             View All →
           </router-link>
@@ -112,15 +51,15 @@
           <span
             class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
           ></span>
-          <p class="mt-3 text-xs font-bold text-[#6B7280]">Loading assigned subjects...</p>
+          <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading assigned subjects...</p>
         </div>
 
         <div
           v-else-if="subjects.length === 0"
-          class="rounded-2xl border border-dashed border-[#E7DCC3] bg-[#FAFAF7] p-8 text-center"
+          class="rounded-2xl border border-dashed border-[#DADCE0] bg-[#F8F9FA] p-8 text-center"
         >
-          <p class="text-sm font-bold text-[#1F2937]">No assigned subjects yet.</p>
-          <p class="mt-1 text-xs text-[#6B7280]">
+          <p class="text-sm font-bold text-[#202124]">No assigned subjects yet.</p>
+          <p class="mt-1 text-xs text-[#5F6368]">
             Once the admin assigns a subject to you, it will appear here.
           </p>
         </div>
@@ -130,21 +69,21 @@
             v-for="subject in subjects"
             :key="subject.id"
             to="/instructor/subjects"
-            class="group block rounded-2xl border border-[#E7DCC3] bg-white p-4 transition hover:border-[#800000] hover:shadow-sm"
+            class="group block rounded-2xl border border-[#DADCE0] bg-white p-4 transition hover:border-[#800000] hover:shadow-sm"
           >
             <div class="flex items-start justify-between gap-4">
               <div class="min-w-0">
-                <p class="truncate text-sm font-black text-[#1F2937] group-hover:text-[#800000]">
+                <p class="truncate text-sm font-black text-[#202124] group-hover:text-[#800000]">
                   {{ subject.code || 'No Code' }} — {{ subject.title || 'Untitled Subject' }}
                 </p>
 
-                <p class="mt-1 text-xs font-medium text-[#6B7280]">
+                <p class="mt-1 text-xs font-medium text-[#5F6368]">
                   {{ subject.program || 'No program' }} • {{ subject.section || 'No section' }}
                 </p>
               </div>
 
               <span
-                class="shrink-0 rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#800000]"
+                class="shrink-0 rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#800000]"
               >
                 Active
               </span>
@@ -158,7 +97,7 @@
         <template #header-action>
           <router-link
             to="/instructor/submissions"
-            class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5A0000] hover:underline"
+            class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5C0000] hover:underline"
           >
             Open Queue →
           </router-link>
@@ -168,15 +107,15 @@
           <span
             class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
           ></span>
-          <p class="mt-3 text-xs font-bold text-[#6B7280]">Loading submissions...</p>
+          <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading submissions...</p>
         </div>
 
         <div
           v-else-if="recentSubmissions.length === 0"
-          class="rounded-2xl border border-dashed border-[#E7DCC3] bg-[#FAFAF7] p-8 text-center"
+          class="rounded-2xl border border-dashed border-[#DADCE0] bg-[#F8F9FA] p-8 text-center"
         >
-          <p class="text-sm font-bold text-[#1F2937]">No submissions yet.</p>
-          <p class="mt-1 text-xs text-[#6B7280]">
+          <p class="text-sm font-bold text-[#202124]">No submissions yet.</p>
+          <p class="mt-1 text-xs text-[#5F6368]">
             Student submissions for your activities will appear here.
           </p>
         </div>
@@ -185,7 +124,7 @@
           <div
             v-for="submission in recentSubmissions"
             :key="submission.id"
-            class="rounded-2xl border border-[#E7DCC3] bg-white p-4 transition hover:border-[#D4AF37] hover:shadow-sm"
+            class="rounded-2xl border border-[#DADCE0] bg-white p-4 transition hover:border-[#FDF0F0] hover:shadow-sm"
           >
             <div class="flex items-center justify-between gap-4">
               <div class="flex min-w-0 items-center gap-3">
@@ -196,11 +135,11 @@
                 </div>
 
                 <div class="min-w-0">
-                  <p class="truncate text-sm font-black text-[#1F2937]">
+                  <p class="truncate text-sm font-black text-[#202124]">
                     {{ submission.studentName || 'Student' }}
                   </p>
 
-                  <p class="mt-0.5 truncate text-xs font-medium text-[#6B7280]">
+                  <p class="mt-0.5 truncate text-xs font-medium text-[#5F6368]">
                     {{ submission.activityTitle || 'Activity' }}
                     <span v-if="submission.subjectCode"> • {{ submission.subjectCode }}</span>
                   </p>
@@ -224,7 +163,7 @@
       <template #header-action>
         <router-link
           to="/instructor/create-activity"
-          class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5A0000] hover:underline"
+          class="text-xs font-bold uppercase tracking-wide text-[#800000] hover:text-[#5C0000] hover:underline"
         >
           Create Activity →
         </router-link>
@@ -234,15 +173,15 @@
         <span
           class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
         ></span>
-        <p class="mt-3 text-xs font-bold text-[#6B7280]">Loading activities...</p>
+        <p class="mt-3 text-xs font-bold text-[#5F6368]">Loading activities...</p>
       </div>
 
       <div
         v-else-if="activities.length === 0"
-        class="rounded-2xl border border-dashed border-[#E7DCC3] bg-[#FAFAF7] p-8 text-center"
+        class="rounded-2xl border border-dashed border-[#DADCE0] bg-[#F8F9FA] p-8 text-center"
       >
-        <p class="text-sm font-bold text-[#1F2937]">No activities created yet.</p>
-        <p class="mt-1 text-xs text-[#6B7280]">
+        <p class="text-sm font-bold text-[#202124]">No activities created yet.</p>
+        <p class="mt-1 text-xs text-[#5F6368]">
           Create an assignment or quiz for your assigned subjects.
         </p>
       </div>
@@ -251,7 +190,7 @@
         <table class="w-full min-w-[650px] text-sm">
           <thead>
             <tr
-              class="border-b border-[#E7DCC3] text-left text-xs font-bold uppercase tracking-wider text-[#6B7280]"
+              class="border-b border-[#DADCE0] text-left text-xs font-bold uppercase tracking-wider text-[#5F6368]"
             >
               <th class="pb-4">Subject</th>
               <th class="pb-4">Activity</th>
@@ -260,34 +199,34 @@
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-[#E7DCC3]/70">
+          <tbody class="divide-y divide-[#DADCE0]/70">
             <tr
               v-for="activity in recentActivities"
               :key="activity.id"
-              class="transition hover:bg-[#FAFAF7]"
+              class="transition hover:bg-[#F8F9FA]"
             >
               <td class="py-4">
-                <p class="font-black text-[#1F2937]">
+                <p class="font-black text-[#202124]">
                   {{ activity.subjectCode || 'Subject' }}
                 </p>
-                <p class="mt-0.5 text-xs text-[#6B7280]">
+                <p class="mt-0.5 text-xs text-[#5F6368]">
                   {{ activity.subjectTitle || 'No subject title' }}
                 </p>
               </td>
 
-              <td class="py-4 font-bold text-[#1F2937]">
+              <td class="py-4 font-bold text-[#202124]">
                 {{ activity.title || 'Untitled Activity' }}
               </td>
 
               <td class="py-4">
                 <span
-                  class="rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-3 py-1 text-xs font-bold capitalize text-[#800000]"
+                  class="rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-xs font-bold capitalize text-[#800000]"
                 >
                   {{ activity.type || 'activity' }}
                 </span>
               </td>
 
-              <td class="py-4 text-right text-xs font-bold text-[#6B7280]">
+              <td class="py-4 text-right text-xs font-bold text-[#5F6368]">
                 {{ formatDate(activity.dueDate) }}
               </td>
             </tr>
@@ -302,11 +241,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'
-import StatCard from '@/components/common/StatCard.vue'
 import CardPanel from '@/components/common/CardPanel.vue'
 import {
-  AwardIcon,
-  BookOpenIcon,
   InboxIcon,
   PenToolIcon,
   TargetIcon,
@@ -350,14 +286,6 @@ const tools = [
   },
 ]
 
-const totalSubjects = computed(() => subjects.value.length)
-const totalModules = computed(() => modules.value.length)
-const totalActivities = computed(() => activities.value.length)
-
-const pendingReviews = computed(() => {
-  return submissions.value.filter((submission) => submission.status !== 'graded').length
-})
-
 const recentSubmissions = computed(() => {
   return submissions.value.slice(0, 5)
 })
@@ -387,7 +315,7 @@ async function fetchInstructorDashboard() {
     subjects.value = subjectsSnapshot.docs.map((document) => ({
       id: document.id,
       ...document.data(),
-    }))
+    })).filter((subject) => subject.archived !== true)
 
     const subjectIds = subjects.value.map((subject) => subject.id)
 
@@ -401,7 +329,7 @@ async function fetchInstructorDashboard() {
     modules.value = modulesSnapshot.docs.map((document) => ({
       id: document.id,
       ...document.data(),
-    }))
+    })).filter((module) => module.archived !== true)
 
     const activitiesQuery = query(
       collection(db, 'activities'),
@@ -413,7 +341,7 @@ async function fetchInstructorDashboard() {
     activities.value = activitiesSnapshot.docs.map((document) => ({
       id: document.id,
       ...document.data(),
-    }))
+    })).filter((activity) => activity.archived !== true)
 
     const activityIds = activities.value.map((activity) => activity.id)
 
@@ -468,14 +396,14 @@ function formatDate(value) {
 
 function getStatusClass(status) {
   if (status === 'graded') {
-    return 'border-green-200 bg-green-50 text-green-700'
+    return 'border-[#DADCE0] bg-white text-[#188038]'
   }
 
   if (status === 'late') {
-    return 'border-red-200 bg-red-50 text-red-700'
+    return 'border-[#DADCE0] bg-white text-[#D93025]'
   }
 
-  return 'border-amber-200 bg-amber-50 text-amber-700'
+  return 'border-[#DADCE0] bg-white text-[#D93025]'
 }
 
 onMounted(fetchInstructorDashboard)

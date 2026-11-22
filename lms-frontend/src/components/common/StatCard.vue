@@ -1,8 +1,7 @@
 <template>
-  <div class="p-6 bg-white rounded-[24px] border border-msu-border shadow-sm flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5">
-    <div 
-      class="w-12 h-12 rounded-xl flex items-center justify-center text-msu-maroon shrink-0 border border-msu-border"
-      :style="{ backgroundColor: iconBg || '#FFFFFF' }"
+  <div class="lms-stat-card p-6 bg-white rounded-2xl border border-[#E7E9EE] flex items-center gap-4 transition-colors duration-200 hover:border-[#D8DCE3]">
+    <div
+      class="w-11 h-11 rounded-2xl flex items-center justify-center text-[#800000] shrink-0 bg-[#FDF0F0]"
     >
       <component 
         v-if="typeof icon === 'object' || typeof icon === 'function'" 
@@ -13,9 +12,9 @@
     </div>
 
     <div>
-      <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">{{ title }}</p>
-      <p class="text-2xl font-black text-msu-maroon mt-0.5">{{ value }}</p>
-      <p class="text-[11px] text-[#6B7280] font-medium mt-0.5">{{ description }}</p>
+      <p class="text-sm text-[#5F6368] font-normal">{{ title }}</p>
+      <p class="mt-1 text-2xl font-semibold tracking-[-0.02em] text-[#202124]">{{ value }}</p>
+      <p class="mt-1 text-xs text-[#8A8F98]">{{ description }}</p>
     </div>
   </div>
 </template>

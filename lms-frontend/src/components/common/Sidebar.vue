@@ -1,16 +1,17 @@
 <template>
   <!-- Desktop Sidebar -->
   <aside
-    class="hidden h-screen w-68 shrink-0 flex-col border-r border-[#E7DCC3] bg-white transition-all duration-200 lg:flex"
+    class="sticky top-0 hidden h-screen shrink-0 flex-col border-r border-[#E7E9EE] bg-transparent transition-[width] duration-200 lg:flex"
+    :class="collapsed ? 'w-[72px]' : 'w-64'"
   >
-    <SidebarContent @logout="logout" />
+    <SidebarContent :collapsed="collapsed" @logout="logout" @toggle-sidebar="$emit('toggle')" />
   </aside>
 
   <!-- Mobile Sidebar Drawer -->
   <transition name="slide">
     <aside
       v-if="open"
-      class="fixed bottom-0 left-0 top-0 z-50 flex h-full w-68 flex-col border-r border-[#E7DCC3] bg-white shadow-xl lg:hidden"
+      class="fixed bottom-0 left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-[#DADCE0] bg-[#F8F9FA] lg:hidden"
     >
       <SidebarContent
         :mobile="true"
@@ -27,9 +28,10 @@ import SidebarContent from './SidebarContent.vue'
 
 defineProps({
   open: Boolean,
+  collapsed: Boolean,
 })
 
-defineEmits(['close'])
+defineEmits(['close', 'toggle'])
 
 const router = useRouter()
 

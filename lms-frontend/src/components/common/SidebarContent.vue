@@ -1,66 +1,83 @@
 <template>
-  <div class="flex h-full flex-col bg-white">
-    <!-- Brand Header -->
-    <div class="flex items-center justify-between border-b border-[#E7DCC3] p-6">
-      <div class="flex items-center gap-3">
-        <div
-          class="flex h-9 w-9 items-center justify-center rounded-full bg-[#800000] text-xs font-black text-white"
-        >
-          M
-        </div>
-
-        <div>
-          <h1 class="text-xs font-black uppercase tracking-widest text-[#800000]">
-            MSU LMS
-          </h1>
-          <p class="text-[10px] font-bold text-gray-400">
-            {{ panelLabel }}
-          </p>
+  <div class="flex h-full flex-col bg-transparent px-3 py-4">
+    <div class="flex items-center gap-2.5 px-2 pb-4" :class="collapsed ? 'flex-col' : 'justify-between'">
+      <div class="flex min-w-0 items-center gap-2.5" :class="collapsed ? 'justify-center' : ''">
+        <img :src="lmsLogo" alt="MSU LMS logo" class="h-9 w-9 shrink-0 object-contain" />
+        <div v-if="!collapsed" class="min-w-0">
+          <h1 class="truncate text-sm font-semibold text-[#202124]">MSU LMS</h1>
+          <p class="truncate text-xs font-normal text-[#8A8F98]">{{ panelLabel }}</p>
         </div>
       </div>
-
       <button
         v-if="mobile"
         @click="$emit('close')"
-        class="text-sm text-gray-400 transition hover:text-[#800000] lg:hidden"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#737983] transition hover:bg-white hover:text-[#800000]"
+        aria-label="Close navigation"
       >
-        ✕
+        <XIcon class="h-4 w-4" />
+      </button>
+      <button
+        v-else
+        @click="$emit('toggle-sidebar')"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#737983] transition hover:bg-white hover:text-[#800000]"
+        :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+        :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      >
+        <PanelLeftOpenIcon v-if="collapsed" class="h-[18px] w-[18px] stroke-[1.8]" />
+        <PanelLeftCloseIcon v-else class="h-[18px] w-[18px] stroke-[1.8]" />
       </button>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 space-y-1 overflow-y-auto p-4">
-      <router-link
-        v-for="item in menuItems"
-        :key="item.to"
-        :to="item.to"
-        @click="mobile ? $emit('close') : null"
-        class="group flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-[#1F2937] transition-all duration-150 hover:bg-[#FFF8E1] hover:text-[#800000]"
-        active-class="bg-[#FFF8E1] !text-[#800000] border-l-4 border-[#800000] rounded-l-none"
-      >
-        <component
-          :is="item.icon"
-          class="h-4 w-4 stroke-[2] text-gray-400 transition-colors group-hover:text-[#800000]"
-        />
-        <span class="truncate">{{ item.label }}</span>
-      </router-link>
+    <nav aria-label="Primary navigation" class="flex-1 space-y-5 overflow-y-auto px-1 py-1">
+      <section v-for="group in navGroups" :key="group.label" class="space-y-1">
+        <h2 v-if="!collapsed" class="px-3 pb-1 pt-1 text-xs font-medium leading-4 text-[#9AA0A9]">{{ group.label }}</h2>
+        <router-link
+          v-for="item in group.items"
+          :key="item.to"
+          :to="item.to"
+          @click="mobile ? $emit('close') : null"
+          class="group flex h-10 items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#555B65] transition-colors hover:bg-[#F7F7F8] hover:text-[#202124]"
+          :class="collapsed ? 'justify-center px-0' : 'px-3'"
+          active-class="bg-[#FDF0F0] !font-medium !text-[#800000]"
+          :title="collapsed ? item.label : undefined"
+        >
+          <component :is="item.icon" class="h-[18px] w-[18px] shrink-0 stroke-[1.8] text-[#858B95] transition-colors group-hover:text-[#800000]" />
+          <span v-if="!collapsed" class="truncate">{{ item.label }}</span>
+        </router-link>
+      </section>
     </nav>
 
-    <!-- Logout -->
-    <div class="border-t border-[#E7DCC3] bg-white p-4">
-      <button
-        @click="$emit('logout')"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
+    <div class="relative mt-3 border-t border-[#ECEEF1] pt-3">
+      <div
+        v-if="showSignOutConfirmation"
+        class="absolute z-20 mb-2 rounded-xl border border-[#E7E9EE] bg-white p-3"
+        :class="collapsed ? 'bottom-0 left-full ml-2 w-56' : 'bottom-full left-0 right-0'"
+        role="dialog"
+        aria-label="Confirm sign out"
       >
-        <LogOutIcon class="h-4 w-4 stroke-[2]" />
-        <span>Terminate Session</span>
+        <p class="text-xs font-medium leading-4 text-[#202124]">Are you sure you want to sign out?</p>
+        <div class="mt-3 flex justify-end gap-2">
+          <button aria-label="Cancel sign out" class="rounded-lg px-2.5 py-1.5 text-xs text-[#737983] hover:bg-[#F7F7F8]" @click="showSignOutConfirmation = false">Cancel</button>
+          <button aria-label="Confirm sign out" class="rounded-lg bg-[#800000] px-2.5 py-1.5 text-xs font-medium text-white hover:bg-[#5C0000]" @click="confirmSignOut">Sign out</button>
+        </div>
+      </div>
+      <button
+        @click="showSignOutConfirmation = !showSignOutConfirmation"
+        class="group flex h-10 w-full items-center gap-2.5 rounded-xl text-sm font-normal leading-5 text-[#737983] transition-colors hover:bg-[#F7F7F8] hover:text-[#800000]"
+        :class="collapsed ? 'justify-center px-0' : 'px-3'"
+        :title="collapsed ? 'Sign out' : undefined"
+        :aria-expanded="showSignOutConfirmation"
+      >
+        <LogOutIcon class="h-[18px] w-[18px] stroke-[1.8]" />
+        <span v-if="!collapsed">Sign out</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import lmsLogo from '@/assets/logo.png'
 import {
   LayoutDashboardIcon,
   UsersIcon,
@@ -76,24 +93,36 @@ import {
   NotebookTabsIcon,
   UserIcon,
   ChartNoAxesColumnIcon,
+  XIcon,
+  PanelLeftCloseIcon,
+  PanelLeftOpenIcon,
 } from 'lucide-vue-next'
 
 defineProps({
   mobile: Boolean,
+  collapsed: Boolean,
 })
 
-defineEmits(['close', 'logout'])
+const emit = defineEmits(['close', 'logout', 'toggle-sidebar'])
+const showSignOutConfirmation = ref(false)
 
-const loggedInUser = computed(() => {
+function confirmSignOut() {
+  showSignOutConfirmation.value = false
+  emit('logout')
+}
+
+function getLoggedInUser() {
   try {
     return JSON.parse(localStorage.getItem('user') || '{}')
   } catch (error) {
     return {}
   }
-})
+}
+
+const loggedInUser = getLoggedInUser()
 
 const role = computed(() => {
-  return String(loggedInUser.value?.role || 'student')
+  return String(loggedInUser?.role || 'student')
     .toLowerCase()
     .trim()
 })
@@ -135,6 +164,11 @@ const adminMenu = [
     label: 'Student Enrollment',
     icon: FileCheckIcon,
   },
+  {
+    to: '/admin/profile',
+    label: 'Profile',
+    icon: UserIcon,
+  },
 ]
 
 const instructorMenu = [
@@ -168,6 +202,11 @@ const instructorMenu = [
     label: 'Grade Submission',
     icon: CheckSquareIcon,
   },
+  {
+    to: '/instructor/profile',
+    label: 'Profile',
+    icon: UserIcon,
+  },
 ]
 
 const studentMenu = [
@@ -198,9 +237,19 @@ const studentMenu = [
   },
 ]
 
-const menuItems = computed(() => {
-  if (role.value === 'admin') return adminMenu
-  if (role.value === 'instructor') return instructorMenu
-  return studentMenu
+const navGroups = computed(() => {
+  const items = role.value === 'admin' ? adminMenu : role.value === 'instructor' ? instructorMenu : studentMenu
+  const profileIndex = items.findIndex((item) => item.to.endsWith('/profile'))
+  const coreItems = profileIndex >= 0 ? items.slice(1, profileIndex) : items.slice(1)
+  const groups = [
+    { label: 'Overview', items: items.slice(0, 1) },
+    { label: role.value === 'admin' ? 'Administration' : role.value === 'instructor' ? 'Teaching' : 'Learning', items: coreItems },
+  ]
+  if (profileIndex >= 0) groups.push({ label: 'Account', items: items.slice(profileIndex) })
+  return groups.filter((group) => group.items.length)
 })
 </script>
+
+<style scoped>
+:deep(.router-link-active svg) { color: #800000; }
+</style>

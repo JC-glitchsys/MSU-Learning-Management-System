@@ -2,23 +2,23 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="rounded-[28px] border border-[#E7DCC3] bg-gradient-to-br from-white via-white to-[#FFF8E1] p-6 shadow-sm"
+      class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"
     >
       <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#FDF0F0]">
             Instructor Queue
           </p>
           <h1 class="mt-2 text-2xl font-black tracking-tight text-[#800000] md:text-3xl">
             Student Submissions
           </h1>
-          <p class="mt-1 max-w-2xl text-sm font-medium text-[#6B7280]">
+          <p class="mt-1 max-w-2xl text-sm font-medium text-[#5F6368]">
             Review submitted activities, check their status, and grade student work.
           </p>
         </div>
 
         <div
-          class="inline-flex w-fit rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-bold text-[#800000] shadow-sm"
+          class="inline-flex w-fit rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-bold text-[#800000] shadow-sm"
         >
           {{ submissions.length }} submission{{ submissions.length === 1 ? '' : 's' }}
         </div>
@@ -26,35 +26,35 @@
     </section>
 
     <!-- Main Card -->
-    <section class="overflow-hidden rounded-[28px] border border-[#E7DCC3] bg-white shadow-sm">
+    <section class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
       <!-- Loading -->
       <div v-if="loading" class="p-12 text-center">
         <span
           class="inline-block h-7 w-7 animate-spin rounded-full border-2 border-[#800000] border-t-transparent"
         ></span>
-        <p class="mt-3 text-sm font-bold text-[#6B7280]">Loading submissions...</p>
+        <p class="mt-3 text-sm font-bold text-[#5F6368]">Loading submissions...</p>
       </div>
 
       <!-- Empty -->
       <div v-else-if="submissions.length === 0" class="p-12 text-center">
         <div
-          class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF8E1] text-[#800000]"
+          class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FDF0F0] text-[#800000]"
         >
           <InboxIcon class="h-7 w-7" />
         </div>
-        <h2 class="mt-4 text-lg font-black text-[#1F2937]">
+        <h2 class="mt-4 text-lg font-black text-[#202124]">
           No submissions yet
         </h2>
-        <p class="mt-1 text-sm text-[#6B7280]">
+        <p class="mt-1 text-sm text-[#5F6368]">
           Student submissions for your activities will appear here.
         </p>
       </div>
 
       <!-- List -->
-      <div v-else class="divide-y divide-[#E7DCC3]/70">
+      <div v-else class="divide-y divide-[#DADCE0]/70">
         <!-- Header Row desktop -->
         <div
-          class="hidden grid-cols-12 gap-4 bg-[#FAFAF7] px-6 py-4 text-xs font-black uppercase tracking-wider text-[#6B7280] lg:grid"
+          class="hidden grid-cols-12 gap-4 bg-[#F8F9FA] px-6 py-4 text-xs font-black uppercase tracking-wider text-[#5F6368] lg:grid"
         >
           <div class="col-span-3">Student</div>
           <div class="col-span-4">Activity</div>
@@ -65,22 +65,22 @@
         <div
           v-for="sub in submissions"
           :key="sub.id"
-          class="grid grid-cols-1 gap-4 px-6 py-5 transition hover:bg-[#FAFAF7] lg:grid-cols-12 lg:items-center"
+          class="grid grid-cols-1 gap-4 px-6 py-5 transition hover:bg-[#F8F9FA] lg:grid-cols-12 lg:items-center"
         >
           <!-- Student -->
           <div class="min-w-0 lg:col-span-3">
             <div class="flex items-center gap-3">
               <div
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5A0000] text-xs font-black text-white ring-2 ring-[#D4AF37]/40"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5C0000] text-xs font-black text-white ring-2 ring-[#FDF0F0]/40"
               >
                 {{ getInitials(sub.studentName) }}
               </div>
 
               <div class="min-w-0">
-                <p class="truncate text-sm font-black text-[#1F2937]">
+                <p class="truncate text-sm font-black text-[#202124]">
                   {{ sub.studentName || 'Student' }}
                 </p>
-                <p class="mt-0.5 truncate text-xs font-medium text-[#6B7280]">
+                <p class="mt-0.5 truncate text-xs font-medium text-[#5F6368]">
                   {{ sub.studentEmail || 'No email' }}
                 </p>
               </div>
@@ -90,16 +90,16 @@
           <!-- Activity -->
           <div class="min-w-0 lg:col-span-4">
             <span
-              class="mb-1 inline-flex rounded-full border border-[#E7DCC3] bg-[#FFF8E1] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#800000]"
+              class="mb-1 inline-flex rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#800000]"
             >
               {{ sub.subjectCode || 'Subject' }}
             </span>
 
-            <p class="truncate text-sm font-black text-[#1F2937]">
+            <p class="truncate text-sm font-black text-[#202124]">
               {{ sub.activityTitle || 'Course Activity' }}
             </p>
 
-            <p class="mt-0.5 text-xs text-[#6B7280]">
+            <p class="mt-0.5 text-xs text-[#5F6368]">
               Submitted: {{ formatDate(sub.submittedAt) }}
             </p>
           </div>
@@ -118,7 +118,7 @@
           <div class="lg:col-span-3 lg:text-right">
             <button
               @click="routeToGradeDesk(sub.id)"
-              class="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7DCC3] bg-white px-4 py-2 text-xs font-black text-[#800000] shadow-sm transition hover:bg-[#800000] hover:text-white"
+              class="inline-flex items-center justify-center gap-2 rounded-full border border-[#DADCE0] bg-white px-4 py-2 text-xs font-black text-[#800000] shadow-sm transition hover:bg-[#800000] hover:text-white"
             >
               <ClipboardCheckIcon class="h-4 w-4" />
               {{ sub.status === 'graded' ? 'Modify Grade' : 'Grade Work' }}
@@ -235,14 +235,14 @@ function formatDate(value) {
 
 function getStatusClass(status) {
   if (status === 'graded') {
-    return 'border-green-200 bg-green-50 text-green-700'
+    return 'border-[#DADCE0] bg-white text-[#188038]'
   }
 
   if (status === 'late') {
-    return 'border-red-200 bg-red-50 text-red-700'
+    return 'border-[#DADCE0] bg-white text-[#D93025]'
   }
 
-  return 'border-amber-200 bg-amber-50 text-amber-700'
+  return 'border-[#DADCE0] bg-white text-[#D93025]'
 }
 
 onMounted(fetchInstructorReviewQueue)
