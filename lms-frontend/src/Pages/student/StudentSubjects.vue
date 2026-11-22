@@ -24,23 +24,18 @@
         @click="openSubjectStream(sub.subjectId)"
         class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer group flex flex-col justify-between"
       >
-        <div class="h-28 bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white relative shrink-0">
-          <div class="absolute inset-0 bg-white/5 skew-y-12 transform origin-top-right transition-transform group-hover:scale-105 duration-300"></div>
-          <div class="relative z-10">
-            <h3 class="text-base font-bold tracking-tight text-white group-hover:underline truncate">{{ sub.subjectTitle }}</h3>
-            <p class="text-xs text-white/80 font-mono tracking-wider mt-0.5">{{ sub.subjectCode }}</p>
+        <div class="subject-card-banner relative h-40 shrink-0 overflow-hidden bg-white p-5 text-[#800000]">
+          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+          <div class="relative z-10 max-w-[58%]">
+            <p class="truncate text-sm font-medium text-[#5C0000]">{{ sub.subjectCode }}</p>
+            <h3 class="mt-1 truncate text-xl font-medium tracking-tight text-[#800000]">{{ sub.subjectTitle }}</h3>
           </div>
         </div>
 
         <div class="p-5 space-y-4 bg-white flex-1 flex flex-col justify-between">
           <div class="space-y-1">
-            <p class="text-xs font-bold text-[#202124] truncate">👨‍🏫 {{ sub.instructorName || 'Unassigned Faculty' }}</p>
-            <p class="text-[10px] text-[#5F6368] font-medium">Mindanao State University Integrated Stream</p>
-          </div>
-
-          <div class="pt-3 border-t border-[#DADCE0]/50 flex items-center justify-between text-[11px] font-bold text-[#800000]">
-            <span class="uppercase tracking-wide">Enter Classroom</span>
-            <span>→</span>
+            <p class="truncate text-xs font-medium text-[#202124]">{{ sub.instructorName || 'Unassigned Faculty' }}</p>
+            <p v-if="sub.section" class="text-xs text-[#5F6368]">{{ sub.section }}</p>
           </div>
         </div>
       </div>
@@ -50,6 +45,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import subjectBanner from '@/assets/banner.png'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, query, where, getDocs } from 'firebase/firestore'

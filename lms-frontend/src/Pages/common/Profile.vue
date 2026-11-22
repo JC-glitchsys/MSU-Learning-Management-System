@@ -23,13 +23,13 @@
 
         <div class="mt-5 flex flex-col gap-2">
           <label class="inline-flex cursor-pointer items-center justify-center rounded-lg border border-[#E7E9EE] px-4 py-2.5 text-sm font-medium text-[#4B515B] transition hover:border-[#D8B7B7] hover:bg-[#FDF8F8] hover:text-[#800000]">
-            {{ avatarPreview ? 'Change photo' : 'Add photo' }}
-            <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="handleImageChange" />
+            {{ isCompressing ? 'Compressing photo…' : avatarPreview ? 'Change photo' : 'Add photo' }}
+            <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp" :disabled="isCompressing" class="sr-only" @change="handleImageChange" />
           </label>
           <button v-if="avatarPreview" type="button" class="rounded-lg px-4 py-2 text-sm text-[#737983] hover:bg-[#F7F7F8]" @click="removePhoto">
             Remove photo
           </button>
-          <p class="text-xs leading-4 text-[#8A8F98]">PNG, JPG, or WebP. Maximum size 5 MB.</p>
+          <p class="text-xs leading-4 text-[#8A8F98]">PNG, JPG, or WebP · Maximum 3 MB. Photos are compressed before upload.</p>
           <p v-if="imageError" class="text-xs text-red-700" role="alert">{{ imageError }}</p>
         </div>
       </section>
@@ -121,6 +121,7 @@ const router = useRouter()
 const loading = ref(true)
 const saving = ref(false)
 const savingMessage = ref('Saving profile...')
+const isCompressing = ref(false)
 const error = ref('')
 const imageError = ref('')
 const fileInput = ref(null)
@@ -197,7 +198,7 @@ async function fetchProfile() {
   }
 }
 
-function handleImageChange(event) {
+async function handleImageChange(event) {
   imageError.value = ''
   const file = event.target.files?.[0]
   if (!file) return
@@ -209,17 +210,46 @@ function handleImageChange(event) {
     event.target.value = ''
     return
   }
-  if (file.size > 5 * 1024 * 1024) {
-    imageError.value = 'The image must be 5 MB or smaller.'
+  if (file.size > 3 * 1024 * 1024) {
+    imageError.value = 'Please choose a profile photo that is 3 MB or smaller.'
     selectedImage.value = null
     if (previewURL.value) URL.revokeObjectURL(previewURL.value)
     previewURL.value = ''
     event.target.value = ''
     return
   }
+
+  isCompressing.value = true
+  try {
+    const bitmap = await createImageBitmap(file)
+    const maxDimension = 640
+    const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(bitmap.width * scale)
+    canvas.height = Math.round(bitmap.height * scale)
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error('Canvas is unavailable')
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+    bitmap.close()
+
+    const compressedBlob = await new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Image compression failed')), 'image/webp', 0.72)
+    })
+    selectedImage.value = new File([compressedBlob], `${file.name.replace(/\.[^.]+$/, '')}.webp`, {
+      type: 'image/webp',
+      lastModified: Date.now(),
+    })
+  } catch (compressionError) {
+    console.error('Profile image compression failed:', compressionError)
+    imageError.value = 'Could not compress this image. Please try another photo.'
+    selectedImage.value = null
+    event.target.value = ''
+    isCompressing.value = false
+    return
+  }
+  isCompressing.value = false
   if (previewURL.value) URL.revokeObjectURL(previewURL.value)
-  selectedImage.value = file
-  previewURL.value = URL.createObjectURL(file)
+  previewURL.value = URL.createObjectURL(selectedImage.value)
   shouldRemovePhoto.value = false
 }
 
@@ -284,17 +314,14 @@ async function saveProfile() {
       }, { merge: true })
     }
 
-    const persistenceTasks = [batch.commit()]
+    await batch.commit()
     if (currentUser) {
-      persistenceTasks.push(updateProfile(currentUser, {
+      updateProfile(currentUser, {
         displayName: form.name.trim(),
         photoURL: nextPhotoURL || null,
-      }))
-    }
-    const persistenceResults = await Promise.allSettled(persistenceTasks)
-    if (persistenceResults[0].status === 'rejected') throw persistenceResults[0].reason
-    if (persistenceResults[1]?.status === 'rejected') {
-      console.warn('Firebase Auth profile did not sync; Firestore profile was saved.', persistenceResults[1].reason)
+      }).catch((authProfileError) => {
+        console.warn('Firebase Auth profile did not sync; Firestore profile was saved.', authProfileError)
+      })
     }
     photoURL.value = nextPhotoURL
     selectedImage.value = null

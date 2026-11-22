@@ -12,40 +12,35 @@
     </div>
 
     <template v-else>
+      <router-link
+        to="/student/subjects"
+        class="inline-flex items-center gap-2 text-sm font-medium text-[#667085] transition hover:text-[#800000]"
+      >
+        <ArrowLeftIcon class="h-4 w-4" />
+        Back to Subjects
+      </router-link>
+
       <!-- Class Banner -->
       <section
-        class="relative overflow-hidden rounded-[28px] border border-[#DADCE0] bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-6 text-white shadow-sm md:p-8"
+        class="relative min-h-[320px] overflow-hidden rounded-2xl border border-[#E7E9EE] bg-white p-6 text-[#202124] md:p-8"
       >
-        <div class="absolute inset-0 bg-white/5"></div>
-        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10"></div>
-        <div class="absolute -bottom-12 left-10 h-36 w-36 rounded-full bg-black/10"></div>
+        <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full rounded-2xl object-cover object-center" />
 
-        <div class="relative z-10">
-          <router-link
-            to="/student/subjects"
-            class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-white ring-1 ring-white/20 transition hover:bg-white/20"
-          >
-            <ArrowLeftIcon class="h-4 w-4" />
-            Back to Subjects
-          </router-link>
-
-          <p class="text-xs font-bold uppercase tracking-[0.25em] text-white/70">
+        <div class="relative z-10 flex min-h-[272px] max-w-full flex-col justify-center sm:max-w-[58%]">
+          <p class="text-sm font-medium text-[#5C0000]">
             {{ subject.code || 'Subject' }}
           </p>
 
-          <h1 class="mt-2 text-2xl font-black tracking-tight md:text-4xl">
+          <h1 class="mt-2 text-3xl font-medium tracking-tight text-[#202124] md:text-4xl">
             {{ subject.title || 'Untitled Subject' }}
           </h1>
 
-          <p class="mt-2 max-w-3xl text-sm font-medium text-white/85 md:text-base">
+          <p class="mt-2 max-w-3xl text-sm text-[#5F6368] md:text-base">
             {{ subject.program || 'Program not specified' }}
             <span v-if="subject.section"> • {{ subject.section }}</span>
             <span v-if="subject.instructorName"> • {{ subject.instructorName }}</span>
           </p>
 
-          <p v-if="subject.description" class="mt-4 max-w-3xl text-sm leading-relaxed text-white/80">
-            {{ subject.description }}
-          </p>
         </div>
       </section>
 
@@ -347,6 +342,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import subjectBanner from '@/assets/banner.png'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'

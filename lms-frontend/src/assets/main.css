@@ -123,6 +123,12 @@ main .lms-page-card [class*="divide-y"] > :not([hidden]) ~ :not([hidden]),
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
+.lms-page-card .subject-card-banner h2,
+.lms-page-card .subject-card-banner h3,
+.lms-page-card .subject-card-banner p { color: #800000 !important; }
+.lms-page-card .subject-card-banner h2,
+.lms-page-card .subject-card-banner h3 { font-size: 20px !important; line-height: 26px !important; }
+.lms-page-card .subject-card-banner p { font-size: 14px !important; line-height: 20px !important; }
 .lms-page-card h1 + p,
 .lms-page-card h2 + p {
   color: var(--lms-muted) !important;
@@ -211,12 +217,14 @@ tr[class*="hover:bg"]:hover { background-color: #F8F9FA !important; }
 .login-page input:not([type="checkbox"]), .login-page input:not([type="checkbox"]):focus { min-width: 0; padding: 10px 0 !important; border: 0 !important; border-radius: 0 !important; outline: none !important; box-shadow: none !important; background: transparent !important; }
 .login-shell { min-height: 620px; }
 .login-brand { min-height: 620px; }
+.login-form-card { min-height: 620px; }
 
 @media (max-width: 767px) {
   .lms-main { padding: 16px 16px 32px; }
   .lms-page-card { min-height: calc(100vh - 132px); padding: 16px; border-radius: 10px; }
   th, td { padding: 12px 14px; }
   .login-brand { min-height: auto; }
+  .login-form-card { min-height: auto; }
   .login-shell { min-height: auto; }
 }
 

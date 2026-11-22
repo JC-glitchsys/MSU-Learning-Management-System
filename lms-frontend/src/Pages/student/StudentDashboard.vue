@@ -41,47 +41,32 @@
               :to="`/student/subjects/${subject.subjectId}`"
               class="group overflow-hidden rounded-[22px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div
-                class="bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white"
-              >
-                <div class="flex items-start justify-between gap-4">
-                  <div class="min-w-0">
-                    <p class="text-xs font-bold uppercase tracking-widest text-white/75">
+              <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
+                <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+                <div class="relative z-10 max-w-[58%]">
+                    <p class="truncate text-sm font-medium text-[#5C0000]">
                       {{ subject.subjectCode || 'No Code' }}
                     </p>
 
-                    <h2 class="mt-1 truncate text-lg font-black">
+                    <h2 class="mt-1 truncate text-lg font-medium text-[#800000]">
                       {{ subject.subjectTitle || 'Untitled Subject' }}
                     </h2>
 
-                    <p class="mt-1 truncate text-xs font-medium text-white/75">
+                    <p class="mt-1 truncate text-xs text-[#5C0000]">
                       Instructor: {{ subject.instructorName || 'Not assigned' }}
                     </p>
-                  </div>
-
-                  <span
-                    class="shrink-0 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20"
-                  >
-                    Open
-                  </span>
                 </div>
               </div>
 
               <div class="flex items-center justify-between p-4">
                 <div>
-                  <p class="text-xs font-bold uppercase tracking-wider text-[#5F6368]">
+                  <p class="text-xs text-[#5F6368]">
                     Enrollment Status
                   </p>
-                  <p class="mt-1 text-sm font-bold text-[#202124]">
+                  <p class="mt-1 text-sm font-medium text-[#202124]">
                     Active
                   </p>
                 </div>
-
-                <span
-                  class="rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-xs font-bold text-[#800000] transition group-hover:bg-[#800000] group-hover:text-white"
-                >
-                  Go to Class →
-                </span>
               </div>
             </router-link>
           </div>
@@ -253,6 +238,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import subjectBanner from '@/assets/banner.png'
 import { computed, onMounted, ref } from 'vue'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

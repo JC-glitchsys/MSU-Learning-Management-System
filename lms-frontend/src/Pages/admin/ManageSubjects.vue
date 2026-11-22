@@ -91,32 +91,21 @@
         class="group overflow-hidden rounded-[26px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
       >
         <!-- Banner -->
-        <div
-          class="relative overflow-hidden bg-gradient-to-br from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white"
-        >
-          <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10"></div>
-          <div class="absolute -bottom-10 left-8 h-24 w-24 rounded-full bg-black/10"></div>
+        <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
+          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
 
-          <div class="relative flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
+          <div class="relative z-10 max-w-[58%]">
+              <p class="truncate text-sm font-medium text-[#5C0000]">
                 {{ subject.code || 'No Code' }}
               </p>
 
-              <h2 class="mt-2 truncate text-lg font-black">
+              <h2 class="mt-1 truncate text-xl font-medium text-[#800000]">
                 {{ subject.title || 'Untitled Subject' }}
               </h2>
 
-              <p class="mt-1 truncate text-xs font-medium text-white/75">
-                {{ subject.program || 'No program' }}
+              <p class="mt-1 truncate text-xs text-[#5C0000]">
+                {{ subject.program || 'No program' }}<span v-if="subject.section"> · {{ subject.section }}</span>
               </p>
-            </div>
-
-            <span
-              class="shrink-0 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-white/20"
-            >
-              {{ subject.section || 'No Section' }}
-            </span>
           </div>
         </div>
 
@@ -124,12 +113,6 @@
         <div class="space-y-4 p-5">
           <div class="rounded-2xl border border-[#DADCE0] bg-[#F8F9FA] p-4">
             <div class="flex items-center gap-3">
-              <div
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
-              >
-                <GraduationCapIcon class="h-5 w-5" />
-              </div>
-
               <div class="min-w-0">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
                   Assigned Instructor
@@ -316,6 +299,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import subjectBanner from '@/assets/banner.png'
 import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,
@@ -335,7 +319,6 @@ import {
   ArchiveIcon,
   ArchiveRestoreIcon,
   BookOpenIcon,
-  GraduationCapIcon,
   PencilIcon,
   PlusCircleIcon,
   SaveIcon,

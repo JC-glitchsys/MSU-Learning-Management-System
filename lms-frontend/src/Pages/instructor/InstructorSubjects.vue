@@ -19,20 +19,17 @@
     <div v-else class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       <div v-for="subj in assignedSubjects" :key="subj.id" class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between group">
         
-        <div class="h-28 bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-5 text-white relative">
-          <div class="absolute inset-0 bg-white/5 skew-y-12 transform origin-top-right"></div>
-          <div class="relative z-10">
-            <h3 class="text-base font-bold tracking-tight text-white group-hover:underline truncate">{{ subj.title }}</h3>
-            <p class="text-xs text-white/80 font-mono tracking-wider mt-0.5">{{ subj.code }} • Section {{ subj.section }}</p>
+        <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
+          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+          <div class="relative z-10 max-w-[58%]">
+            <p class="truncate text-sm font-medium text-[#5C0000]">{{ subj.code }}</p>
+            <h3 class="mt-1 truncate text-xl font-medium tracking-tight text-[#800000]">{{ subj.title }}</h3>
+            <p class="mt-1 truncate text-xs text-[#5C0000]">{{ subj.program || 'General Program' }}<span v-if="subj.section"> · {{ subj.section }}</span></p>
           </div>
         </div>
 
         <div class="p-5 space-y-4 bg-white flex-1 flex flex-col justify-between">
-          <div class="text-xs font-bold text-[#5F6368] uppercase tracking-wider">
-            Tracking Program: {{ subj.program || 'General Program' }}
-          </div>
-
-          <div class="pt-4 border-t border-[#DADCE0]/50 grid grid-cols-3 gap-2 text-center">
+          <div class="grid grid-cols-3 gap-2 text-center">
             <router-link to="/instructor/upload-module" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Modules</router-link>
             <router-link to="/instructor/create-activity" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Activity</router-link>
             <router-link to="/instructor/submissions" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Review</router-link>
@@ -45,6 +42,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import subjectBanner from '@/assets/banner.png'
 import { ref, onMounted } from 'vue'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'
