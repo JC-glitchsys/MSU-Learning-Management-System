@@ -41,8 +41,8 @@
               :to="`/student/subjects/${subject.subjectId}`"
               class="group overflow-hidden rounded-[22px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
-                <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+              <div class="subject-card-banner relative h-40 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(subject)}`">
+                <StudyToolsArtwork :subject="subject" />
                 <div class="relative z-10 max-w-[58%]">
                     <p class="truncate text-sm font-medium text-[#5C0000]">
                       {{ subject.subjectCode || 'No Code' }}
@@ -238,7 +238,8 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
-import subjectBanner from '@/assets/banner.png'
+import StudyToolsArtwork from '@/components/common/StudyToolsArtwork.vue'
+import { getSubjectArtworkType } from '@/utils/subjectArtwork.js'
 import { computed, onMounted, ref } from 'vue'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'
@@ -278,12 +279,33 @@ async function fetchStudentDashboard() {
 
     const enrollmentSnapshot = await getDocs(enrollmentQuery)
     const subjectSnapshot = await getDocs(collection(db, 'subjects'))
-    const activeSubjectIds = new Set(subjectSnapshot.docs.filter((subject) => subject.data().archived !== true).map((subject) => subject.id))
+    const subjectById = new Map(subjectSnapshot.docs.map((document) => [
+      document.id,
+      { id: document.id, ...document.data() },
+    ]))
+    const activeSubjectIds = new Set(subjectSnapshot.docs
+      .filter((subject) => subject.data().archived !== true)
+      .map((subject) => subject.id))
 
-    subjects.value = enrollmentSnapshot.docs.map((document) => ({
-      id: document.id,
-      ...document.data(),
-    })).filter((item) => item.archived !== true && activeSubjectIds.has(item.subjectId))
+    subjects.value = enrollmentSnapshot.docs.map((document) => {
+      const enrollment = { id: document.id, ...document.data() }
+      const subject = subjectById.get(enrollment.subjectId) || {}
+
+      return {
+        ...subject,
+        ...enrollment,
+        title: subject.title || enrollment.subjectTitle,
+        code: subject.code || enrollment.subjectCode,
+        subjectTitle: subject.title || enrollment.subjectTitle,
+        subjectCode: subject.code || enrollment.subjectCode,
+        description: subject.description,
+        program: subject.program,
+        category: subject.category,
+        subjectCategory: subject.subjectCategory,
+        subjectArea: subject.subjectArea,
+        discipline: subject.discipline,
+      }
+    }).filter((item) => item.archived !== true && activeSubjectIds.has(item.subjectId))
 
     const enrolledSubjectIds = subjects.value
       .map((subject) => subject.subjectId)

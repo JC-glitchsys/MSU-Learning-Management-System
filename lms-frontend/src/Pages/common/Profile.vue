@@ -59,10 +59,9 @@
               <span class="text-sm font-medium text-[#4B515B]">Student number</span>
               <input v-model.trim="form.studentNumber" class="h-11 w-full rounded-lg border border-[#E4E7EC] bg-white px-3 text-sm text-[#202124] outline-none focus:border-[#800000]" />
             </label>
-            <label class="flex flex-col gap-1.5">
-              <span class="text-sm font-medium text-[#4B515B]">Program</span>
-              <input v-model.trim="form.program" placeholder="Your academic program" class="h-11 w-full rounded-lg border border-[#E4E7EC] bg-white px-3 text-sm text-[#202124] outline-none focus:border-[#800000]" />
-            </label>
+            <div class="md:col-span-2">
+              <AcademicProgramSelect v-model="academicPath" />
+            </div>
             <label class="flex flex-col gap-1.5">
               <span class="text-sm font-medium text-[#4B515B]">Year level</span>
               <input v-model.trim="form.yearLevel" placeholder="Your current year level" class="h-11 w-full rounded-lg border border-[#E4E7EC] bg-white px-3 text-sm text-[#202124] outline-none focus:border-[#800000]" />
@@ -108,6 +107,7 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
+import AcademicProgramSelect from '@/components/common/AcademicProgramSelect.vue'
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { onAuthStateChanged, updateProfile } from 'firebase/auth'
@@ -132,8 +132,13 @@ const shouldRemovePhoto = ref(false)
 const role = ref('student')
 const uid = ref('')
 const form = reactive({
-  name: '', email: '', contact: '', studentNumber: '', program: '', yearLevel: '',
-  department: '', specialization: '', facultyId: '',
+  name: '', email: '', contact: '', studentNumber: '', college: '', department: '', program: '', yearLevel: '',
+  specialization: '', facultyId: '',
+})
+
+const academicPath = computed({
+  get: () => ({ college: form.college, department: form.department, program: form.program }),
+  set: (value) => Object.assign(form, value),
 })
 
 const roleLabel = computed(() => ({ admin: 'Administrator', instructor: 'Instructor', student: 'Student' })[role.value] || 'Account')
@@ -159,6 +164,7 @@ function loadProfile(primary, secondary = {}) {
     email: primary.email || secondary.email || auth.currentUser?.email || '',
     contact: primary.contact || secondary.contact || '',
     studentNumber: secondary.studentNumber || primary.studentNumber || '',
+    college: secondary.college || primary.college || '',
     program: secondary.program || primary.program || '',
     yearLevel: secondary.yearLevel || primary.yearLevel || '',
     department: secondary.department || primary.department || '',
@@ -266,6 +272,10 @@ function removePhoto() {
 async function saveProfile() {
   error.value = ''
   imageError.value = ''
+  if (role.value === 'student' && (!form.college || !form.department || !form.program)) {
+    error.value = 'Select a college, department, and academic program.'
+    return
+  }
   if (!form.name.trim()) {
     error.value = 'Enter your name before saving.'
     return
@@ -302,6 +312,8 @@ async function saveProfile() {
       batch.set(doc(db, 'students', uid.value), {
         ...commonData,
         studentNumber: form.studentNumber.trim(),
+        college: form.college.trim(),
+        department: form.department.trim(),
         program: form.program.trim(),
         yearLevel: form.yearLevel.trim(),
       }, { merge: true })

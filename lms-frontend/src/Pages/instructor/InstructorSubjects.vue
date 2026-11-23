@@ -19,8 +19,8 @@
     <div v-else class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       <div v-for="subj in assignedSubjects" :key="subj.id" class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between group">
         
-        <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
-          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+        <div class="subject-card-banner relative h-40 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(subj)}`">
+          <StudyToolsArtwork :subject="subj" />
           <div class="relative z-10 max-w-[58%]">
             <p class="truncate text-sm font-medium text-[#5C0000]">{{ subj.code }}</p>
             <h3 class="mt-1 truncate text-xl font-medium tracking-tight text-[#800000]">{{ subj.title }}</h3>
@@ -42,7 +42,8 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
-import subjectBanner from '@/assets/banner.png'
+import StudyToolsArtwork from '@/components/common/StudyToolsArtwork.vue'
+import { getSubjectArtworkType } from '@/utils/subjectArtwork.js'
 import { ref, onMounted } from 'vue'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config.js'

@@ -91,8 +91,8 @@
         class="group overflow-hidden rounded-[26px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
       >
         <!-- Banner -->
-        <div class="subject-card-banner relative h-40 overflow-hidden bg-white p-5 text-[#800000]">
-          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+        <div class="subject-card-banner relative h-40 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(subject)}`">
+          <StudyToolsArtwork :subject="subject" />
 
           <div class="relative z-10 max-w-[58%]">
               <p class="truncate text-sm font-medium text-[#5C0000]">
@@ -219,17 +219,8 @@
               />
             </div>
 
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Academic Program
-              </label>
-              <input
-                v-model="formData.program"
-                required
-                type="text"
-                placeholder="e.g. BSIT"
-                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
+            <div class="sm:col-span-2">
+              <AcademicProgramSelect v-model="academicPath" />
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
@@ -299,7 +290,9 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
-import subjectBanner from '@/assets/banner.png'
+import AcademicProgramSelect from '@/components/common/AcademicProgramSelect.vue'
+import StudyToolsArtwork from '@/components/common/StudyToolsArtwork.vue'
+import { getSubjectArtworkType } from '@/utils/subjectArtwork.js'
 import { computed, onMounted, ref } from 'vue'
 import {
   addDoc,
@@ -345,9 +338,20 @@ const formData = ref({
   code: '',
   title: '',
   description: '',
+  college: '',
+  department: '',
   program: '',
   section: '',
   instructorId: '',
+})
+
+const academicPath = computed({
+  get: () => ({
+    college: formData.value.college,
+    department: formData.value.department,
+    program: formData.value.program,
+  }),
+  set: (value) => Object.assign(formData.value, value),
 })
 
 const filteredSubjects = computed(() => {
@@ -428,6 +432,8 @@ function openEditModal(subject) {
     code: subject.code || '',
     title: subject.title || '',
     description: subject.description || '',
+    college: subject.college || '',
+    department: subject.department || '',
     program: subject.program || '',
     section: subject.section || '',
     instructorId: subject.instructorId || '',
@@ -446,6 +452,8 @@ function resetForm() {
     code: '',
     title: '',
     description: '',
+    college: '',
+    department: '',
     program: '',
     section: '',
     instructorId: '',
@@ -457,6 +465,11 @@ async function saveSubject() {
 
   if (!formData.value.instructorId) {
     error.value = 'Please assign an instructor.'
+    return
+  }
+
+  if (!formData.value.college || !formData.value.department || !formData.value.program) {
+    error.value = 'Select a college, department, and academic program.'
     return
   }
 
@@ -475,6 +488,8 @@ async function saveSubject() {
     code: formData.value.code.trim(),
     title: formData.value.title.trim(),
     description: formData.value.description.trim(),
+    college: formData.value.college.trim(),
+    department: formData.value.department.trim(),
     program: formData.value.program.trim(),
     section: formData.value.section.trim(),
     instructorId: selectedInstructor.id,

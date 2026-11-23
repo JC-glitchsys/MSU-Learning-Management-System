@@ -24,8 +24,8 @@
         @click="openSubjectStream(sub.subjectId)"
         class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer group flex flex-col justify-between"
       >
-        <div class="subject-card-banner relative h-40 shrink-0 overflow-hidden bg-white p-5 text-[#800000]">
-          <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full object-contain object-right" />
+        <div class="subject-card-banner relative h-40 shrink-0 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(sub)}`">
+          <StudyToolsArtwork :subject="sub" />
           <div class="relative z-10 max-w-[58%]">
             <p class="truncate text-sm font-medium text-[#5C0000]">{{ sub.subjectCode }}</p>
             <h3 class="mt-1 truncate text-xl font-medium tracking-tight text-[#800000]">{{ sub.subjectTitle }}</h3>
@@ -45,7 +45,8 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
-import subjectBanner from '@/assets/banner.png'
+import StudyToolsArtwork from '@/components/common/StudyToolsArtwork.vue'
+import { getSubjectArtworkType } from '@/utils/subjectArtwork.js'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, query, where, getDocs } from 'firebase/firestore'
@@ -69,8 +70,30 @@ const fetchStudentEnrollments = async () => {
     const q = query(collection(db, 'enrollments'), where('studentId', '==', user.uid))
     const snap = await getDocs(q)
     const subjectSnap = await getDocs(collection(db, 'subjects'))
-    const activeSubjectIds = new Set(subjectSnap.docs.filter((subject) => subject.data().archived !== true).map((subject) => subject.id))
-    enrolledSubjects.value = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter((item) => item.archived !== true && activeSubjectIds.has(item.subjectId))
+    const subjectById = new Map(subjectSnap.docs.map((document) => [
+      document.id,
+      { id: document.id, ...document.data() },
+    ]))
+    const activeSubjectIds = new Set(subjectSnap.docs
+      .filter((subject) => subject.data().archived !== true)
+      .map((subject) => subject.id))
+    enrolledSubjects.value = snap.docs.map((document) => {
+      const enrollment = { id: document.id, ...document.data() }
+      const subject = subjectById.get(enrollment.subjectId) || {}
+
+      return {
+        ...subject,
+        ...enrollment,
+        subjectTitle: subject.title || enrollment.subjectTitle,
+        subjectCode: subject.code || enrollment.subjectCode,
+        description: subject.description,
+        program: subject.program,
+        category: subject.category,
+        subjectCategory: subject.subjectCategory,
+        subjectArea: subject.subjectArea,
+        discipline: subject.discipline,
+      }
+    }).filter((item) => item.archived !== true && activeSubjectIds.has(item.subjectId))
   } catch (err) {
     console.error(err)
     error.value = 'Failed to fetch your academic enrollment collection.'

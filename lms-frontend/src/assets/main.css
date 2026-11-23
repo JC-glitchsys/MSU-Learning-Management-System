@@ -129,6 +129,20 @@ main .lms-page-card [class*="divide-y"] > :not([hidden]) ~ :not([hidden]),
 .lms-page-card .subject-card-banner h2,
 .lms-page-card .subject-card-banner h3 { font-size: 20px !important; line-height: 26px !important; }
 .lms-page-card .subject-card-banner p { font-size: 14px !important; line-height: 20px !important; }
+.lms-page-card .subject-card-banner--calculator { background: linear-gradient(120deg, #EF4765 0%, #F86A7E 100%) !important; }
+.lms-page-card .subject-card-banner--laptop { background: linear-gradient(120deg, #F8F9FA 0%, #E7E9EE 100%) !important; }
+.lms-page-card .subject-card-banner--notebook { background: linear-gradient(120deg, #405DF5 0%, #2672EF 100%) !important; }
+.lms-page-card .subject-card-banner--calculator h2,
+.lms-page-card .subject-card-banner--calculator h3,
+.lms-page-card .subject-card-banner--calculator p,
+.lms-page-card .subject-card-banner--notebook h2,
+.lms-page-card .subject-card-banner--notebook h3,
+.lms-page-card .subject-card-banner--notebook p { color: #FFFFFF !important; }
+.lms-page-card .subject-card-banner--calculator p,
+.lms-page-card .subject-card-banner--notebook p { color: rgb(255 255 255 / 82%) !important; }
+.lms-page-card .subject-card-banner--laptop h2,
+.lms-page-card .subject-card-banner--laptop h3 { color: #202124 !important; }
+.lms-page-card .subject-card-banner--laptop p { color: #5F6368 !important; }
 .lms-page-card h1 + p,
 .lms-page-card h2 + p {
   color: var(--lms-muted) !important;

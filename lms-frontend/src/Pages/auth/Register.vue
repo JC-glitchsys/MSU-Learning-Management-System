@@ -66,15 +66,7 @@
           />
         </div>
 
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Program</label>
-          <input
-            v-model="form.program"
-            type="text"
-            placeholder="BS Information Technology"
-            class="w-full border border-[#DADCE0] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
-          />
-        </div>
+        <AcademicProgramSelect v-model="academicPath" />
 
         <div>
           <label class="block text-sm font-medium mb-1.5">Year Level</label>
@@ -137,6 +129,7 @@ import { useRouter } from 'vue-router'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/config.js'
+import AcademicProgramSelect from '@/components/common/AcademicProgramSelect.vue'
 
 const router = useRouter()
 
@@ -150,11 +143,11 @@ const form = reactive({
   email: '',
   password: '',
   studentNumber: '',
-  program: '',
   yearLevel: '',
   department: '',
   specialization: '',
 })
+const academicPath = ref({ college: '', department: '', program: '' })
 
 const getFirebaseErrorMessage = (code) => {
   if (code === 'auth/email-already-in-use') return 'This email is already registered.'
@@ -177,7 +170,9 @@ const buildStudentProfile = (uid) => ({
   name: form.name.trim(),
   email: form.email.trim(),
   studentNumber: form.studentNumber.trim(),
-  program: form.program.trim(),
+  college: academicPath.value.college,
+  department: academicPath.value.department,
+  program: academicPath.value.program,
   yearLevel: form.yearLevel.trim(),
   role: 'student',
   createdAt: serverTimestamp(),
@@ -210,6 +205,10 @@ const validateForm = () => {
 
   if (form.role === 'instructor' && !form.department.trim()) {
     return 'Department is required for instructor accounts.'
+  }
+
+  if (form.role === 'student' && (!academicPath.value.college || !academicPath.value.department || !academicPath.value.program)) {
+    return 'Select a college, department, and academic program.'
   }
 
   return ''

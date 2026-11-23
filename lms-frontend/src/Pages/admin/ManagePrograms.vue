@@ -85,8 +85,9 @@
         <div
           class="hidden grid-cols-12 gap-4 bg-[#F8F9FA] px-6 py-4 text-xs font-black uppercase tracking-wider text-[#5F6368] lg:grid"
         >
-          <div class="col-span-3">Program Code</div>
-          <div class="col-span-4">Program Name</div>
+          <div class="col-span-2">Program Code</div>
+          <div class="col-span-3">Program Name</div>
+          <div class="col-span-2">College</div>
           <div class="col-span-3">Department</div>
           <div class="col-span-2 text-right">Actions</div>
         </div>
@@ -97,7 +98,7 @@
           class="grid grid-cols-1 gap-4 px-6 py-5 transition hover:bg-[#F8F9FA] lg:grid-cols-12 lg:items-center"
         >
           <!-- Program Code -->
-          <div class="min-w-0 lg:col-span-3">
+          <div class="min-w-0 lg:col-span-2">
             <div class="flex items-center gap-3">
               <div
                 class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5C0000] text-xs font-black text-white ring-2 ring-[#FDF0F0]/40"
@@ -117,7 +118,7 @@
           </div>
 
           <!-- Program Name -->
-          <div class="min-w-0 lg:col-span-4">
+          <div class="min-w-0 lg:col-span-3">
             <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368] lg:hidden">
               Program Name
             </p>
@@ -131,19 +132,29 @@
             </p>
           </div>
 
-          <!-- Department -->
-          <div class="min-w-0 lg:col-span-3">
+          <!-- College -->
+          <div class="min-w-0 lg:col-span-2">
             <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368] lg:hidden">
-              Department
+              College
             </p>
 
             <span
               class="mt-1 inline-flex max-w-full rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-xs font-bold text-[#800000] lg:mt-0"
             >
               <span class="truncate">
-                {{ program.department || 'Not specified' }}
+                {{ program.college || program.department || 'Not specified' }}
               </span>
             </span>
+          </div>
+
+          <!-- Department -->
+          <div class="min-w-0 lg:col-span-3">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368] lg:hidden">
+              Department
+            </p>
+            <p class="mt-1 truncate text-sm font-medium text-[#202124] lg:mt-0">
+              {{ program.college ? (program.department || 'Not specified') : 'Needs department setup' }}
+            </p>
           </div>
 
           <!-- Actions -->
@@ -214,13 +225,26 @@
 
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
-                Department / College
+                College
+              </label>
+              <input
+                v-model="formData.college"
+                required
+                type="text"
+                placeholder="e.g. College of Information and Computing Sciences"
+                class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
+                Department
               </label>
               <input
                 v-model="formData.department"
                 required
                 type="text"
-                placeholder="e.g. CICS"
+                placeholder="e.g. Department of Computer Science"
                 class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               />
             </div>
@@ -319,6 +343,7 @@ const archivedCount = computed(() => programs.value.filter((item) => item.archiv
 const formData = ref({
   programCode: '',
   programName: '',
+  college: '',
   department: '',
   description: '',
 })
@@ -333,6 +358,7 @@ const filteredPrograms = computed(() => {
     return (
       program.programCode?.toLowerCase().includes(queryText) ||
       program.programName?.toLowerCase().includes(queryText) ||
+      program.college?.toLowerCase().includes(queryText) ||
       program.department?.toLowerCase().includes(queryText) ||
       program.description?.toLowerCase().includes(queryText)
     )
@@ -366,7 +392,8 @@ function openModal(program = null) {
     formData.value = {
       programCode: program.programCode || '',
       programName: program.programName || '',
-      department: program.department || '',
+      college: program.college || program.department || '',
+      department: program.college ? program.department || '' : '',
       description: program.description || '',
     }
   } else {
@@ -376,6 +403,7 @@ function openModal(program = null) {
     formData.value = {
       programCode: '',
       programName: '',
+      college: '',
       department: '',
       description: '',
     }
@@ -394,6 +422,7 @@ async function saveProgram() {
   const payload = {
     programCode: formData.value.programCode.trim(),
     programName: formData.value.programName.trim(),
+    college: formData.value.college.trim(),
     department: formData.value.department.trim(),
     description: formData.value.description.trim(),
     updatedAt: serverTimestamp(),

@@ -22,11 +22,12 @@
 
       <!-- Class Banner -->
       <section
-        class="relative min-h-[320px] overflow-hidden rounded-2xl border border-[#E7E9EE] bg-white p-6 text-[#202124] md:p-8"
+        class="subject-card-banner relative min-h-[320px] overflow-hidden rounded-2xl border border-[#E7E9EE] p-6 text-[#202124] md:p-8"
+        :class="`subject-card-banner--${getSubjectArtworkType(subject)}`"
       >
-        <img :src="subjectBanner" alt="" class="absolute inset-0 h-full w-full rounded-2xl object-cover object-center" />
+        <StudyToolsArtwork :subject="subject" />
 
-        <div class="relative z-10 flex min-h-[272px] max-w-full flex-col justify-center sm:max-w-[58%]">
+        <div class="relative z-10 flex min-h-[272px] max-w-[52%] flex-col justify-center">
           <p class="text-sm font-medium text-[#5C0000]">
             {{ subject.code || 'Subject' }}
           </p>
@@ -342,7 +343,8 @@
 
 <script setup>
 import SkeletonLoader from '@/components/common/SkeletonLoader.vue'
-import subjectBanner from '@/assets/banner.png'
+import StudyToolsArtwork from '@/components/common/StudyToolsArtwork.vue'
+import { getSubjectArtworkType } from '@/utils/subjectArtwork.js'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'

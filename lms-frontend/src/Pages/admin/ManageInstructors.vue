@@ -254,13 +254,21 @@
               <label class="text-[11px] font-bold uppercase tracking-wider text-[#202124]">
                 Department
               </label>
-              <input
+              <select
                 v-model="formData.department"
                 required
-                type="text"
-                placeholder="e.g. College of Information and Computing Sciences"
                 class="w-full rounded-[12px] border border-[#DADCE0] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
-              />
+              >
+                <option disabled value="">
+                  {{ departmentsLoading ? 'Loading departments...' : departmentOptions.length ? 'Select a department' : 'No departments available' }}
+                </option>
+                <option v-for="department in departmentOptions" :key="department" :value="department">
+                  {{ department }}
+                </option>
+              </select>
+              <p v-if="!departmentsLoading && departmentOptions.length === 0" class="text-xs text-[#5F6368]">
+                Add a department to a program first, or edit an instructor with an existing department.
+              </p>
             </div>
 
             <div class="space-y-1.5 sm:col-span-2">
@@ -331,6 +339,8 @@ import {
 } from 'lucide-vue-next'
 
 const instructors = ref([])
+const departments = ref([])
+const departmentsLoading = ref(true)
 const loading = ref(true)
 const saving = ref(false)
 const error = ref('')
@@ -351,6 +361,25 @@ const formData = ref({
   department: '',
   specialization: '',
   contact: '',
+})
+
+const departmentOptions = computed(() => {
+  const values = [
+    ...departments.value,
+    ...instructors.value.map((instructor) => instructor.department),
+    formData.value.department,
+  ]
+  const unique = new Map()
+
+  values
+    .filter((department) => typeof department === 'string' && department.trim())
+    .forEach((department) => {
+      const value = department.trim()
+      const key = value.toLocaleLowerCase()
+      if (!unique.has(key)) unique.set(key, value)
+    })
+
+  return [...unique.values()].sort((a, b) => a.localeCompare(b))
 })
 
 const filteredInstructors = computed(() => {
@@ -391,6 +420,21 @@ async function fetchInstructors() {
     error.value = 'Failed to load instructors. Please check Firestore permissions.'
   } finally {
     loading.value = false
+  }
+}
+
+async function fetchDepartments() {
+  departmentsLoading.value = true
+
+  try {
+    const snapshot = await getDocs(collection(db, 'programs'))
+    departments.value = snapshot.docs
+      .map((document) => document.data().department)
+      .filter((department) => typeof department === 'string' && department.trim())
+  } catch (err) {
+    console.error('Fetch departments error:', err)
+  } finally {
+    departmentsLoading.value = false
   }
 }
 
@@ -490,7 +534,10 @@ function getInitials(name) {
     .slice(0, 2)
 }
 
-onMounted(fetchInstructors)
+onMounted(() => {
+  fetchInstructors()
+  fetchDepartments()
+})
 </script>
 
 <style scoped>
