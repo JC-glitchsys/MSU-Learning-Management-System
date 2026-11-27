@@ -1,8 +1,12 @@
 <template>
-  <div class="mx-auto max-w-5xl space-y-6 animate-fade-in">
-    <header>
-      <h1 class="mt-1 text-3xl font-semibold leading-[38px] text-[#202124]">Edit profile</h1>
-      <p class="mt-2 text-sm leading-5 text-[#737983]">Update your account details and profile photo.</p>
+  <div class="mx-auto max-w-6xl space-y-6 animate-fade-in">
+    <header class="flex flex-col gap-3 border-b border-[#E7E9EE] pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#800000]">Account settings</p>
+        <h1 class="mt-1 text-2xl font-semibold leading-8 text-[#202124]">Your profile</h1>
+        <p class="mt-1 text-sm leading-5 text-[#737983]">Manage your personal details and profile photo.</p>
+      </div>
+      <span class="w-fit rounded-full border border-[#E7C5C5] bg-[#FDF0F0] px-3 py-1 text-xs font-medium text-[#800000]">{{ roleLabel }}</span>
     </header>
 
     <p v-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
@@ -11,33 +15,47 @@
 
     <SkeletonLoader v-if="loading" variant="profile" card />
 
-    <div v-else class="grid grid-cols-1 items-start gap-5 xl:grid-cols-[260px_minmax(0,740px)] xl:justify-center">
-      <section class="rounded-2xl border border-[#E7E9EE] bg-white p-6 text-center">
-        <div class="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-[#FDF0F0] text-2xl font-semibold text-[#800000] ring-2 ring-[#F2D5D5]">
+    <div v-else class="grid grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <section class="overflow-hidden rounded-2xl border border-[#E7E9EE] bg-white shadow-sm">
+        <div class="h-20 bg-gradient-to-r from-[#800000] to-[#A33B3B]"></div>
+        <div class="px-6 pb-6 text-center">
+        <div class="mx-auto -mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-[#FDF0F0] text-2xl font-semibold text-[#800000] shadow-sm">
           <img v-if="avatarPreview" :src="avatarPreview" alt="Profile photo preview" class="h-full w-full object-cover" />
           <span v-else>{{ initials }}</span>
         </div>
-        <h2 class="mt-4 truncate text-base font-semibold text-[#202124]">{{ form.name || 'Your name' }}</h2>
-        <p class="mt-1 text-sm text-[#737983]">{{ roleLabel }}</p>
-        <p class="mt-1 break-all text-xs text-[#8A8F98]">{{ form.email }}</p>
+        <h2 class="mt-3 truncate text-base font-semibold text-[#202124]">{{ form.name || 'Your name' }}</h2>
+        <p class="mt-1 break-all text-sm text-[#737983]">{{ form.email }}</p>
 
-        <div class="mt-5 flex flex-col gap-2">
-          <label class="inline-flex cursor-pointer items-center justify-center rounded-lg border border-[#E7E9EE] px-4 py-2.5 text-sm font-medium text-[#4B515B] transition hover:border-[#D8B7B7] hover:bg-[#FDF8F8] hover:text-[#800000]">
+        <div class="mt-5 rounded-xl border border-dashed border-[#D8B7B7] bg-[#FDF8F8] p-4">
+          <label class="profile-upload-button inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#5C0000] has-[:disabled]:cursor-wait has-[:disabled]:opacity-60">
+            <Upload v-if="!isCompressing" class="h-4 w-4" />
+            <LoaderCircle v-else class="h-4 w-4 animate-spin" />
             {{ isCompressing ? 'Compressing photo…' : avatarPreview ? 'Change photo' : 'Add photo' }}
             <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp" :disabled="isCompressing" class="sr-only" @change="handleImageChange" />
           </label>
-          <button v-if="avatarPreview" type="button" class="rounded-lg px-4 py-2 text-sm text-[#737983] hover:bg-[#F7F7F8]" @click="removePhoto">
+          <button v-if="avatarPreview && !isUploading" type="button" class="ml-2 rounded-lg px-3 py-2 text-sm text-[#737983] hover:bg-white hover:text-[#800000]" @click="removePhoto">
             Remove photo
           </button>
-          <p class="text-xs leading-4 text-[#8A8F98]">PNG, JPG, or WebP · Maximum 3 MB. Photos are compressed before upload.</p>
+          <p class="mt-3 text-xs leading-4 text-[#8A8F98]">PNG, JPG, or WebP · Maximum 3 MB</p>
+          <div v-if="isUploading" class="mt-4 flex items-center gap-3 rounded-lg border border-[#E7E9EE] bg-white p-3 text-left" role="status" aria-live="polite">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#FDF0F0] text-[#800000]"><LoaderCircle class="h-4 w-4 animate-spin" /></span>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-xs font-medium text-[#202124]">{{ uploadFileName }}</p>
+              <p class="mt-0.5 text-xs text-[#737983]">Uploading · {{ uploadProgress }}%</p>
+              <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-[#F0F1F3]">
+                <div class="h-full rounded-full bg-[#800000] transition-[width] duration-200" :style="{ width: `${uploadProgress}%` }"></div>
+              </div>
+            </div>
+          </div>
           <p v-if="imageError" class="text-xs text-red-700" role="alert">{{ imageError }}</p>
+        </div>
         </div>
       </section>
 
-      <form class="rounded-2xl border border-[#E7E9EE] bg-white p-6" @submit.prevent="saveProfile">
+      <form class="rounded-2xl border border-[#E7E9EE] bg-white p-6 shadow-sm sm:p-8" @submit.prevent="saveProfile">
         <div class="mb-6 border-b border-[#ECEEF1] pb-4">
           <h2 class="text-base font-semibold text-[#202124]">Personal information</h2>
-          <p class="mt-1 text-sm text-[#737983]">Your email is managed by your sign-in account.</p>
+          <p class="mt-1 text-sm text-[#737983]">Keep your account details up to date.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
@@ -89,14 +107,8 @@
           </label>
         </div>
 
-        <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[#ECEEF1] pt-5">
-          <div v-if="saving" class="flex items-center gap-2 text-sm text-[#737983]" role="status" aria-live="polite">
-            <LoaderCircle class="h-4 w-4 animate-spin text-[#800000]" />
-            <span>{{ savingMessage }}</span>
-          </div>
-          <span v-else></span>
-          <button type="submit" :disabled="saving" :aria-busy="saving" class="rounded-lg bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60">
-            <LoaderCircle v-if="saving" class="mr-2 inline-block h-4 w-4 animate-spin align-[-3px]" />
+        <div class="mt-8 flex justify-end gap-4 border-t border-[#ECEEF1] pt-5">
+          <button type="submit" :disabled="saving" :aria-busy="saving" class="inline-flex items-center rounded-lg bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60">
             {{ saving ? 'Saving...' : 'Save changes' }}
           </button>
         </div>
@@ -112,16 +124,18 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { onAuthStateChanged, updateProfile } from 'firebase/auth'
 import { doc, getDoc, serverTimestamp, writeBatch } from 'firebase/firestore'
-import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
-import { LoaderCircle } from 'lucide-vue-next'
+import { getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage'
+import { LoaderCircle, Upload } from 'lucide-vue-next'
 import { auth, db, storage } from '@/firebase/config.js'
 import { showResult } from '@/utils/resultMessage'
 
 const router = useRouter()
 const loading = ref(true)
 const saving = ref(false)
-const savingMessage = ref('Saving profile...')
 const isCompressing = ref(false)
+const isUploading = ref(false)
+const uploadProgress = ref(0)
+const uploadFileName = ref('')
 const error = ref('')
 const imageError = ref('')
 const fileInput = ref(null)
@@ -285,14 +299,25 @@ async function saveProfile() {
   try {
     let nextPhotoURL = shouldRemovePhoto.value ? '' : photoURL.value
     if (selectedImage.value) {
-      savingMessage.value = 'Uploading photo...'
       const extension = selectedImage.value.type.split('/')[1].replace('jpeg', 'jpg')
       const destination = storageRef(storage, `profile-images/${uid.value}/${Date.now()}.${extension}`)
-      const uploaded = await uploadBytes(destination, selectedImage.value, { contentType: selectedImage.value.type })
-      nextPhotoURL = await getDownloadURL(uploaded.ref)
+      const uploadTask = uploadBytesResumable(destination, selectedImage.value, { contentType: selectedImage.value.type })
+      isUploading.value = true
+      uploadFileName.value = selectedImage.value.name
+      uploadProgress.value = 0
+      nextPhotoURL = await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed', (snapshot) => {
+          uploadProgress.value = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        }, reject, async () => {
+          try {
+            resolve(await getDownloadURL(uploadTask.snapshot.ref))
+          } catch (downloadError) {
+            reject(downloadError)
+          }
+        })
+      })
+      isUploading.value = false
     }
-    savingMessage.value = 'Saving profile...'
-
     const currentUser = auth.currentUser
 
     const commonData = {
@@ -353,6 +378,7 @@ async function saveProfile() {
       : 'Unable to save your profile. Please try again.'
     showResult('Could Not Save Profile', error.value, 'error')
   } finally {
+    isUploading.value = false
     saving.value = false
   }
 }
@@ -360,3 +386,9 @@ async function saveProfile() {
 onMounted(fetchProfile)
 onBeforeUnmount(() => { if (previewURL.value) URL.revokeObjectURL(previewURL.value) })
 </script>
+
+<style scoped>
+.profile-upload-button {
+  color: #fff !important;
+}
+</style>

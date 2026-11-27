@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 animate-fade-in max-w-4xl mx-auto">
+  <div class="space-y-8 animate-fade-in">
     <div>
       <h2 class="text-3xl md:text-4xl font-bold text-[#800000] tracking-tight">Course Modules Workbench</h2>
       <p class="text-[#5F6368] mt-1 font-medium text-sm">Upload and manage reading assets assigned across your streams.</p>

@@ -1,17 +1,18 @@
 <template>
-  <div class="login-page flex min-h-screen items-center justify-center bg-[#F4F5F7] px-4 py-8 sm:px-8">
-    <main class="login-shell grid w-full max-w-5xl gap-5 md:grid-cols-2">
-      <section class="login-form-card flex min-h-[620px] w-full items-center justify-center px-6 py-10 sm:px-12 sm:py-14">
-        <div class="mx-auto w-full max-w-sm">
-          <div class="mb-8 text-center">
-            <h2 class="text-2xl font-medium tracking-tight text-[#202124]">Welcome back</h2>
-            <p class="mt-2 text-sm leading-5 text-[#667085]">Sign in with your MSU account.</p>
-          </div>
+  <div class="login-page min-h-svh bg-white">
+    <main class="login-shell grid w-full lg:grid-cols-2">
+      <section class="login-form-card flex w-full flex-col gap-4 p-6 md:p-10">
+        <div class="flex flex-1 items-center justify-center">
+          <div class="mx-auto w-full max-w-xs">
+            <div class="mb-8 space-y-1 text-center">
+              <h2 class="text-2xl font-semibold tracking-tight text-[#202124]">Welcome back</h2>
+              <p class="text-sm leading-5 text-[#667085]">Sign in with your MSU account.</p>
+            </div>
 
-          <form class="space-y-5" @submit.prevent="handleLogin">
+            <form class="space-y-5" @submit.prevent="handleLogin">
             <div class="space-y-1.5">
               <label class="block text-sm font-medium text-[#343A40]">Email</label>
-              <div class="flex h-12 items-center gap-3 rounded-lg border border-[#E2E5E9] px-3.5 transition focus-within:border-[#9B4B4B]">
+              <div class="flex h-10 items-center gap-3 rounded-md border border-[#E2E5E9] px-3 transition focus-within:border-[#9B4B4B] focus-within:ring-2 focus-within:ring-[#800000]/10">
                 <MailIcon class="h-4 w-4 shrink-0 text-[#98A2B3]" />
                 <input
                   v-model="form.email"
@@ -26,11 +27,11 @@
             <div class="space-y-1.5">
               <div class="flex items-center justify-between">
                 <label class="block text-sm font-medium text-[#343A40]">Password</label>
-                <button type="button" @click="handleForgotPassword" :disabled="isResetting" class="text-xs font-medium text-[#800000] transition hover:text-[#5C0000] disabled:opacity-60">
-                  {{ isResetting ? 'Sending link...' : 'Forgot password?' }}
-                </button>
+                <router-link to="/forgot-password" class="text-xs font-medium text-[#800000] transition hover:text-[#5C0000]">
+                  Forgot password?
+                </router-link>
               </div>
-              <div class="flex h-12 items-center gap-3 rounded-lg border border-[#E2E5E9] px-3.5 transition focus-within:border-[#9B4B4B]">
+              <div class="flex h-10 items-center gap-3 rounded-md border border-[#E2E5E9] px-3 transition focus-within:border-[#9B4B4B] focus-within:ring-2 focus-within:ring-[#800000]/10">
                 <LockIcon class="h-4 w-4 shrink-0 text-[#98A2B3]" />
                 <input
                   v-model="form.password"
@@ -54,27 +55,24 @@
             <p v-if="error" class="rounded-lg border border-[#F2D6D6] bg-[#FFF8F8] px-3.5 py-3 text-sm text-[#B3261E]" role="alert">
               {{ error }}
             </p>
-            <p v-if="resetMessage" class="rounded-lg bg-[#F4F7F4] px-3.5 py-3 text-sm text-[#336B45]" role="status" aria-live="polite">
-              {{ resetMessage }}
-            </p>
-
             <button
               type="submit"
               :disabled="isLoading"
-              class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#800000] px-4 text-sm font-medium text-white transition-colors hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[#800000] px-4 text-sm font-medium text-white transition-colors hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <LogInIcon class="h-4 w-4" />
               {{ isLoading ? 'Signing in...' : 'Sign In' }}
             </button>
-          </form>
+            </form>
 
-          <p class="mt-8 border-t border-[#F0F1F3] pt-5 text-center text-xs text-[#98A2B3]">
-            MSU Learn · {{ new Date().getFullYear() }}
-          </p>
+            <p class="mt-8 border-t border-[#F0F1F3] pt-5 text-center text-xs text-[#98A2B3]">
+              MSU Learn · {{ new Date().getFullYear() }}
+            </p>
+          </div>
         </div>
       </section>
 
-      <aside class="login-brand flex flex-col justify-between rounded-2xl bg-[#800000] p-8 text-white sm:p-10">
+      <aside class="login-brand relative hidden flex-col justify-between overflow-hidden bg-[#800000] p-12 text-white lg:flex lg:p-16">
         <img :src="msuLogo" alt="MSU Learn" class="h-auto w-56 max-w-full object-contain" />
         <div class="my-10 max-w-sm md:my-0">
           <h1 class="text-3xl font-medium leading-tight tracking-tight">Learning starts here.</h1>
@@ -89,7 +87,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/config.js'
 import msuLogo from '@/assets/logologin.png'
@@ -105,38 +103,12 @@ const router = useRouter()
 
 const error = ref('')
 const isLoading = ref(false)
-const isResetting = ref(false)
-const resetMessage = ref('')
 const showPassword = ref(false)
 
 const form = ref({
   email: '',
   password: '',
 })
-
-async function handleForgotPassword() {
-  error.value = ''
-  resetMessage.value = ''
-  const email = form.value.email.trim()
-  if (!email) {
-    error.value = 'Enter your MSU email first.'
-    return
-  }
-
-  isResetting.value = true
-  try {
-    await sendPasswordResetEmail(auth, email)
-  } catch (err) {
-    if (err.code === 'auth/invalid-email') {
-      error.value = 'Please enter a valid email address.'
-      isResetting.value = false
-      return
-    }
-  }
-
-  resetMessage.value = 'If an account exists for this email, a password reset link is on the way.'
-  isResetting.value = false
-}
 
 function normalizeRole(role) {
   return String(role || '')

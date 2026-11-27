@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 animate-fade-in">
+  <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
       class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"

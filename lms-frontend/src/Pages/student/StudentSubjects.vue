@@ -1,28 +1,28 @@
 <template>
-  <div class="space-y-8 animate-fade-in">
-    <div>
-      <h2 class="text-3xl md:text-4xl font-bold text-[#800000] tracking-tight">My Enrolled Classes</h2>
-      <p class="text-[#5F6368] mt-2 font-medium text-sm">Select an active class card to open the classroom workspace stream.</p>
+  <div class="space-y-6 animate-fade-in">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-semibold tracking-tight text-[#202124]">My Enrolled Classes</h1>
+      <p class="text-sm text-[#667085]">Select an active class card to open the classroom workspace stream.</p>
     </div>
 
     <SkeletonLoader v-if="loading" variant="cards" card />
 
-    <div v-else-if="error" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm text-[#D93025] font-bold">
+    <div v-else-if="error" class="rounded-lg border border-[#E7E9EE] bg-white p-8 text-center text-sm font-medium text-[#D93025]">
       {{ error }}
     </div>
 
-    <div v-else-if="enrolledSubjects.length === 0" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm text-[#5F6368]">
+    <div v-else-if="enrolledSubjects.length === 0" class="rounded-lg border border-dashed border-[#DADCE0] bg-white p-8 text-center text-[#5F6368]">
       <p class="text-4xl">📚</p>
-      <p class="text-sm font-bold mt-2">You are not enrolled in any subjects yet.</p>
-      <p class="text-xs mt-1">Please coordinate with your system registrar or program adviser.</p>
+      <p class="mt-2 text-sm font-semibold text-[#202124]">You are not enrolled in any subjects yet.</p>
+      <p class="mt-1 text-sm">Please coordinate with your system registrar or program adviser.</p>
     </div>
 
-    <div v-else class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       <div 
         v-for="sub in enrolledSubjects" 
         :key="sub.id"
         @click="openSubjectStream(sub.subjectId)"
-        class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer group flex flex-col justify-between"
+        class="group flex cursor-pointer flex-col justify-between overflow-hidden rounded-lg border border-[#E7E9EE] bg-white transition-colors duration-200 hover:border-[#DADCE0]"
       >
         <div class="subject-card-banner relative h-40 shrink-0 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(sub)}`">
           <StudyToolsArtwork :subject="sub" />
@@ -32,10 +32,10 @@
           </div>
         </div>
 
-        <div class="p-5 space-y-4 bg-white flex-1 flex flex-col justify-between">
+        <div class="flex flex-1 flex-col justify-between space-y-4 bg-white p-4">
           <div class="space-y-1">
-            <p class="truncate text-xs font-medium text-[#202124]">{{ sub.instructorName || 'Unassigned Faculty' }}</p>
-            <p v-if="sub.section" class="text-xs text-[#5F6368]">{{ sub.section }}</p>
+            <p class="truncate text-sm font-medium text-[#202124]">{{ sub.instructorName || 'Unassigned Faculty' }}</p>
+            <p v-if="sub.section" class="text-sm text-[#667085]">{{ sub.section }}</p>
           </div>
         </div>
       </div>

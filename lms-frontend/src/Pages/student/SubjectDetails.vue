@@ -145,7 +145,7 @@
       </section>
 
       <!-- Classwork -->
-      <section v-if="currentTab === 'classwork'" class="mx-auto max-w-4xl space-y-6">
+      <section v-if="currentTab === 'classwork'" class="space-y-6">
         <!-- Modules -->
         <div class="rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
           <div class="border-b border-[#DADCE0] px-6 py-5">
@@ -233,7 +233,7 @@
       </section>
 
       <!-- People -->
-      <section v-if="currentTab === 'people'" class="mx-auto max-w-3xl space-y-6">
+      <section v-if="currentTab === 'people'" class="space-y-6">
         <div class="rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm">
           <h2 class="border-b border-[#DADCE0] pb-3 text-xl font-black text-[#800000]">
             Instructor
@@ -285,7 +285,7 @@
       </section>
 
       <!-- Grades -->
-      <section v-if="currentTab === 'grades'" class="mx-auto max-w-4xl">
+      <section v-if="currentTab === 'grades'">
         <div class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm">
           <div class="flex items-center justify-between border-b border-[#DADCE0] bg-[#F8F9FA] px-6 py-4">
             <div>

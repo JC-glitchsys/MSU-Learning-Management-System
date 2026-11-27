@@ -8,6 +8,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 
 // Auth Pages
 import Login from '@/Pages/auth/Login.vue'
+import ForgotPassword from '@/Pages/auth/ForgotPassword.vue'
 
 // Admin Pages
 import AdminDashboard from '@/Pages/admin/AdminDashboard.vue'
@@ -46,6 +47,11 @@ const routes = [
         path: 'login',
         name: 'Login',
         component: Login,
+      },
+      {
+        path: 'forgot-password',
+        name: 'ForgotPassword',
+        component: ForgotPassword,
       },
     ],
   },

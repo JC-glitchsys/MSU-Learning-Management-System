@@ -1,23 +1,23 @@
 <template>
-  <div class="space-y-8 animate-fade-in">
-    <div>
-      <h2 class="text-3xl md:text-4xl font-bold text-[#800000] tracking-tight">My Handled Subjects</h2>
-      <p class="text-[#5F6368] mt-2 font-medium text-sm">Access your assigned classroom streams and operations panels.</p>
+  <div class="space-y-6 animate-fade-in">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-semibold tracking-tight text-[#202124]">My Handled Subjects</h1>
+      <p class="text-sm text-[#667085]">Access your assigned classroom streams and operations panels.</p>
     </div>
 
     <SkeletonLoader v-if="loading" variant="cards" card />
 
-    <div v-else-if="error" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm text-[#D93025] font-bold">
+    <div v-else-if="error" class="rounded-lg border border-[#E7E9EE] bg-white p-8 text-center text-sm font-medium text-[#D93025]">
       {{ error }}
     </div>
 
-    <div v-else-if="assignedSubjects.length === 0" class="p-12 text-center bg-white rounded-[28px] border border-[#DADCE0] shadow-sm text-[#5F6368]">
-      <p class="text-sm font-bold mt-2">No assigned subjects found.</p>
-      <p class="text-xs mt-0.5">Please contact the System Admin to allocate your curriculum sheets.</p>
+    <div v-else-if="assignedSubjects.length === 0" class="rounded-lg border border-dashed border-[#DADCE0] bg-white p-8 text-center text-[#5F6368]">
+      <p class="text-sm font-semibold text-[#202124]">No assigned subjects found.</p>
+      <p class="mt-1 text-sm">Please contact the System Admin to allocate your curriculum sheets.</p>
     </div>
 
-    <div v-else class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-      <div v-for="subj in assignedSubjects" :key="subj.id" class="overflow-hidden rounded-[24px] border border-[#DADCE0] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md flex flex-col justify-between group">
+    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div v-for="subj in assignedSubjects" :key="subj.id" class="group flex flex-col justify-between overflow-hidden rounded-lg border border-[#E7E9EE] bg-white transition-colors duration-200 hover:border-[#DADCE0]">
         
         <div class="subject-card-banner relative h-40 overflow-hidden p-5 text-[#800000]" :class="`subject-card-banner--${getSubjectArtworkType(subj)}`">
           <StudyToolsArtwork :subject="subj" />
@@ -28,11 +28,11 @@
           </div>
         </div>
 
-        <div class="p-5 space-y-4 bg-white flex-1 flex flex-col justify-between">
+        <div class="flex flex-1 flex-col justify-between space-y-4 bg-white p-4">
           <div class="grid grid-cols-3 gap-2 text-center">
-            <router-link to="/instructor/upload-module" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Modules</router-link>
-            <router-link to="/instructor/create-activity" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Activity</router-link>
-            <router-link to="/instructor/submissions" class="px-2 py-2 rounded-xl bg-[#F8F9FA] border border-[#DADCE0] text-[10px] font-bold text-[#800000] hover:bg-[#FDF0F0] transition">Review</router-link>
+            <router-link to="/instructor/upload-module" class="rounded-md border border-[#E7E9EE] bg-white px-2 py-2 text-xs font-medium text-[#800000] transition hover:bg-[#FDF0F0]">Modules</router-link>
+            <router-link to="/instructor/create-activity" class="rounded-md border border-[#E7E9EE] bg-white px-2 py-2 text-xs font-medium text-[#800000] transition hover:bg-[#FDF0F0]">Activity</router-link>
+            <router-link to="/instructor/submissions" class="rounded-md border border-[#E7E9EE] bg-white px-2 py-2 text-xs font-medium text-[#800000] transition hover:bg-[#FDF0F0]">Review</router-link>
           </div>
         </div>
       </div>

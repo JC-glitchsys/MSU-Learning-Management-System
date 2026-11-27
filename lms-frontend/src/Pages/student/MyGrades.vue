@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="space-y-4 max-w-4xl">
+      <div class="space-y-4">
         <h3 class="text-sm font-bold text-[#202124] uppercase tracking-wider border-b border-[#DADCE0] pb-2">Evaluated Portfolio Items Sheets</h3>
         
         <div v-if="submissions.length === 0" class="p-8 text-center text-xs text-[#5F6368] bg-white border border-[#DADCE0] rounded-2xl">No history submission nodes tracked in this account configuration.</div>

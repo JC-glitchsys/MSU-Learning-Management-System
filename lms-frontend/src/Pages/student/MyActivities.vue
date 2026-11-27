@@ -10,7 +10,7 @@
       🎉 No active classwork requirements found across your enrolled streams.
     </div>
 
-    <div v-else class="grid grid-cols-1 gap-5 max-w-4xl">
+    <div v-else class="grid grid-cols-1 gap-5">
       <div v-for="act in activities" :key="act.id" class="bg-white rounded-[24px] border border-[#DADCE0] p-5 shadow-sm space-y-4">
         
         <div class="flex flex-wrap items-start justify-between gap-3 border-b border-[#DADCE0]/50 pb-3">

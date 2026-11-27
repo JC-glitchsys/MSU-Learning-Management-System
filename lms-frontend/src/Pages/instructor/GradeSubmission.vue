@@ -2,35 +2,32 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="overflow-hidden rounded-[28px] border border-[#DADCE0] bg-white shadow-sm"
+      class="overflow-hidden rounded-lg border border-[#E7E9EE] bg-white"
     >
       <div
-        class="relative bg-gradient-to-r from-[#800000] via-[#800000] to-[#FDF0F0] p-6 text-white md:p-7"
+        class="relative bg-[#F8F9FA] p-6 text-[#202124] md:p-7"
       >
-        <div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10"></div>
-        <div class="absolute -bottom-12 left-10 h-32 w-32 rounded-full bg-black/10"></div>
-
         <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <button
               @click="backToQueue"
-              class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-white ring-1 ring-white/20 transition hover:bg-white/20"
+              class="mb-4 inline-flex items-center gap-2 rounded-md border border-[#E7E9EE] bg-white px-3 py-2 text-sm font-medium text-[#5F6368] transition hover:bg-[#F3F4F6]"
             >
               <ArrowLeftIcon class="h-4 w-4" />
               Back to Submissions
             </button>
 
-            <h1 class="mt-2 text-2xl font-black tracking-tight md:text-3xl">
+            <h1 class="mt-2 text-2xl font-semibold tracking-tight">
               Review Student Work
             </h1>
 
-            <p class="mt-1 max-w-2xl text-sm font-medium text-white/80">
+            <p class="mt-1 max-w-2xl text-sm text-[#667085]">
               Check the submitted answer, review attachments, then provide grade and feedback.
             </p>
           </div>
 
           <div
-            class="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-xs font-bold text-white backdrop-blur"
+            class="inline-flex w-fit items-center gap-2 rounded-md border border-[#E7E9EE] bg-white px-3 py-2 text-sm font-medium text-[#800000]"
           >
             <ClipboardCheckIcon class="h-4 w-4" />
             Instructor Evaluation
@@ -45,7 +42,7 @@
     <!-- Error / Empty -->
     <section
       v-else-if="error || !submission"
-      class="rounded-[28px] border border-[#DADCE0] bg-white p-8 text-center shadow-sm"
+      class="rounded-lg border border-[#E7E9EE] bg-white p-8 text-center"
     >
       <AlertCircleIcon class="mx-auto h-10 w-10 text-[#D93025]" />
       <h2 class="mt-3 text-lg font-black text-[#D93025]">
@@ -57,7 +54,7 @@
 
       <button
         @click="backToQueue"
-        class="mt-5 rounded-full bg-[#800000] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#5C0000]"
+        class="mt-5 rounded-md bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#5C0000]"
       >
         Return to Submissions
       </button>
@@ -66,60 +63,60 @@
     <!-- Main Content -->
     <section v-else class="grid grid-cols-1 gap-6 xl:grid-cols-12">
       <!-- Submission Details -->
-      <div class="space-y-6 xl:col-span-7">
+      <div class="space-y-6 xl:col-span-8">
         <!-- Student + Activity Summary -->
         <div
-          class="rounded-[28px] border border-[#DADCE0] bg-gradient-to-br from-white via-white to-[#FDF0F0] p-6 shadow-sm"
+          class="rounded-lg border border-[#E7E9EE] bg-white p-5"
         >
           <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <span
-                class="inline-flex rounded-full border border-[#DADCE0] bg-[#FDF0F0] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#800000]"
+                class="inline-flex rounded-md border border-[#E7E9EE] bg-[#F8F9FA] px-2.5 py-1 text-xs font-medium text-[#800000]"
               >
                 {{ submission.subjectCode || 'Subject' }}
               </span>
 
-              <h2 class="mt-3 text-xl font-black text-[#202124]">
+              <h2 class="mt-3 text-lg font-semibold text-[#202124]">
                 {{ submission.activityTitle || submission.title || 'Submitted Activity' }}
               </h2>
 
-              <p class="mt-1 text-sm font-medium text-[#5F6368]">
+              <p class="mt-1 text-sm text-[#667085]">
                 {{ submission.subjectTitle || 'No subject title' }}
               </p>
             </div>
 
             <span
               :class="getStatusClass(submission.status)"
-              class="inline-flex w-fit rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-wider"
+              class="inline-flex w-fit rounded-md border px-2.5 py-1 text-xs font-medium"
             >
               {{ submission.status || 'submitted' }}
             </span>
           </div>
 
           <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
+            <div class="rounded-md border border-[#E7E9EE] bg-white p-3">
+              <p class="text-xs font-medium text-[#667085]">
                 Student
               </p>
-              <p class="mt-1 truncate text-sm font-black text-[#202124]">
+              <p class="mt-1 truncate text-sm font-medium text-[#202124]">
                 {{ submission.studentName || 'Student' }}
               </p>
             </div>
 
-            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
+            <div class="rounded-md border border-[#E7E9EE] bg-white p-3">
+              <p class="text-xs font-medium text-[#667085]">
                 Submitted
               </p>
-              <p class="mt-1 text-sm font-black text-[#202124]">
+              <p class="mt-1 text-sm font-medium text-[#202124]">
                 {{ formatDate(submission.submittedAt) }}
               </p>
             </div>
 
-            <div class="rounded-2xl border border-[#DADCE0] bg-white p-4">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-[#5F6368]">
+            <div class="rounded-md border border-[#E7E9EE] bg-white p-3">
+              <p class="text-xs font-medium text-[#667085]">
                 Current Grade
               </p>
-              <p class="mt-1 text-sm font-black text-[#800000]">
+              <p class="mt-1 text-sm font-medium text-[#800000]">
                 {{ submission.grade !== null && submission.grade !== undefined ? submission.grade : 'Not graded' }}
               </p>
             </div>
@@ -127,16 +124,16 @@
         </div>
 
         <!-- Answer -->
-        <div class="rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm">
+        <div class="rounded-lg border border-[#E7E9EE] bg-white p-5">
           <div class="mb-4 flex items-center gap-3">
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
+              class="flex h-9 w-9 items-center justify-center rounded-md border border-[#E7E9EE] bg-[#FDF0F0] text-[#800000]"
             >
               <FileTextIcon class="h-5 w-5" />
             </div>
 
             <div>
-              <h3 class="text-base font-black text-[#202124]">
+              <h3 class="text-base font-semibold text-[#202124]">
                 Student Answer
               </h3>
               <p class="text-xs text-[#5F6368]">
@@ -146,7 +143,7 @@
           </div>
 
           <div
-            class="min-h-[180px] rounded-2xl border border-[#DADCE0] bg-[#F8F9FA] p-5 text-sm leading-relaxed text-[#202124] whitespace-pre-wrap"
+            class="min-h-[180px] whitespace-pre-wrap rounded-md border border-[#E7E9EE] bg-[#F8F9FA] p-4 text-sm leading-relaxed text-[#202124]"
           >
             {{ submission.answerText || 'No written answer was submitted.' }}
           </div>
@@ -155,17 +152,17 @@
         <!-- Attachment -->
         <div
           v-if="submission.fileUrl"
-          class="rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm"
+          class="rounded-lg border border-[#E7E9EE] bg-white p-5"
         >
           <div class="mb-4 flex items-center gap-3">
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FDF0F0] text-[#800000] ring-1 ring-[#DADCE0]"
+              class="flex h-9 w-9 items-center justify-center rounded-md border border-[#E7E9EE] bg-[#FDF0F0] text-[#800000]"
             >
               <PaperclipIcon class="h-5 w-5" />
             </div>
 
             <div>
-              <h3 class="text-base font-black text-[#202124]">
+              <h3 class="text-base font-semibold text-[#202124]">
                 Attachment
               </h3>
               <p class="text-xs text-[#5F6368]">
@@ -175,7 +172,7 @@
           </div>
 
           <div
-            class="flex flex-col gap-3 rounded-2xl border border-[#DADCE0] bg-gradient-to-r from-white to-[#FDF0F0] p-4 sm:flex-row sm:items-center sm:justify-between"
+            class="flex flex-col gap-3 rounded-md border border-[#E7E9EE] bg-[#F8F9FA] p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <p class="min-w-0 truncate text-xs font-bold text-[#800000]">
               {{ submission.fileUrl }}
@@ -184,7 +181,7 @@
             <a
               :href="submission.fileUrl"
               target="_blank"
-              class="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#800000] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#5C0000]"
+              class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#800000] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#5C0000]"
             >
               Open File
               <ExternalLinkIcon class="h-3.5 w-3.5" />
@@ -194,23 +191,23 @@
       </div>
 
       <!-- Grading Form -->
-      <aside class="xl:col-span-5">
+      <aside class="xl:col-span-4">
         <div
-          class="sticky top-28 rounded-[28px] border border-[#DADCE0] bg-white p-6 shadow-sm"
+          class="rounded-lg border border-[#E7E9EE] bg-white p-5"
         >
           <!-- Student Card -->
           <div
-            class="mb-6 rounded-2xl border border-[#DADCE0] bg-gradient-to-br from-white to-[#FDF0F0] p-4"
+            class="mb-5 rounded-md border border-[#E7E9EE] bg-[#F8F9FA] p-4"
           >
             <div class="flex items-center gap-3">
               <div
-                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#800000] to-[#5C0000] text-sm font-black text-white ring-2 ring-[#FDF0F0]/40"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#800000] text-sm font-medium text-white"
               >
                 {{ getInitials(submission.studentName) }}
               </div>
 
               <div class="min-w-0">
-                <p class="truncate text-sm font-black text-[#202124]">
+                <p class="truncate text-sm font-medium text-[#202124]">
                   {{ submission.studentName || 'Student' }}
                 </p>
                 <p class="truncate text-xs text-[#5F6368]">
@@ -223,7 +220,7 @@
           <form @submit.prevent="saveGrade" class="space-y-5">
             <div>
               <label
-                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#202124]"
+                class="mb-2 block text-sm font-medium text-[#202124]"
               >
                 Grade
               </label>
@@ -236,10 +233,10 @@
                   min="0"
                   :max="submission.points || undefined"
                   placeholder="Score"
-                  class="w-28 rounded-[14px] border border-[#DADCE0] bg-white px-4 py-3 text-center text-lg font-black text-[#800000] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
+                  class="w-28 rounded-md border border-[#DADCE0] bg-white px-3 py-2 text-center text-base font-medium text-[#800000] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
                 />
 
-                <span class="text-sm font-bold text-[#5F6368]">
+                <span class="text-sm text-[#667085]">
                   <template v-if="submission.points">
                     / {{ submission.points }} points
                   </template>
@@ -252,7 +249,7 @@
 
             <div>
               <label
-                class="mb-2 block text-[11px] font-black uppercase tracking-wider text-[#202124]"
+                class="mb-2 block text-sm font-medium text-[#202124]"
               >
                 Feedback
               </label>
@@ -261,14 +258,14 @@
                 v-model="feedbackText"
                 rows="6"
                 placeholder="Write feedback for the student..."
-                class="w-full resize-none rounded-[16px] border border-[#DADCE0] bg-white px-4 py-3 text-sm leading-relaxed text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
+                class="w-full resize-none rounded-md border border-[#DADCE0] bg-white px-3 py-2.5 text-sm leading-relaxed text-[#202124] outline-none transition focus:border-[#800000] focus:ring-2 focus:ring-[#FDF0F0]"
               ></textarea>
             </div>
 
             <button
               type="submit"
               :disabled="committing"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#800000] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[#800000] px-4 text-sm font-medium text-white transition hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <SaveIcon class="h-4 w-4" />
               {{ committing ? 'Saving Grade...' : 'Save Grade and Feedback' }}
@@ -277,7 +274,7 @@
             <button
               type="button"
               @click="backToQueue"
-              class="w-full rounded-full border border-[#DADCE0] bg-white px-6 py-3 text-sm font-bold text-[#800000] transition hover:bg-[#FDF0F0]"
+              class="h-10 w-full rounded-md border border-[#E7E9EE] bg-white px-4 text-sm font-medium text-[#800000] transition hover:bg-[#FDF0F0]"
             >
               Cancel
             </button>

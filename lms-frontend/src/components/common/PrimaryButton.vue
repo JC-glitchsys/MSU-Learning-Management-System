@@ -1,15 +1,12 @@
 <template>
-  <button
-    :type="type"
-    :disabled="disabled"
-    class="rounded-lg bg-[#800000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#5C0000] disabled:cursor-not-allowed disabled:opacity-50"
-    @click="$emit('click')"
-  >
+  <Button :type="type" :disabled="disabled" @click="$emit('click')">
     <slot />
-  </button>
+  </Button>
 </template>
 
 <script setup>
+import Button from '../ui/Button.vue'
+
 defineProps({
   type: { type: String, default: 'button' },
   disabled: Boolean,

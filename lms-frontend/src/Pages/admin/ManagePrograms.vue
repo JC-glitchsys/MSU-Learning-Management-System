@@ -2,9 +2,9 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header -->
     <section
-      class="flex items-end justify-between gap-6 border-b border-[#DADCE0] pb-5"
+      class="flex items-start justify-between gap-6 border-b border-[#DADCE0] pb-5"
     >
-      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="flex w-full flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[#202124]">
             Manage Programs
